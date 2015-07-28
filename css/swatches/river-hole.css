@@ -1,0 +1,116 @@
+/*
+Flat Ui Colors used:
+Peter River - #3498db
+Belize Hole - #2980b9
+*/
+
+.appeal-button {
+  background:#3498db; 
+  box-shadow: 0 6px #2980b9;
+}
+
+.appeal-button:hover {
+  box-shadow: 0 4px #2980b9;
+  top: 2px;
+}
+
+.appeal-button:active {
+  background: #2980b9;
+  box-shadow: 0 0 #2980b9;
+  top: 6px;
+}
+
+#page-footer button[type="submit"] {
+  color: #3498db; 
+}
+
+h1,h2,h3,h4,h5,h6,a {
+  color: #3498db;
+}
+
+a:hover,a:active{
+  color:#2980b9;
+}
+
+.overlay, .fluidbox-overlay {
+  background-color: rgba(41,128,185,0.5);
+}
+
+.spinner {
+    border: 5px solid rgba(41,128,185,0.5);
+}
+
+.spinner:before {
+    border-top: 5px solid rgba(41,128,185,0.5);
+}
+
+/* Hero */
+
+#hero a:hover i, #hero a:hover, .close-video:hover i {
+  color: #3498db;
+}
+
+body.header-no-image #hero {
+  background-color: #3498db;
+}
+
+.modal-backdrop {
+  background: #3498db;
+}
+
+.video-overlay{
+  background-color: rgba(41,128,185,0.8);
+}
+
+.navbar-fixed, .dropdown-menu, .container>.navbar-header, .container>.navbar-collapse {
+  background-color: #3498db;
+}
+
+.device-showcase i.active, .device-showcase i:hover {
+  color: #3498db;
+}
+
+.flex-control-paging li a.flex-active, .flex-control-paging li a:hover  {
+  background: #3498db;
+}
+
+.flex-direction-nav a{
+  color: #3498db;
+}
+
+.featured-section{
+  background-color: #3498db;
+}
+
+.twitter-feed {
+  background-color: #3498db;
+}
+
+.panel-info {
+  border-color: #3498db;
+}
+
+.panel-info > .panel-heading {
+  background-color: #3498db;
+  border-color: #3498db;
+}
+
+.panel-footer .btn-lg {
+  background-color: #3498db;
+}
+
+.panel-footer .btn-lg:hover {
+  background-color: #2980b9;
+}
+
+.download-icon{
+  background-color: #3498db;
+}
+
+.download-icon:hover{
+  background-color: #2980b9;
+}
+
+#page-footer {
+  background-color: #3498db;
+}

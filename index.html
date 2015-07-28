@@ -1,9 +1,662 @@
 <!DOCTYPE html>
-<html lang="">
-<head>
-  <meta charset="utf-8">
-	<title>Digital Publishing Tools for WordPress</title>
-</head>
-<body>
-</body>
+<html>
+	<head>
+
+		<meta charset="utf-8">
+		<meta http-equiv-"X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<title>Appeal - Responsive Landing App Page</title>
+		<meta name="description" content="Appeal is a responsive landing page for mobile applications.">
+		<meta name="keywords" content="joaosaraiva,html5,css3,workshop-js,responsive,mobile,landing,app,jsthemes">
+	    <meta name="author" content="João Saraiva">
+
+	    <!-- Favicon -->
+	    <link rel="shortcut icon" href="favicon.png">
+
+		<!-- Load Plugins Stylesheets -->
+		<link rel="stylesheet" type="text/css" href="css/plugins.min.css" >
+
+		<!-- Load Swatches (keep only the line you want and remove alternate from rel="" if that's the case) -->
+		<link rel="stylesheet" type="text/css" title="default" href="css/swatches/asphalt-blue.css">
+		<link rel="alternate stylesheet" type="text/css" title="amethyst-histeria" href="css/swatches/amethyst-histeria.css">
+		<link rel="alternate stylesheet" type="text/css" title="river-hole" href="css/swatches/river-hole.css">
+		<link rel="alternate stylesheet" type="text/css" title="emerald-nephritis" href="css/swatches/emerald-nephritis.css">
+		<link rel="alternate stylesheet" type="text/css" title="turquoise-sea" href="css/swatches/turquoise-sea.css">
+		<link rel="alternate stylesheet" type="text/css" title="alizarin-pomegranate" href="css/swatches/alizarin-pomegranate.css">
+		<link rel="alternate stylesheet" type="text/css" title="carrot-pumpkin" href="css/swatches/carrot-pumpkin.css">
+		<link rel="alternate stylesheet" type="text/css" title="sun-orange" href="css/swatches/sun-orange.css">
+		<link rel="alternate stylesheet" type="text/css" title="concrete-asbestos" href="css/swatches/concrete-asbestos.css">
+
+		<!-- Load Main Styles -->
+		<link rel="stylesheet" type="text/css" href="css/styles.css">
+
+	    <!-- Google Web Fonts -->
+	    <link rel='stylesheet' href="http://fonts.googleapis.com/css?family=Montserrat:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic|Source+Sans+Pro:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic|Volkhov:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic">
+
+	</head>
+	<!-- REMOVE CLASS FROM BODY IF YOU WANT VIDEO TO FIT THE HEADER INSTEAD OF OVERLAY -->
+	<body class="app-overlay">
+
+		<!-- BEGIN NAVIGATION -->
+		<nav id="navigation" class="navbar animate fadeInDown" role="navigation">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+		        <span class="sr-only">Toggle navigation</span>
+		        <i class="fa fa-bars"></i>
+		      </button>
+		      <a class="navbar-brand scroll" href="#hero"><img src="img/logo-lettering.png" /></a>
+		    </div>
+
+		    <div id="navbar-collapse" class="collapse navbar-collapse">
+		      <ul class="nav navbar-nav navbar-right">
+		      	<li><a class="scroll" href="#simple-features">Features</a></li>
+		        <li><a class="scroll" href="#showcase">Showcase</a></li>
+		        <li><a class="scroll" href="#testimonials">Testimonials</a></li>
+		        <li><a class="scroll" href="#gallery">Gallery</a></li>
+ 			    <li class="dropdown">
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Extras <b class="caret"></b></a>
+		          <ul class="dropdown-menu">
+		            <li><a class="scroll" href="#twitter">Twitter</a></li>
+		            <li><a class="scroll" href="#price-tables">Price Tables</a></li>
+		          </ul>
+		        </li>
+		      </ul>
+		    </div>
+		  </div>
+		</nav>
+		<!-- END NAVIGATION -->
+
+		<!-- BEGIN PAGE WRAPPER -->
+		<div id="page-wrapper">
+
+			<!-- BEGIN HEADER -->
+			<header id="hero" role="hero">
+			    <div class="overlay"></div>
+				<div id="hero-text" class="h-align animate fadeInUp">
+					<div class="v-align">
+						<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+							<h1>A simple way to showcase your app</h1>
+							<p>Your App page. Instant. Self-hosted. Always up-to-date with a nice support service.</p>
+							<a id="display-video" class="display-video">
+								<i class="fa fa-play"></i>
+								Watch the demo video
+							</a>
+						</div>
+					</div>
+				</div>
+		 		<div class="video video-fit-header">
+					<video id="fitVideoYT" src="" class="video-js vjs-sublime-skin" controls preload="auto" width="100%" height="100%" poster="img/header.jpg" data-setup='{ "techOrder": ["youtube"], "src": "https://www.youtube.com/watch?v=spu8KZvWxGw" }'></video>
+					<div id="closeFit" class="close-video">
+						<i class="fa fa-times fa-2x"></i>
+					</div>
+				</div>
+			</header>
+			<!-- END HEADER -->
+
+			<!-- SIMPLE FEATURES SECTION -->
+			<section id="simple-features">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-6 col-md-4 feature animate fadeIn">
+							<div class="feature-icon">
+								<i class="fa fa-gear"></i>
+							</div>
+							<div class="feature-text">
+								<h5>Easy to customize</h5>
+								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rutrum bibendum nunc. Aenean interdum mauris mi.</p>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-4 feature animate fadeIn">
+							<div class="feature-icon">
+								<i class="fa fa-folder-open-o"></i>
+							</div>
+							<div class="feature-text">
+								<h5>Well Documented</h5>
+								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rutrum bibendum nunc. Aenean interdum mauris mi.</p>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-4 feature animate fadeIn">
+							<div class="feature-icon">
+								<i class="fa fa-barcode"></i>
+							</div>
+							<div class="feature-text">
+								<h5>Unique</h5>
+								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rutrum bibendum nunc. Aenean interdum mauris mi.</p>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-4 feature animate fadeIn">
+							<div class="feature-icon">
+								<i class="fa fa-bars"></i>
+							</div>
+							<div class="feature-text">
+								<h5>Responsive</h5>
+								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rutrum bibendum nunc. Aenean interdum mauris mi.</p>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-4 feature animate fadeIn">
+							<div class="feature-icon">
+								<i class="fa fa-user"></i>
+							</div>
+							<div class="feature-text">
+								<h5>User Friendly</h5>
+								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rutrum bibendum nunc. Aenean interdum mauris mi.</p>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-4 feature animate fadeIn">
+							<div class="feature-icon">
+								<i class="fa fa-globe"></i>
+							</div>
+							<div class="feature-text">
+								<h5>For Everyone</h5>
+								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rutrum bibendum nunc. Aenean interdum mauris mi.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- END SIMPLE FEATURES SECTION -->
+
+			<!-- SHOWCASE INSIDE DEVICES SECTION -->
+			<section id="showcase" class="device-showcase equal-height">
+				<div class="container">
+					<div class="row">
+						
+						<div class="col-sm-8 col-sm-offset-2 col-md-5 animate fadeInLeft" data-wow-duration=".6s">
+							<h4>Appeal is ready to showcase your product in any platform.</h4>
+							<p>This is yet another place to highlight a feature of your awesome app and talk about compatibility maybe? <br>Who knows, the decision is yours to make!</p>
+							<ul id="device-select" class="list-inline">
+								<li class="apple"><i class="fa fa-apple fa-2x active"></i></li>
+								<li class="android"><i class="fa fa-android fa-2x"></i></li>
+								<li class="windows"><i class="fa fa-windows fa-2x"></i></li>
+							</ul>
+						</div>
+						<div class="col-sm-12 col-md-7 animate fadeInRight" data-wow-duration=".6s">
+							<div class="device apple tablet">
+								<img src="img/devices/apple-tablet.png" class="device-img apple">
+								<img src="img/devices/android-tablet.png" class="device-img android">
+								<img src="img/devices/windows-tablet.png" class="device-img windows">
+								<div class="device-content">
+									<div class="flexslider">
+										<ul class="slides">
+											<li style="background-image: url('img/showcase/intro.jpg');" class="flex-active-slide"></li>
+											<li style="background-image: url('img/showcase/sign-up.jpg');"></li>
+											<li style="background-image: url('img/showcase/app-view-1.jpg');"></li>
+											<li style="background-image: url('img/showcase/menu-open.jpg');"></li>
+										</ul>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+	            </div>			
+			</section>
+			<!-- END SHOWCASE INSIDE DEVICES SECTION -->
+
+			<!-- SHOWCASE INSIDE DEVICES SECTION -->
+			<section class="device-showcase multiple-phones alternate equal-height">
+				<div class="container">
+					<div class="row">
+			
+						<div class="col-sm-12 col-md-7 animate fadeInRight">
+							<div class="device apple phone">
+								<img src="img/devices/apple.png" class="device-img apple">
+								<img src="img/devices/android.png" class="device-img android">
+								<img src="img/devices/windows.png" class="device-img windows">
+								<div class="device-content">
+									<div class="flexslider">
+										<ul class="slides">
+											<li style="background-image: url('img/showcase/intro.jpg');" class="flex-active-slide"></li>
+											<li style="background-image: url('img/showcase/sign-up.jpg');"></li>
+											<li style="background-image: url('img/showcase/app-view-1.jpg');"></li>
+											<li style="background-image: url('img/showcase/menu-open.jpg');"></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-sm-8 col-sm-offset-2 col-md-5 animate fadeInLeft" data-wow-duration=".6s">
+							<div class="h-align">
+								<div class="v-align">
+									<h4>Appart from tablets you also have all major phones available for you to choose from.</h4>
+									<p>This is yet another place to highlight a feature of your awesome app and talk about something in specific.</p>
+								</div>
+							</div>
+						</div>
+
+					</div>
+	            </div>			
+			</section>
+			<!-- END SHOWCASE INSIDE DEVICES SECTION -->
+
+			<!-- SHOWCASE INSIDE DEVICES SECTION -->
+			<section class="device-showcase multiple equal-height">
+				<div class="container">
+					<div class="row">
+						
+						<div class="col-sm-8 col-sm-offset-2 col-md-5 animate fadeInLeft" data-wow-duration=".6s">
+							<div class="h-align">
+								<div class="v-align">
+									<h4>And you can even display both at same time.</h4>
+									<p>This is yet another place to highlight a feature of your awesome app showcasing on two different devices at once.</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-7 animate fadeInRight" data-wow-duration=".6s">
+							<div class="device apple tablet">
+								<img src="img/devices/apple-tablet.png" class="device-img apple">
+								<img src="img/devices/android-tablet.png" class="device-img android">
+								<img src="img/devices/windows-tablet.png" class="device-img windows">
+								<div class="device-content">
+									<div class="flexslider">
+										<ul class="slides">
+											<li style="background-image: url('img/showcase/intro.jpg');" class="flex-active-slide"></li>
+											<li style="background-image: url('img/showcase/sign-up.jpg');"></li>
+											<li style="background-image: url('img/showcase/app-view-1.jpg');"></li>
+											<li style="background-image: url('img/showcase/menu-open.jpg');"></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div class="device apple phone">
+								<img src="img/devices/apple.png" class="device-img apple">
+								<img src="img/devices/android.png" class="device-img android">
+								<img src="img/devices/windows.png" class="device-img windows">
+								<div class="device-content">
+									<div class="flexslider">
+										<ul class="slides">
+											<li style="background-image: url('img/showcase/intro.jpg');" class="flex-active-slide"></li>
+											<li style="background-image: url('img/showcase/sign-up.jpg');"></li>
+											<li style="background-image: url('img/showcase/app-view-1.jpg');"></li>
+											<li style="background-image: url('img/showcase/menu-open.jpg');"></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+	            </div>			
+			</section>
+			<!-- END SHOWCASE INSIDE DEVICES SECTION -->
+
+			<!-- SIMPLE FEATURES SECTION -->
+			<section id="detail-features">
+				<div class="container">
+					<div class="row">
+						<div class="col-xs-12 animate fadeIn" data-wow-duration=".6s">
+							<h4 class="section-title">Detail some features of your app!</h4>
+						</div>
+					</div>
+				</div>
+				<div class="equal-height">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-4 col-md-push-4 animate fadeInUp">
+								<div class="detailed-view apple">
+									<img src="img/devices/apple.png" class="device-img apple">
+									<img src="img/devices/android.png" class="device-img android">
+									<img src="img/devices/windows.png" class="device-img windows">
+									<div class="detailed-view-content" style="background-image: url('img/showcase/menu-open.jpg');"></div>
+								</div>
+							</div>
+							<div class="col-md-4 col-md-pull-4 animate fadeInLeft" data-wow-duration=".6s">
+								<div class="feature left">
+									<div class="feature-icon">
+										<i class="fa fa-bars"></i>
+									</div>
+									<div class="feature-text">
+										<h5>Easy to navigate</h5>
+										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rutrum bibendum nunc. Aenean interdum mauris mi.</p>
+									</div>
+								</div>
+								<div class="feature left">
+									<div class="feature-icon">
+										<i class="fa fa-list"></i>
+									</div>
+									<div class="feature-text">
+										<h5>Side navigation</h5>
+										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rutrum bibendum nunc. Aenean interdum mauris mi.</p>
+									</div>
+								</div>
+								<div class="feature left">
+									<div class="feature-icon">
+										<i class="fa fa-eyedropper"></i>
+									</div>
+									<div class="feature-text">
+										<h5>Appealing design</h5>
+										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rutrum bibendum nunc. Aenean interdum mauris mi.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4 animate fadeInRight" data-wow-duration=".6s">
+								<div class="feature">
+									<div class="feature-icon">
+										<i class="fa fa-refresh"></i>
+									</div>
+									<div class="feature-text">
+										<h5>Pull-to-refresh</h5>
+										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rutrum bibendum nunc. Aenean interdum mauris mi.</p>
+									</div>
+								</div>
+								<div class="feature">
+									<div class="feature-icon">
+										<i class="fa fa-group"></i>
+									</div>
+									<div class="feature-text">
+										<h5>Interact with friends</h5>
+										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rutrum bibendum nunc. Aenean interdum mauris mi.</p>
+									</div>
+								</div>
+								<div class="feature">
+									<div class="feature-icon">
+										<i class="fa fa-share"></i>
+									</div>
+									<div class="feature-text">
+										<h5>Share your data</h5>
+										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rutrum bibendum nunc. Aenean interdum mauris mi.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- END SIMPLE FEATURES SECTION -->
+
+			<!-- TESTIMONIALS SECTION -->
+			<section id="testimonials" class="testimonials-section">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 animate fadeIn" data-wow-duration=".6s">
+							<h4 class="section-title">Simple testimonials from your customers</h4>
+							<div class="testimonials-slider h-align">
+								<div class="v-align loading">
+									<div class="spinner"></div>
+								</div>
+								<ul class="slides">
+									<li>
+										<blockquote cite="#">
+											<img src="img/testimonials/avatar-1.jpg" alt="Testimonial Avatar" class="testimonial-img">
+											<p>I'm very satisfied with appeal. It's simple to modify and the customer service is awesome.</p>
+											<footer><a href="#">João Saraiva</a></footer>
+										</blockquote>
+									</li>
+									<li>
+										<blockquote cite="#">
+											<img src="img/testimonials/avatar-2.jpg" alt="Testimonial Avatar" class="testimonial-img">
+											<p>I was looking for a beautiful theme to display my upcomming app and i knew this was the one the first time i saw it.</p>
+											<footer><a href="#">Carolina Vieira</a></footer>
+										</blockquote>
+									</li>
+									<li>
+										<blockquote cite="#">
+											<img src="img/testimonials/avatar-3.jpg" alt="Testimonial Avatar" class="testimonial-img">
+											<p>Using this landing page for a mobile app it's a pleasure. Better than eating candies all day!</p>
+											<footer><a href="#">Cátia Pereira</a></footer>
+										</blockquote>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+	            </div>			
+			</section>
+			<!-- END TESTIMONIALS SECTION -->
+
+			<!-- INSTAGRAM FEED -->
+			<section id="gallery">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+							<h4 class="section-title">Let your users know something about your app or simply something inspiring with Instagram pictures!</h4>
+						</div>
+					</div>
+				</div>
+				<div class="container-fluid">
+					<div id="instagram" class="animate fadeIn"></div>
+				</div>
+			</section>
+			<!-- END INSTAGRAM FEED -->
+
+			<!-- LIGHTBOX SHOWCASE SECTION -->
+	 		<section class="fluidbox-section">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+							<h4 class="section-title">Or simply put some photos that you want to highlight with a clean lightbox.</h4>
+						</div>
+					</div>
+				</div>
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-sm-6 col-md-3 fluidbox-item">
+							<a href="img/showcase/intro.jpg">
+								<img src="img/showcase/intro.jpg" alt="Gallery Image 1" />
+							</a>
+						</div>
+						<div class="col-sm-6 col-md-3 fluidbox-item">
+							<a href="img/showcase/sign-up.jpg">
+								<img src="img/showcase/sign-up.jpg" alt="Gallery Image 2" />
+							</a>
+						</div>
+						<div class="col-sm-6 col-md-3 fluidbox-item">
+							<a href="img/showcase/app-view-1.jpg">
+								<img src="img/showcase/app-view-1.jpg" alt="Gallery Image 3" />
+							</a>
+						</div>
+						<div class="col-sm-6 col-md-3 fluidbox-item">
+							<a href="img/showcase/menu-open.jpg">
+								<img src="img/showcase/menu-open.jpg" alt="Gallery Image 4" />
+							</a>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- END LIGHTBOX SHOWCASE SECTION -->
+
+			<!-- BEGIN TWITTER FEED -->
+			<section id="twitter" class="twitter-feed">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-1">
+							<i class="fa fa-twitter fa-3x twitter-logo"></i>
+						</div>
+						<div class="col-sm-11 animate fadeIn" data-wow-duration=".6s">
+							<div class="twitter-slider">
+								<div class="spinner"></div>
+								<ul class="slides"></ul>
+							</div>
+						</div>
+					</div>
+	            </div>			
+			</section>
+			<!-- END TWITTER FEED-->
+
+			<!-- BEGIN PRICE TABLES -->
+			<section id="price-tables">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+							<h4 class="section-title">Beautiful Price Tables for your own use!</h4>
+						</div>
+						<div class="col-sm-4">
+							<div class="panel panel-info animate fadeInUp">
+ 								<div class="panel-heading">
+ 									<h2>FREE</h2>
+ 								</div>
+						        <div class="panel-body">
+									<h2>€0</h2>
+								</div>
+		                       	<ul class="list-group">
+									<li class="list-group-item">Personal use <i class="fa fa-check fa-lg"></i></li>
+									<li class="list-group-item"><i class="fa fa-times fa-lg"></i> Unlimited projects</li>
+									<li class="list-group-item"><i class="fa fa-times fa-lg"></i> 24/7 support</li>
+								</ul>
+							    <div class="panel-footer">
+									<a class="btn btn-lg btn-block" href="#">SIGNUP NOW!</a>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-4 featured-plan">
+							<div class="panel panel-info animate fadeInUp" data-wow-delay="0.5s">
+ 								<div class="panel-heading">
+ 									<h2>PRO</h2>
+ 								</div>
+						        <div class="panel-body">
+									<h2>€10</h2>
+									<h6>per month</h6>
+									<hr/>
+									<h6>€100 per year</h6>
+								</div>
+		                       	<ul class="list-group list-group-flush text-center">
+									<li class="list-group-item"><i class="fa fa-check fa-lg"></i> Personal use</li>
+									<li class="list-group-item"><i class="fa fa-check fa-lg"></i> Unlimited projects</li>
+									<li class="list-group-item"><i class="fa fa-times fa-lg"></i> 24/7 support</li>
+								</ul>
+							    <div class="panel-footer">
+									<a class="btn btn-lg btn-block" href="#">SIGNUP NOW!</a>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="panel panel-info animate fadeInUp" data-wow-delay="1s">
+ 								<div class="panel-heading">
+ 									<h2>ENTERPRISE</h2>
+ 								</div>
+						        <div class="panel-body">
+									<h2>€35</h2>
+									<h6>per month</h6>
+									<hr/>
+									<h6>€300 per year</h6>
+								</div>
+		                       	<ul class="list-group list-group-flush text-center">
+									<li class="list-group-item"><i class="fa fa-check fa-lg"></i> Personal use</li>
+									<li class="list-group-item"><i class="fa fa-check fa-lg"></i> Unlimited projects</li>
+									<li class="list-group-item"><i class="fa fa-check fa-lg"></i> 24/7 support</li>
+								</ul>
+							    <div class="panel-footer">
+									<a class="btn btn-lg btn-block" href="#">SIGNUP NOW!</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- END PRICE TABLES -->
+
+			<!-- BEGIN CONTACT SECTION -->
+			<section id="contact" class="contact">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+							<h4 class="section-title">Let your visitors contact you so they know other details about your app!</h4>
+							<form id="contact-form" action="/" method="post">
+								<div class="form-field-container">
+									<input type="text" name="name" id="name" value="" class="requiredField text" placeholder="John Doe">
+								</div>
+								<div class="form-field-container">
+									<input type="email" name="email" id="email" value="" class="requiredField email" placeholder="johndoe@mail.com">
+								</div>
+								<div class="form-field-container">
+									<textarea name="message" id="message" rows="20" cols="30" class="requiredField" placeholder="Your message"></textarea>
+								</div>
+								<div class="form-field-container">
+									<input type="hidden" name="submitted" id="submitted" class="button" value="SEND"><button id="submit" class="appeal-button button-margin" type="submit">Send</button>
+								</div>
+								<div class="form-field-container">
+									<p id="thanks" data-alert class="alert-box success">Thanks. We'll get back to you as soon as possible.</p>
+									<p id="error" data-alert class="alert-box"></p>
+									<p id="timedout" data-alert class="alert-box">The connection to the server timed out.</p>
+									
+								</div>
+							</form>
+		                </div>
+		            </div>
+				</div>
+			</section>	
+			<!-- END CONTACT SECTION -->	
+
+			<!-- BEGIN DOWNLOAD SECTION -->
+			<section class="download-app">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+							<h4 class="section-title">If your app is already available, link to the respective markets</h4>
+						</div>
+					</div>
+				</div>
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-xs-4 download-icon">
+							<i class="fa fa-apple fa-3x visible-xs"></i>
+							<i class="fa fa-apple fa-5x animate fadeInUp hidden-xs"></i>
+						</div>
+						<div class="col-xs-4 download-icon">
+							<i class="fa fa-android fa-3x visible-xs"></i>
+							<i class="fa fa-android fa-5x animate fadeInDown hidden-xs" data-wow-delay="0.3s"></i>
+						</div>
+						<div class="col-xs-4 download-icon">
+							<i class="fa fa-windows fa-3x visible-xs"></i>
+							<i class="fa fa-windows fa-5x animate fadeInUp hidden-xs" data-wow-delay="0.6s"></i>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- END DOWNLOAD SECTION -->
+
+			<!-- BEGIN FOOTER -->
+			<footer id="page-footer">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+							<h4 class="section-title">And they can also subscribe to your MailChimp newsletter!</h4>
+							<form id="mc-form">
+						        <input id="mc-email" type="email" placeholder="email">       
+						        <button type="submit" class="appeal-button">Submit</button>
+						        <label>* signup if you want to receive app updates and other related news</label>
+						        <label class="mc-validation" for="mc-email"></label>
+						    </form>
+						</div>
+					</div>
+					<h5>Appeal</h5>
+					<ul class="list-inline">
+						<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+						<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+						<li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+					</ul>
+					<hr>
+					<small>©2014 João Saraiva, All Rights Reserved</small>
+				</div>
+			</footer>
+			<!-- END FOOTER -->
+
+		</div>
+		<!-- END PAGE WRAPPER -->
+
+		<!-- BEGIN VIDEO FULLSCREEN OVERLAY -->
+		<div class="video-overlay">
+			<div id="closeOverlay"class="close-video">
+				<i class="fa fa-times fa-2x"></i>
+			</div>
+			<div class="h-align">
+				<div class="v-align">
+					<video id="overlayVideo" src="" class="video-js vjs-sublime-skin" controls preload="auto" width="100%" height="100%" poster="img/header.jpg" data-setup='{ "techOrder": ["youtube"], "src": "https://www.youtube.com/watch?v=spu8KZvWxGw" }'></video>
+					</video>
+				</div>
+			</div>
+		</div>
+		<!-- END VIDEO FULLSCREEN OVERLAY -->
+
+		<!-- jQuery Script -->	
+		<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+		<!-- Plugins Scripts -->
+		<script src="js/plugins.min.js"></script>
+
+		<!-- Template Scripts -->
+		<script src="js/scripts.js"></script>
+
+	</body>
 </html>

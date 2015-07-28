@@ -1,0 +1,124 @@
+/*
+Flat Ui Colors used:
+Concrete - #95a5a6
+Asbestos - #7f8c8d
+*/
+
+.appeal-button {
+  background:#95a5a6; 
+  box-shadow: 0 6px #7f8c8d;
+}
+
+.appeal-button:hover {
+  box-shadow: 0 4px #7f8c8d;
+  top: 2px;
+}
+
+.appeal-button:active {
+  background: #7f8c8d;
+  box-shadow: 0 0 #7f8c8d;
+  top: 6px;
+}
+
+#page-footer button[type="submit"] {
+  color: #95a5a6; 
+}
+
+h1,h2,h3,h4,h5,h6,a {
+  color: #95a5a6;
+}
+
+a:hover,a:active{
+  color:#7f8c8d;
+}
+
+.overlay, .fluidbox-overlay {
+  background-color: rgba(149,165,166,0.5);
+}
+
+.spinner {
+    border: 5px solid rgba(149,165,166,0.5);
+}
+
+.spinner:before {
+    border-top: 5px solid rgba(149,165,166,0.5);
+}
+
+/* Hero */
+
+#hero a:hover i, #hero a:hover, .close-video:hover i {
+  color: #95a5a6;
+}
+
+body.header-no-image #hero {
+  background-color: #95a5a6;
+}
+
+.modal-backdrop {
+  background: #95a5a6;
+}
+
+.video-overlay{
+  background-color: rgba(149,165,166,0.8);
+}
+
+.navbar-fixed, .dropdown-menu, .container>.navbar-header, .container>.navbar-collapse {
+  background-color: #95a5a6;
+}
+
+.device-showcase i.active, .device-showcase i:hover {
+  color: #95a5a6;
+}
+
+.flex-control-paging li a.flex-active, .flex-control-paging li a:hover  {
+  background: #95a5a6;
+}
+
+.flex-direction-nav a{
+  color: #95a5a6;
+}
+
+.featured-section{
+  background-color: #95a5a6;
+}
+
+.twitter-feed {
+  background-color: #95a5a6;
+}
+
+.twitter-slider .spinner{
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.twitter-slider .spinner:before{
+  border-top: 5px solid rgba(149,165,166, 0.8);
+}
+
+.panel-info {
+  border-color: #95a5a6;
+}
+
+.panel-info > .panel-heading {
+  background-color: #95a5a6;
+  border-color: #95a5a6;
+}
+
+.panel-footer .btn-lg {
+  background-color: #95a5a6;
+}
+
+.panel-footer .btn-lg:hover {
+  background-color: #7f8c8d;
+}
+
+.download-icon{
+  background-color: #95a5a6;
+}
+
+.download-icon:hover{
+  background-color: #7f8c8d;
+}
+
+#page-footer {
+  background-color: #95a5a6;
+}

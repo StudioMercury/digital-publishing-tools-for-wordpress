@@ -1,0 +1,116 @@
+/*
+Flat Ui Colors used:
+Amethyst - #9b59b6
+Histeria - #8e44ad
+*/
+
+.appeal-button {
+  background:#9b59b6; 
+  box-shadow: 0 6px #8e44ad;
+}
+
+.appeal-button:hover {
+  box-shadow: 0 4px #8e44ad;
+  top: 2px;
+}
+
+.appeal-button:active {
+  background: #8e44ad;
+  box-shadow: 0 0 #8e44ad;
+  top: 6px;
+}
+
+#page-footer button[type="submit"] {
+  color: #9b59b6;  
+}
+
+h1,h2,h3,h4,h5,h6,a {
+  color: #9b59b6;
+}
+
+a:hover,a:active{
+  color:#8e44ad;
+}
+
+.overlay, .fluidbox-overlay {
+  background-color: rgba(155,89,182,0.5);
+}
+
+.spinner {
+    border: 5px solid rgba(155,89,182,0.15);
+}
+
+.spinner:before {
+    border-top: 5px solid rgba(155,89,182,0.15);
+}
+
+/* Hero */
+
+#hero a:hover i, #hero a:hover, .close-video:hover i {
+  color: #9b59b6;
+}
+
+body.header-no-image #hero {
+  background-color: #9b59b6;
+}
+
+.modal-backdrop {
+  background: #9b59b6;
+}
+
+.video-overlay{
+  background-color: rgba(155,89,182,0.8);
+}
+
+.navbar-fixed, .dropdown-menu, .container>.navbar-header, .container>.navbar-collapse {
+  background-color: #9b59b6;
+}
+
+.device-showcase i.active, .device-showcase i:hover {
+  color: #9b59b6;
+}
+
+.flex-control-paging li a.flex-active, .flex-control-paging li a:hover  {
+  background: #9b59b6;
+}
+
+.flex-direction-nav a{
+  color: #9b59b6;
+}
+
+.featured-section{
+  background-color: #9b59b6;
+}
+
+.twitter-feed {
+  background-color: #9b59b6;
+}
+
+.panel-info {
+  border-color: #9b59b6;
+}
+
+.panel-info > .panel-heading {
+  background-color: #9b59b6;
+  border-color: #9b59b6;
+}
+
+.panel-footer .btn-lg {
+  background-color: #9b59b6;
+}
+
+.panel-footer .btn-lg:hover {
+  background-color: #8e44ad;
+}
+
+.download-icon{
+  background-color: #9b59b6;
+}
+
+.download-icon:hover{
+  background-color: #8e44ad;
+}
+
+#page-footer {
+  background-color: #9b59b6;
+}
