@@ -73,10 +73,12 @@
 						<div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
 							<h1>Digital Publishing Tools for WordPress</h1>
 							<p>Digital Publishing Tools for WordPress is a plugin that allows anyone to create HTML articles for Digital Publishing Solution directly from WordPress. </p>
-							<!--<a class="" href="downloads/digital-publishing-tools-for-wordpress-v1.1.zip">
+							<!--
+							<a class="" href="downloads/digital-publishing-tools-for-wordpress-v1.1.zip">
 								<i class="fa fa-download"></i>
 								Download Now
 							</a>
+							<small class="label label-primary">v 1.0.1</small>
 							-->
 							<h5 style="color:#fff;">We've removed the download link while we update the plugin with some bug fixes.</h5>
 						</div>
@@ -271,16 +273,16 @@
 				
 				    <p><span>Access to the Adobe Digital Publishing Solution API is recommended for this plugin. Without the API access the plugin will still allow you to create and manage articles, edit, and download articles in an Adobe Digital Publishing Solution .article format. Access to the Adobe Digital Publishing Solution API will unlock cloud publishing functions in the plugin. This will allow you to directly publish articles from WordPress directly to Adobe Digital Publishing Solution. API access will also streamline the process of managing and creating articles in Adobe Digital Publishing Solution.</span></p>
 				
-				    <p></p>
+				    
 					
 					<br />
 				    <h4><span>How to gain access to the API</span></h4>
 				
 				    <p><span>API access is available for enterprise customers of Adobe Digital Publishing Solution. You only need one API key for the plugin. To request API access, have the account manager of the Adobe Digital Publishing Solution enterprise account e-mail:</span> <span class="c2"><a class="c9" href="mailto:wwds@adobe.com">wwds@adobe.com</a></span><span>.</span></p>
 				
-				    <p></p>
+				    
 				
-				    <p></p>
+				    
 					
 					<br />
 					
@@ -310,7 +312,7 @@
 				        <li class="c0"><span>Enter the API information into the plugin</span></li>
 				    </ol>
 				
-				    <p></p>
+				    
 					
 					<div class="row">
 					<div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
@@ -319,7 +321,7 @@
 					
 					    <p><span>Once you have an API key you will want to create an AdobeID for access to the API.</span> <span>For security, do not associate your Master Admin AdobeID with the API Key.</span> <span>We recommend creating a new AdobeID</span><span>&nbsp;</span><span>(</span><span class="c2"><a class="c9" href="https://www.google.com/url?q=https%3A%2F%2Faccounts.adobe.com%2F&amp;sa=D&amp;sntz=1&amp;usg=AFQjCNFZqIAwUKoCOkWo8AeC73OrV5xvGA">https://accounts.adobe.com/</a></span><span>). Then use the Adobe Digital Publishing Solution portal to assign that AdobeID the roles and permissions it needs for the project you&rsquo;re using for the plugin. You can assign roles using the Adobe Digital Publishing Solution dashboard: (</span><span class="c2"><a class="c9" href="https://www.google.com/url?q=https%3A%2F%2Fpublish.adobe.com%2Fadmin%2Findex.html%23%2Fusers&amp;sa=D&amp;sntz=1&amp;usg=AFQjCNE23VVFiu5sBAZgp30gyTdFWXLhmg">https://publish.adobe.com/admin/index.html#/users</a></span><span>).</span></p>
 					
-					    <p></p>
+					    
 					
 					    <p><span>___</span></p>
 					
@@ -327,7 +329,7 @@
 					
 					    <p><span>After you have an AdobeID that has been assigned to the permissions/roles of the project you&rsquo;d like to use with the plugin, you will need to e-mail:</span> <span class="c2"><a class="c9" href="mailto:wwds@adobe.com">wwds@adobe.com</a></span><span>&nbsp;asking for that account to be whitelisted.</span></p>
 					
-					    <p></p>
+					    
 					
 					    <p><span>___</span></p>
 					
@@ -335,11 +337,11 @@
 					
 					    <p><span>When your AdobeID has been whitelisted, you will need to create a device token using your AdobeID and API key. To do this, visit:</span> <span class="c2"><a class="c9" href="https://www.google.com/url?q=https%3A%2F%2Faex.publish.adobe.com%2Findex.html%23%2F&amp;sa=D&amp;sntz=1&amp;usg=AFQjCNHCU1hNyIFKJ7RiG9JHeHL7wXCVog">https://aex.publish.adobe.com/index.html</a></span><span>&nbsp;and enter your API key ( also referred to as your IMS Client ID ). Click the &ldquo;IMS Authorize&rdquo; button. You will be asked to log in with an AdobeID, use the one that was whitelisted above.</span></p>
 					
-					    <p></p>
+					    
 					
 					    <p><span>After logging in you will be given a Device Token, Device ID, and expiration time. A note about the Device Token + Device ID:</span></p>
 					
-					    <p></p>
+					    
 					
 					    <ul class="c8 lst-kix_454ayag0traq-0 start">
 					        <li class="c0"><span>The device token will expire after 6 months</span></li>
@@ -349,7 +351,7 @@
 					        <li class="c0"><span>A password update will invalidate the device_token in the future (within a 2 to 3 month timeframe)</span></li>
 					    </ul>
 					
-					    <p></p>
+					    
 					
 					    <p><span>___</span></p>
 					
@@ -357,7 +359,7 @@
 					
 					    <p><span>After obtaining the: Adobe API Key, Adobe API Secret, Device Token, and Device ID you can then enter these pieces into the Digital Publishing plugin for WordPress. You can do this by clicking on Settings on the left hand side, then the Adobe API tab. Make sure your API version is set to Publish (v2.0). After entering the following fields:</span></p>
 					
-					    <p></p>
+					    
 					
 					    <ul class="c8 lst-kix_8o2jy3gaipio-0 start">
 					        <li class="c0"><span>Adobe API Key</span></li>
@@ -369,16 +371,16 @@
 					        <li class="c0"><span>Device ID</span></li>
 					    </ul>
 					
-					    <p></p>
+					    
 					
 					    <p><span>Click Save. The plugin will then automatically create an access token for you behind the scenes. You should see it populated in the Adobe API tab after the save. You should also see a list of authorized publications at the bottom of the tab that will show you the publications your AdobeID has access to. If you need access to a publication that does not appear in this list, log into the Adobe Digital Publishing Solution portal and assign the AdobeID (the one assigned to the API) access to the publication you&rsquo;d like to use.</span></p>
 					
-					    <p></p>
+					    
 					
-					    <p></p>
+					    
 					    <hr style="page-break-before:always;display:none;">
 					
-					    <p></p>
+					    
 					 
 					 
                     <div class="alert alert-danger" role="alert">
@@ -405,39 +407,39 @@
 					<hr />
 				    <h3 class="text-center"><span>Working with the Plugin</span></h3>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6>Installation</h6>
 				
 				    <p><span>You can also download a copy of the plugin above</span><span>&nbsp;then drag the &ldquo;digital-publishig-for-adobe-publish&rdquo; folder into your WordPress plugins folder.</span></p>
 				
-				    <p></p>
+				    
 				
 				    <p><span>After you activate the plugin you will see a menu item on the left for &ldquo;Digital Publishing.&rdquo; Clicking on this will launch you into the Digital Publishing plugin.</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6>Recommended Hosting Services</h6>
 				
 				    <p><span>We&rsquo;ve been using Media Temple&rsquo;s Wordpress Premium hosting service with our clients and the plugin works great with the service.</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h4>Setting up the plugin: Settings</h4>
 				
 				    <p><span>Opening the plugin for the first time will take you into the settings area. Here you can set-up the plugin and assign any defaults.</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6><span>General</span></h6>
 				
 				    <p><span>You can use the plugin in two modes:</span></p>
 				
-				    <p></p>
+				    
 					
 				
 					<div class="row">
@@ -461,30 +463,30 @@
 				
 				    <p><span>If you have access to the Adobe API (see how to get access to the Adobe Digital Publishing Solution API) you can enter them here. If you choose not to enter an Adobe API you can still use the plugin. Cloud functions will be disabled.</span></p>
 				
-				    <p></p>
+				    
 					
 					<br />
 				    <h6><span>Target Devices</span></h6>
 				
 				    <p><span>COMING SOON: The ability to have renditions for different devices. You can set the different device sizes in this tab</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6><span>Templates</span></h6>
 				
 				    <p><span>This tab will show you the templates the plugin has found. You can use this tab to make sure the templates are available and even set the default template used when creating new articles. [see working with templates for more information about templates]</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6><span>Advanced</span></h6>
 				
 				    <p><span>As additional features come up we&rsquo;ll be adding their options to the advanced tab.</span></p>
 				
-				    <p></p>
+				    
 				
-				    <p></p>
+				    
 				    
 				    
 				    
@@ -510,35 +512,35 @@
 				
 				    <p><span>Articles are an integral part of the plugin. The plugin allows you to easily migrate existing content or create new content as Adobe Digital Publishing Solution articles. We make working with, editing, and publishing articles easy. Clicking on the &ldquo;Articles&rdquo; section in the plugin will take you to the articles list.</span></p>
 				
-				    <p></p>
+				    
 				
-				    <p></p>
+				    
 				    
 					<br />
 				    <h6><span>Creating a new article</span></h6>
 				
 				    <p><span>Articles can be created from scratch. Clicking the (+) button will allow you to create a new article. When creating a new article, the name must be unique. Enter an article name and click create. The new article will appear at the top of the article list.</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6><span>Importing Articles</span></h6>
 				
 				    <p><span>You can also work with existing content already created in WordPress. To import an article, go to your list of posts (or custom taxonomy posts). In the standard WordPress list, check the posts you&rsquo;d like to import as articles. From the bulk actions drop down menu, select &ldquo;Import as DPS Article&rdquo; and click &ldquo;Apply.&rdquo; This will begin the process of importing the selected content into articles.</span></p>
 				
-				    <p></p>
+				    
 				
 				    <p><span>When importing articles, the plugin keeps everything associated with the original article: custom fields, taxonomies, categories, tags, etc. A reference to the original post is stored as well, so you can sync any changes made from the original post (if it changes).</span></p>
 				
-				    <p></p>
+				    
 				
 				    <p><span>In addition, the plugin also takes any taxonomy or category values and adds them as &ldquo;internal keywords&rdquo; to make it easier to search and manage articles in the Adobe Digital Publishing Solution web portal.</span></p>
 				
-				    <p></p>
+				    
 				
 				    <p><span>After the import, if you go back to the articles list in the plugin, you will see the new article(s).</span></p>
 				
-				    <p></p>
+				    
 					
 					<br />
 					<div class="row">
@@ -561,14 +563,14 @@
 				        <li class="c0"><span>The Edit button allows you to edit the article using wordpress. NOTE: editing an article in the plugin does not sync the changes back to the original post. If the intent is to edit the source file you&rsquo;ll want to edit the original post and then sync the changes back to the article in the plugin.</span></li>
 				    </ul>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6><i class="fa fa-trash-o"></i> <span>Deleting Articles</span></h6>
 				
 				    <p><span>Articles can be deleted one by one or in bulk. Opening an article in the plugin will give you the ability to delete it. Clicking the trash can icon will ask you if you&rsquo;d like to delete the article. If the article is also hosted in the cloud, you will also be given the option to delete it from the cloud at the same time. Once an article is deleted it can not be undone. Similarly, if you&rsquo;re in the article list, you can select a group of articles and click the trash can icon to delete them.</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6><i class="fa fa-arrow-circle-o-down"></i> <span>Downloading Articles</span></h6>
@@ -583,7 +585,7 @@
 				        <li class="c0"><span>An .article file (a zip of the HTML article and it&rsquo;s assets) ready for upload into Adobe Digital Publishing Solution</span></li>
 				    </ul>
 				
-				    <p></p>
+				    
 					
 					<br />
 					<hr />
@@ -608,149 +610,118 @@
 				
 				    <p><span>When creating and working with articles in WordPress, they will be local to that install of WordPress. When you want to publish them you can use the cloud functions. Any changes made to articles in Wordpress are made locally. You will need to update the changes you&rsquo;ve made to see them reflected in the Adobe Digital Publishing Solution cloud.</span></p>
 				
-				    <p></p>
+				    
 				
 				    <p><span>When you open an article, there&rsquo;s a cloud button with a drop down of options.</span></p>
 				
-				    <p></p>
+				    
 				
 				    <h6><i class="fa fa-cloud"></i> <span>Create in the Cloud</span></h6>
 				
 				    <p><span>When you first create an article, it&rsquo;s only local to that instance of WordPress. The only option you&rsquo;ll have when clicking on the cloud button is to &ldquo;Create in the Cloud.&rdquo; This will create a new article in the Adobe Digital Publishing Solution cloud with all of the metadata of the article.</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6><i class="fa fa-tags"></i> <span>Update Metadata</span></h6>
 				
 				    <p><span>This will only update the article&rsquo;s metadata.</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6><i class="fa fa-picture-o"></i> <span>Update Content (thumbnails)</span></h6>
 				
 				    <p><span>This will only upload updates to the article&rsquo;s thumbnail or social sharing images</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6><i class="fa fa-upload"></i> <span>Update Article Folio</span></h6>
 				
 				    <p><span>This will only update the article content file (the .article file) that&rsquo;s attached to the article</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6><i class="fa fa-cloud-upload"></i> <span>Update ALL</span></h6>
 				
 				    <p><span>Update all will update the article&rsquo;s metadata, contents, and article folio (.article).</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6><i class="fa fa-trash-o"></i> <span>Delete from the Cloud</span></h6>
 				
 				    <p><span>This will delete the article from the Adobe Digital Publishing Solution cloud</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6><i class="fa fa-link"></i> <span>Unlink from Cloud</span></h6>
 				
 				    <p><span>This will unlink the local WordPress article with the one in the cloud. You can re-link the article at a later time if you do this.</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6><span>Link to Cloud</span></h6>
 				
 				    <p><span>This will bring up a list of article already in the cloud. You can link this local WordPress article with the one in the cloud.</span></p>
 				
-				    <p></p>
+				    
 				
 					<br />
 				    <h6><i class="fa fa-paper-plane"></i> <span>Publish</span></h6>
 				
 				    <p><span>This will publish the article in the Adobe Digital Publishing Solution cloud.</span></p>
 				
-				    <p></p>
+				    
 				
-				    <p></p>
+				    
 				
-				    <p></p>
+				    
 				
-				    <p></p>
+				    
 				    <hr style="page-break-before:always;display:none;">
 				
-				    <p></p>
-				
-				
-					<!--
+				    
+				    
 					<br />
 					<br />
 					<hr />
+				    <h3 class="text-center"><span>Working with Templates</span></h3>
 				
-				    <h4><span>Working with Templates</span></h4>
+				    <p>The plugin comes with a sample article template. The template is built using Bootstrap and is responsive for phone, tablet and desktop.</p>
+				    
+				    <p>To make your own templates, copy the folder <b>publish-templates</b> from the plugin folder into your active theme folder. Once in your theme’s folder the plugin will look there first when searching for a source of templates.</p>
 				
-				    <p><span>The plugin comes with a sample article template. The template is built using Bootstrap and is responsive for phone, tablet and desktop.</span></p>
+					<br />
+				    <h6>Template folder organization</h6>
 				
-				    <p></p>
+				    <p><span>You can also download a copy of the plugin above</span><span>&nbsp;then drag the &ldquo;digital-publishig-for-adobe-publish&rdquo; folder into your WordPress plugins folder.</span></p>
 				
-				    <p><span>To make your own templates, copy the folder</span> <span>publish-templates</span><span>&nbsp;from the plugin folder into your active theme folder. Once in your theme&rsquo;s folder the plugin will look there first when searching for a source of templates.</span></p>
+				    <p>We recommend keeping your template files in the root of the <b>publish-templates</b> folder. All resources such as css, fonts, js and images should go inside of the HTMLResources folder. 
+				    </p>
+				    
+				    <div class="row">		    
+						<div class="col-sm-8 col-sm-offset-2">
+							<img src="img/screenshots/folder-structure.png" class="img-responsive" />
+						</div>
+				    </div>
+					
+					<br />
+				    <h6>Inner workings of a template</h6>
 				
-				    <p></p>
+				    <p>The top of a template file includes some crucial code needed to bundle the template when publishing it to the cloud.</p>
+					
+					<p><b>bundle</b> <i>required</i> - When the plugin goes to render the page it will pass “true” to the attribute bundle in order to change all file paths to be relative to the HTMLResources folder. When including new files in your template you’ll want to use the $filePath variable for the file path.</p>				
 				
-				    <h6><span>Template folder organization:</span></h6>
-				
-				    <p><span>We recommend keeping your template files in the root of the</span> <span>publish-templates</span><span>&nbsp;folder. All resources such as css, fonts, js and images should go inside of the HTMLResources folder.</span></p>
-				
-				    <p class="c3 c7"><span>HTMLResources</span></p>
-				
-				    <ul class="c8 lst-kix_c7michi5lua-0 start">
-				        <li class="c3 c5"><span>css</span></li>
-				
-				        <li class="c3 c5"><span>fonts</span></li>
-				
-				        <li class="c3 c5"><span>images</span></li>
-				
-				        <li class="c3 c5"><span>js</span></li>
-				    </ul>
-				
-				    <p class="c3 c7"><span>template-article.php</span></p>
-				
-				    <p></p>
-				
-				    <h6><span>Inner workings of a template</span></h6>
-				
-				    <p><span>The top of a template file includes some crucial code needed to bundle the template when publishing it to the cloud.</span></p>
-				
-				    <ul class="c8 lst-kix_er189o5qa0wt-0 start">
-				        <li class="c3 c5"><span>articleID</span><span>&nbsp;</span><span class="c10">optional</span><span>&nbsp;- The</span> <span>articleID</span><span>&nbsp;is ID of the post. Used for optional testing purposes.</span></li>
-				
-				        <li class="c3 c5"><span>postType</span><span>&nbsp;</span> <span class="c10">optional</span><span>&nbsp;- Slug of the post type or custom post type (ie: post). Used for optional testing purposes.</span></li>
-				
-				        <li class="c3 c5"><span>bundle</span> <span>&nbsp;</span><span class="c10">required</span><span>&nbsp;- When the plugin goes to render the page it will pass &ldquo;true&rdquo; to the attribute</span> <span>bundle</span><span>&nbsp;in order to change all file paths to be relative to the</span> <span>HTMLResources</span><span>&nbsp;folder. When including new files in your template you&rsquo;ll want to use the</span> <span>$filePath</span><span>&nbsp;variable for the file path.</span></li>
-				    </ul>
-				
-				    <p></p>
-				
-				    <p class="c3 c11"><span class="c1 c12">OPTIONAL TESTING PURPOSES</span><span class="c12">:</span><span>&nbsp;Creating a new page and choosing your template allows you to pass the articleID and postType for quickly previewing. You don&rsquo;t have to use this method, you can always import a post as an article in the Adobe Digital Publishing Solution for Wordpress plugin to test.</span></p>
-				-->
 					<br />
 					<br />
 					<hr />
-					<h6 class="text-center">
-						More documentation will be added soon.
-					</h6>
-									
-									
-				
-				
-				
-				
-				
-				
+
+							
 				
 					
 					
@@ -766,18 +737,18 @@
 			
 
 			<!-- SHOWCASE INSIDE DEVICES SECTION -->
-			<!--
+			
 			<section id="showcase" class="device-showcase equal-height">
 				<div class="container">
 					<div class="row">
 						
 						<div class="col-sm-8 col-sm-offset-2 col-md-5 animate fadeInLeft" data-wow-duration=".6s">
-							<h4>Appeal is ready to showcase your product in any platform.</h4>
-							<p>This is yet another place to highlight a feature of your awesome app and talk about compatibility maybe? <br>Who knows, the decision is yours to make!</p>
+							<h4>Gather Journal Recipe App</h4>
+							<p>Gather's app publishes content exclusively from the Digital Publishing Tools for Wordpress plugin.</p>
 							<ul id="device-select" class="list-inline">
-								<li class="apple"><i class="fa fa-apple fa-2x active"></i></li>
-								<li class="android"><i class="fa fa-android fa-2x"></i></li>
-								<li class="windows"><i class="fa fa-windows fa-2x"></i></li>
+								<li class="apple"><a href="https://itunes.apple.com/us/app/gather-journal/id1008189079?mt=8" target="_blank"><i class="fa fa-apple fa-2x active"></i></a></li>
+								<li class="android"><a href="https://play.google.com/store/apps/details?id=com.gather.recipes&hl=en" target="_blank"><i class="fa fa-android fa-2x active"></i></a></li>
+								<li class="windows"><a href="http://apps.microsoft.com/windows/app/d1f0c578-d533-44ee-9a58-e9d28610109f" target="_blank"><i class="fa fa-windows fa-2x active"></i></a></li>
 							</ul>
 						</div>
 						<div class="col-sm-12 col-md-7 animate fadeInRight" data-wow-duration=".6s">
@@ -788,10 +759,12 @@
 								<div class="device-content">
 									<div class="flexslider">
 										<ul class="slides">
-											<li style="background-image: url('img/showcase/intro.jpg');" class="flex-active-slide"></li>
-											<li style="background-image: url('img/showcase/sign-up.jpg');"></li>
-											<li style="background-image: url('img/showcase/app-view-1.jpg');"></li>
-											<li style="background-image: url('img/showcase/menu-open.jpg');"></li>
+											<li style="background-image: url('img/showcase/gather-journal/1.PNG');" class="flex-active-slide"></li>
+											<li style="background-image: url('img/showcase/gather-journal/2.PNG');"></li>
+											<li style="background-image: url('img/showcase/gather-journal/3.PNG');"></li>
+											<li style="background-image: url('img/showcase/gather-journal/4.PNG');"></li>
+											<li style="background-image: url('img/showcase/gather-journal/5.PNG');"></li>
+											<li style="background-image: url('img/showcase/gather-journal/6.PNG');"></li>
 										</ul>
 									</div>
 								</div>
