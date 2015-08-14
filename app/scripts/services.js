@@ -169,6 +169,7 @@ angular.module('AdobePublishForCMS.services', [])
 
 /* HELPERS: Interacting with the CMS */
 		request = function(action, reqData){
+			Alerts.removeGroup('request')
 			var deferred = $q.defer();
 			
 			var req = {
