@@ -1,0 +1,151 @@
+<!-- Article Navigation -->
+<nav class="navbar navbar-inverse navbar-secondary">
+    <div class="container-fluid">
+    
+        <ul class="nav navbar-nav navbar-right">
+	        
+	        <!-- SYNC (if previously imported)-->
+	        <li ng-if="article.origin && article.origin.length > 0">
+	        	<a class="clickable" ng-click="openSync()"><span class="glyphicon glyphicon-refresh"></span> Sync</a>
+	        </li>
+	        
+	        <!-- DOWNLOAD (archive of article) -->
+	        <li><a class="clickable" ng-click="download()"><span class="glyphicon glyphicon-download"></span> Download</a></li>
+	        
+	        <!-- CLOUD: If no API ACCESS / Publications (don't allow any actions) -->
+	        <li ng-if="!settings.canAccessCloud() && !(article.entityId.length > 0)" >
+	        	<a  class="disabled" 
+		        	popover="{{getCloudError()}}" 
+			        popover-placement="bottom"
+			        popover-trigger="mouseenter">
+		        		<span class="glyphicon glyphicon-cloud"></span> Cloud
+		        </a>
+	        </li>
+	        
+	        <!-- CLOUD: No access to cloud but has a reference -->
+	        <li dropdown is-open="cloudwithID.isOpen" ng-if="!settings.canAccessCloud() && (article.entityId.length > 0) ">
+	        	
+	        	<a class="clickable" dropdown-toggle>
+					<span class="glyphicon glyphicon-cloud"></span> Cloud
+				</a>
+				
+				<ul class="dropdown-menu" role="menu">
+					<li class="clickable" ng-if="article.entityId.length > 0">
+						<a ng-click="unlink()"><span class="glyphicon glyphicon-link"></span> Unlink from Cloud</a>
+					</li>
+				</ul>
+				
+	        </li>
+	        	        
+	        <!-- CLOUD: If API Access + Publications -->
+	        <li dropdown is-open="push.isOpen" ng-if="settings.canAccessCloud()">
+	        		        	
+				<a class="clickable" dropdown-toggle>
+					<span class="glyphicon glyphicon-cloud"></span> Cloud
+				</a>
+				
+				<ul class="dropdown-menu" role="menu">
+					
+					<li class="clickable disabled" ng-if="!(article.entityId.length > 0)">
+						<a ng-click="link()"><span class="glyphicon glyphicon-link"></span> Link to Existing Article in Cloud (coming soon)</a>
+					</li>
+										
+					<li class="clickable" ng-if="(article.entityId.length > 0)">
+						<a ng-click="push_all()"><span class="glyphicon glyphicon-cloud-upload"></span> Update ALL</a>
+					</li>
+					
+					<li class="divider" ng-if="(article.entityId.length > 0)"></li>
+					
+					<li class="clickable" ng-if="(article.entityId.length > 0)">
+						<a ng-click="push_metadata()"><span class="glyphicon glyphicon-tags"></span> Update Metadata</a>
+					</li>
+					
+					<li class="clickable" ng-if="(article.entityId.length > 0)">
+						<a ng-click="push_content()"><span class="glyphicon glyphicon-picture"></span> Update Content (thumbnails)</a>
+					</li>
+					
+					<li class="clickable" ng-if="(article.entityId.length > 0)">
+						<a ng-click="push_article_folio()"><span class="glyphicon glyphicon-open"></span> Update Article Folio</a>
+					</li>
+					
+					<li class="divider" ng-if="(article.entityId.length > 0)"></li>
+					
+					<li class="clickable" ng-if="(article.entityId.length > 0)">
+						<a ng-click="delete_cloud()"><span class="glyphicon glyphicon-trash"></span> Delete from the Cloud</a>
+					</li>									
+					
+					<li class="divider" ng-if="(article.entityId.length > 0)"></li>
+					
+					<li class="clickable" ng-if="(article.entityId.length > 0)">
+						<a ng-click="unlink()"><span class="glyphicon glyphicon-link"></span> Unlink from Cloud</a>
+					</li>	
+					
+					<li class="divider"></li>
+					
+					<li class="clickable" ng-if="!(article.entityId.length > 0)">
+						<a ng-click="create(true)"><span class="glyphicon glyphicon-cloud-upload"></span> Create in the Cloud</a>
+					</li>
+					
+					<li class="clickable" ng-if="(article.entityId.length > 0)">
+						<a ng-click="publish()"><span class="glyphicon glyphicon-send"></span> Publish</a>
+					</li>
+				
+				</ul>
+			</li>
+			
+			<!-- PREVIEW SIZE -->
+	        <li dropdown is-open="preview.isOpen">
+				<a class="clickable" dropdown-toggle>
+					<span class="glyphicon glyphicon-phone"></span> Preview
+				</a>
+				<ul class="dropdown-menu" role="menu">
+					<li class="clickable"><a ng-click="preview.device = 'phone' ">
+						<span class="glyphicon glyphicon-ok" ng-style="{ visibility: preview.device == 'phone' ? 'visible' : 'hidden' }"></span> Phone</a>
+					</li>
+					<li class="clickable"><a ng-click="preview.device = 'tablet' ">
+						<span class="glyphicon glyphicon-ok" ng-style="{ visibility: preview.device == 'tablet' ? 'visible' : 'hidden' }"></span> Tablet</a>
+					</li>
+					<li class="clickable"><a ng-click="preview.device = 'desktop' ">
+						<span class="glyphicon glyphicon-ok" ng-style="{ visibility: (preview.device == 'desktop' || preview.device === undefined) ? 'visible' : 'hidden' }"></span> Desktop</a>
+					</li>
+				</ul>
+			</li>
+			
+			<!-- METADATA -->
+            <li><a class="clickable" data-toggle="collapse" ng-click="showMetadata = !showMetadata">
+	            	<span class="glyphicon" ng-class="{'glyphicon-menu-down': !showMetadata, 'glyphicon-menu-up': showMetadata}"></span> Properties
+	        	</a>
+	        </li>
+            
+            <!-- EDIT -->
+            <li dropdown is-open="edit.isOpen">
+				<a class="clickable" dropdown-toggle><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+				<ul class="dropdown-menu" role="menu">
+					<li class="disabled"><a>Inline (coming soon)</a></li>
+<!-- 					<li class="clickable"><a ui-sref="article.edit({id: article.id})">Inline (coming soon)</a></li> -->
+					<li class="clickable"><a href="{{article.editUrl}}">WordPress</a></li>
+				</ul>
+			</li>
+                        	        
+			<!-- DELETE -->
+            <li><a class="clickable" ng-click="delete()"><span class="glyphicon glyphicon-trash"></span> Delete</a></li>
+
+            <!-- SAVE (locally) -->
+            <li><a class="clickable" ng-click="save()"><span class="glyphicon glyphicon-save"></span> Save</a></li>
+            
+        </ul>	          
+      
+    </div>
+</nav>	
+	
+<!-- Article Metadata -->
+<!-- <div ui-view="metadata"></div> -->
+<div ng-cloak collapse="!showMetadata">
+	<div class="article-header metadata-group" ng-include="config.viewPath + 'views/article/metadata.html'"></div>
+</div>
+
+<!-- Article Content / Body -->
+<div class="single-article">
+<!-- 	<article ng-bind-html="article.body"></article> -->
+	<iframe class="{{preview.device}}" src="{{article.cmsPreview}}">
+</div>

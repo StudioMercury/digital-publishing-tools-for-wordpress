@@ -1,0 +1,40 @@
+<div class="loading-window">
+	<div class="bar-spinner"></div>
+	<BR/>
+	<p ng-bind-html="text">TEXT</p>
+</div>
+
+<style>
+	.loading-window{
+		position: absolute;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		top: 40%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		text-align: center;
+		font-weight: 100;
+		font-size: 16px;
+		color: #333;
+	}	
+	
+	.bar-spinner{
+		width: 6px;
+		height: 30px;
+		color: rgba(0,0,0,0);
+		background-color: #333;
+		margin: auto;
+		
+		-webkit-transform: rotate(180deg);
+		
+		-webkit-animation: spin 1.5s infinite linear; /* Safari 4+ */
+		-moz-animation:    spin 1.5s infinite linear; /* Fx 5+ */
+		-o-animation:      spin 1.5s infinite linear; /* Opera 12+ */
+		animation:         spin 1.5s infinite linear;
+	}
+	
+	@-webkit-keyframes spin {
+	    from { -webkit-transform: rotate(0deg); }
+	    to { -webkit-transform: rotate(360deg); }
+	}
+</style>

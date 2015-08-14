@@ -1,0 +1,87 @@
+<!doctype html>
+<html class="no-js" lang="">
+	<head>
+	    
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	    <meta name="description" content="">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+        
+        <title>Adobe Publish for CMS</title>
+        
+        <!-- CSS FOR HIDDEN ELEMENTS -->
+		<style>
+			[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak { display: none !important; }
+		</style>
+
+        <!-- build:css styles/vendor.css -->
+        <!-- bower:css -->
+        <!-- endbower -->
+        <!-- endbuild -->
+<!--         <link rel="stylesheet" href="bower_components/adobe-coral-bootstrap-theme/css/fonts.css"> -->
+	    <link rel="stylesheet" href="bower_components/adobe-coral-bootstrap-theme/css/bootstrap-coral-ui.css">
+	    <link rel="stylesheet" href="bower_components/adobe-coral-bootstrap-theme/css/theme.css">
+	    <link rel="stylesheet" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css">
+	    <link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.bootstrap.min.css">    
+        <link rel="stylesheet" href="styles/style.css">
+                
+        <!-- build:js scripts/vendor.js -->
+        <!-- bower:js -->
+        <script src="bower_components/angular/angular.min.js"></script>
+        <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+        <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+        <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+        <script src="bower_components/underscore/underscore-min.js"></script>
+        <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+        <script src="bower_components/ng-tags-input/ng-tags-input.min.js"></script>
+        <script src="bower_components/angular-file-upload/angular-file-upload.min.js"></script>
+        
+        <!-- endbower -->
+        <!-- endbuild -->
+        
+        <!-- build:js scripts/scripts.js -->
+        <script src="scripts/app.js"></script>
+        <script src="scripts/controllers.js"></script>
+        <script src="scripts/services.js"></script>
+        <script src="scripts/configuration.js"></script>
+        <script src="scripts/filters.js"></script>
+        <script src="scripts/directives.js"></script>
+        <!-- endbuild -->
+        
+    </head>
+    
+    <body ng-app="AdobePublishForCMS" class="bootstrap-coral-ui">
+		
+		<!-- Alerts -->
+		<div id="alerts" ng-controller="alerts" ng-include="config.viewPath + 'views/alerts.html'"></div>		
+		
+		<!-- HEADER (only for full screen app) -->
+		<nav class="navbar navbar-default navbar-fixed-top">
+		    <div class="container-fluid">
+		        <div class="navbar-header">
+			        <a href="{{config.CMSUrl}}" class="navbar-brand clickable"><span class="glyphicon glyphicon-chevron-left"></span> Back to WordPress</a>
+<!-- 		            <a class="navbar-brand">{{name}}</a> -->
+		        </div>
+		    </div>
+		</nav>
+				
+		<BR/><BR/>
+		
+		<!-- SIDEBAR (only for full screen app) -->
+		<!-- Menu -->
+		<!-- http://shoppinpal.github.io/ng-mobile-menu/demo/#/skinny -->
+		<div ng-show="showSideMenu" ng-include="config.viewPath + 'views/side-navigation.html'" ng-controller="sideMenu"></div>
+
+
+	    <!-- CONTENT -->
+		<div class="page-view coral-sidebar-open">
+
+			<div class="col-sm-12">
+				<div ui-view></div>
+			</div>
+		</div>
+		
+		<style>body { background-color: #ffffff; }</style>
+		    
+    </body>
+</html>

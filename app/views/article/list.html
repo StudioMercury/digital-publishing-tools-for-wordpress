@@ -1,0 +1,39 @@
+<!-- Navigation: Article Collection -->
+<nav ng-include="config.viewPath + 'views/article/list-nav.html'" class="navbar navbar-inverse navbar-secondary"></nav>	
+
+<!-- Search -->
+<!--
+<div ng-cloak collapse="!showSearch">
+	<div class="article-header metadata-group" ng-include="config.viewPath + 'views/search.html'"></div>
+</div>
+-->
+
+<!-- Filter -->
+<!--
+<div ng-cloak collapse="!showFilter">
+	<div class="article-header metadata-group" ng-include="config.viewPath + 'views/filter.html'"></div>
+</div>
+-->
+
+<!-- Article Table -->
+<div ng-cloak ng-if="entities.length > 0" ng-include="config.viewPath + 'views/article/list-table.html'"></div>
+
+
+<!-- NO ARTICLES: When there are no articles available -->
+<div ng-cloak ng-if="entities.length < 1">
+	<div class="no-articles text-center">
+		<br />
+		<h1>You don't have any articles.</h1>
+		<p>
+	    	<br />
+	        <a ng-click="addArticle()" class="btn btn-default">
+		        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Article
+		    </a> 
+	        <br />
+	        <br />
+	        You can also batch import articles, or script the import of articles. 
+	        <br />
+	        <a href="http://studiomercury.github.io/folio-author-plugin-for-wordpress/">Click here to learn more.</a>
+	    </p>
+	</div>
+</div>

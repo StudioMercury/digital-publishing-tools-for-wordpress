@@ -1,0 +1,31 @@
+<div id="article-metadata">
+    <br /><br />
+	<tabset class="nav">
+		
+		<!-- Article Metadata: Article Metadata --> 
+		<tab heading="Article Metadata" role="presentation">
+			<div ng-include="config.viewPath + 'views/article/metadata-general.html'"></div>
+		</tab>
+		
+		<!-- Article Metadata: Images --> 
+		<tab heading="Images" role="presentation">
+            <div ng-include="config.viewPath + 'views/article/metadata-images.html'"></div>
+		</tab>
+		
+		<!-- Article Metadata: Advertising --> 
+		<tab heading="Advertisement" role="presentation">
+            <div ng-include="config.viewPath + 'views/article/metadata-advertisement.html'"></div>
+		</tab>
+		
+		<!-- Article Metadata: Social Sharing --> 
+		<tab heading="Social Sharing" role="presentation">
+            <div ng-include="config.viewPath + 'views/article/metadata-social-sharing.html'"></div>
+		</tab>
+		
+		<!-- Article Metadata: Advanced --> 
+		<tab heading="Advanced" role="presentation">
+            <div ng-include="config.viewPath + 'views/article/metadata-advanced.html'"></div>
+		</tab>
+		
+	</tabset>
+</div>

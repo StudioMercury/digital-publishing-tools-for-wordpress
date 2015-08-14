@@ -1,0 +1,44 @@
+<!-- MODAL: ADD ENTITY -->
+
+<!-- Modal Header -->
+<div class="modal-header">
+    <button type="button" class="close" ng-click="close()" aria-label="Close">
+    	<span aria-hidden="true">&times;</span>
+    </button>
+    <h2 class="modal-title" id="myModalLabel">{{ entity.entityType.charAt(0).toUpperCase() + entity.entityType.slice(1) }} Name</h2>
+</div>
+
+<!-- Modal Body -->
+<div class="modal-body">
+  	<p>
+	  	The {{entity.entityType}} name is used internally and must be unique for the content within a project. 
+	  	Once an article has been created in the cloud, it's name can not be changed.
+  	</p>
+  	
+  	<br />
+  	
+	<div class="form-group">
+		<label for="entityName"><b>{{ entity.entityType.charAt(0).toUpperCase() + entity.entityType.slice(1) }} Name</b></label>
+		<form name="addEntity">
+			<input 	type="text" 
+					ng-pattern="/^[0-9a-zA-Z]{1}[0-9a-zA-Z.-]{0,62}[0-9a-zA-Z]{1}$/" 
+					class="form-control" 
+					name="entityName" 
+					placeholder="Unique {{ entity.entityType.charAt(0).toUpperCase() + entity.entityType.slice(1) }} Name (required)" 
+					ng-model="entity.entityName" 
+					ng-enter="doAction(entity.create(),'create')"
+					required />
+
+			<div role="alert" class="alert">
+				<span class="error" ng-show="addEntity.entityName.$error.required">A Name is required</span>
+				<span class="error" ng-show="addEntity.entityName.$error.pattern">{{ entity.entityType.charAt(0).toUpperCase() + entity.entityType.slice(1) }} name must be greater than one character and contain no special characters or spaces</span>
+			</div>
+		</form>
+	</div>			  	
+</div>
+
+<!-- Modal Footer -->
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button type="button" class="btn btn-primary" ng-click="doAction(entity.create(), 'create')">Create</button>
+</div>

@@ -1,0 +1,33 @@
+<!-- MODAL: DELETE ENTITY -->
+
+<!-- Modal Header -->
+<div class="modal-header">
+    <button type="button" class="close" ng-click="close()" aria-label="Close">
+    	<span aria-hidden="true">&times;</span>
+    </button>
+    <h2 class="modal-title" id="myModalLabel">Are you sure you want to delete?</h2>
+</div>
+
+<!-- Modal Body -->
+<div class="modal-body">
+	<p>
+		You can not undo this action and the {{ entity.entityType }} will be deleted forever.
+	</p>
+	
+	<!-- If entity exists in the cloud too -->
+	<p ng-if="(entity.entityId.length > 0) && settings.canAccessCloud()">
+		There is also a linked {{ entity.entityType }} in the cloud. Would you like to delete this one as well? This action can not be undone.
+		<BR/><BR/>
+		<input type="checkbox" ng-model="action.fromCloud" name="fromCloud"/><b> Delete the linked {{ entity.entityType }} from the cloud</b>
+	</p>
+  	
+	<br />
+	  	
+</div>
+
+<!-- Modal Footer -->
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button type="button" ng-if="!action.fromCloud" class="btn btn-primary warning" ng-click="doAction(entity.delete(), 'delete')">Delete</button>
+    <button type="button" ng-if="action.fromCloud" class="btn btn-primary warning" ng-click="doAction([entity.delete(),entity.delete(fromCloud)], 'delete')">Delete from Both</button>
+</div>

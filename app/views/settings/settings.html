@@ -1,0 +1,58 @@
+<div id="settings">
+    
+    <div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-7 col-lg-offset-3">
+        
+    	<tabset class="nav centered">
+    		
+    		<!-- Settings: General --> 
+    		<tab heading="General">
+    			<div ng-include="config.viewPath + 'views/settings/general.html'"></div>
+    		</tab>
+    		
+    		<!-- Settings: API --> 
+    		<tab heading="Adobe API">
+                <div ng-include="config.viewPath + 'views/settings/api.html'"></div>
+    		</tab>
+    		
+    		<!-- Settings: Devices --> 
+    		<tab heading="Devices">
+                <div ng-include="config.viewPath + 'views/settings/devices.html'"></div>
+    		</tab>
+    		
+    		<!-- Settings: Templates --> 
+    		<tab heading="Templates">
+                <div ng-include="config.viewPath + 'views/settings/templates.html'"></div>
+    		</tab>
+    		
+    		<!-- Settings: Defaults --> 
+<!--
+    		<tab heading="Defaults">
+                <div ng-include="config.viewPath + 'views/settings/defaults.html'"></div>
+    		</tab>
+-->
+    		
+    		<!-- Settings: Importing --> 
+<!--
+    		<tab heading="Importing">
+                <div ng-include="config.viewPath + 'views/settings/importing.html'"></div>
+    		</tab>
+-->
+    		
+    		<!-- Settings: Advanced --> 
+<!--
+    		<tab heading="Advanced">
+                <div ng-include="config.viewPath + 'views/settings/advanced.html'"></div>
+    		</tab>
+-->
+    		
+    	</tabset>
+    	
+    	<BR/>
+    	
+    	<div class="text-right">
+            <button class="btn btn-primary" ng-click="save()"><span class="glyphicon glyphicon-save"></span> Save</button>
+    	</div>
+    	
+    </div>
+	
+</div>

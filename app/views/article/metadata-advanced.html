@@ -1,0 +1,154 @@
+<!-- Column 1-->
+<div class="col-sm-4">
+
+	<div class="form-group">
+		<label for="id">Article ID</label>
+		<p>
+			<i>Each article has an ID that uniquely identifies it</i>
+		</p>
+		<input 	type="text" 
+				class="form-control" 
+				name="id" 
+				placeholder="Article Id" 
+				ng-model="article.id" 
+				disabled />
+	</div>	
+	
+	<br />
+	
+	<div class="form-group">
+		<label for="version">Article Version</label>
+		<p>
+			<i>Each time the entity changes a new version of the entity is created</i>
+		</p>
+		<input 	type="text" 
+				class="form-control" 
+				name="version" 
+				placeholder="Article Version" 
+				ng-model="article.version" 
+				disabled
+				/>
+	</div>
+		
+	<br />
+	
+	<div class="form-group">
+		<label for="contentVersion">Content Version</label>
+		<p>
+			<i>Each time the content changes a new version of the entity is created</i>
+		</p>
+		<input 	type="text" 
+				class="form-control" 
+				name="contentVersion" 
+				placeholder="Content Version" 
+				ng-model="article.contentVersion" 
+				disabled
+				/>
+	</div>
+		
+	<br />
+
+</div>	
+
+
+
+<div class="col-sm-4">	
+		
+	<div class="form-group">
+		<label for="url">Content URL</label>
+		<p>
+			<i>Specific URL for the content used by the API</i>
+		</p>
+		<input 	type="text" 
+				class="form-control" 
+				name="url" 
+				placeholder="Content URL" 
+				ng-model="article.url" 
+				disabled />
+	</div>
+	
+	<br />
+	
+	<div class="form-group">
+		<label for="modified">Date Modified</label>
+		<p>
+			<i>Time the article was last modified</i>
+		</p>
+		<input 	type="text" 
+				class="form-control" 
+				name="modified" 
+				placeholder="Date Modified" 
+				ng-model="article.modified" 
+				disabled />
+	</div>
+	
+	<br />
+    	
+	<div class="form-group">
+		<label for="created">Date Created</label>
+		<p>
+			<i>Time the article was created</i>
+		</p>
+		<input 	type="text" 
+				class="form-control" 
+				name="created" 
+				placeholder="Date Created" 
+				ng-model="article.created" 
+				disabled />
+	</div>
+	
+	<br />
+	
+
+</div>	
+
+
+
+<div class="col-sm-4">	
+	
+	<div class="form-group">
+		<label for="published">Date Published</label>
+		<p>
+			<i>Time the article was last published</i>
+		</p>
+		<input 	type="text" 
+				class="form-control" 
+				name="published" 
+				placeholder="Date Published" 
+				ng-model="article.published" 
+				disabled />
+	</div>
+	
+	<br />
+	
+	<div class="form-group">
+		<label for="userData">User Data</label>
+		<p>
+			<i>Free form field for 3rd party use</i>
+		</p>
+		<input 	type="text" 
+				class="form-control" 
+				name="userData"
+				placeholder="User Data" 
+				ng-model="article.userData" 
+				disabled />
+	</div>
+	
+	<br />
+	
+	<div class="form-group">
+		<label for="articleFolio">Article Folio</label>
+		<p>
+			<i>The link to the article folio containing the contents of the article in the CDS.</i>
+		</p>
+		<input 	type="text" 
+				class="form-control" 
+				name="articleFolio"
+				placeholder="Article Folio" 
+				ng-model="article.articleFolio" 
+				disabled />
+	</div>
+	
+	<br />	
+	
+</div>

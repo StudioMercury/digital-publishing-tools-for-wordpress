@@ -1,0 +1,45 @@
+<!-- MODAL: ADD ENTITY -->
+
+<!-- Modal Header -->
+<div class="modal-header">
+    <button type="button" class="close" ng-click="close()" aria-label="Close">
+    	<span aria-hidden="true">&times;</span>
+    </button>
+    <h2 class="modal-title" id="myModalLabel">Sync Article</h2>
+</div>
+
+<!-- Modal Body -->
+<div class="modal-body">
+  	<p>This article was imported from another post. You can re-sync the content from the original post and override the content of the article.</p>
+  	
+  	<BR/>
+  	
+  	<span class="glyphicon glyphicon-cloud"></span> <label>Status</label>
+  	<p>The original content has been modified since import</p>
+  	
+<!--
+  	<BR/>	
+  	
+  	<label>What to sync</label>
+  	<BR/>
+  	<input type="checkbox" /> Title
+  	<BR/>
+  	<input type="checkbox" /> Article Body
+  	<BR/>
+  	<input type="checkbox" /> Metadata
+  	<BR/>
+  	<input type="checkbox" /> Title
+  	<BR/>
+-->
+  	
+  	<BR/>
+  	<p>Warning, clicking the sync button below will override the contents of the article with the original post's contents. This can not be undone.</p>
+
+		  	
+</div>
+
+<!-- Modal Footer -->
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button type="button" class="btn btn-primary" ng-click="sync()">Sync</button>
+</div>

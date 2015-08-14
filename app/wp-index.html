@@ -1,0 +1,93 @@
+<!--
+https://www.google.com/fonts#UsePlace:use/Collection:Open+Sans
+https://www.google.com/fonts#UsePlace:use/Collection:Lato
+https://www.google.com/fonts#UsePlace:use/Collection:Source+Sans+Pro
+
+https://www.google.com/fonts/specimen/Old+Standard+TT
+-->
+
+<link href='http://fonts.googleapis.com/css?family=Old+Standard+TT:400,400italic,700' rel='stylesheet' type='text/css'>
+<script> jQuery("body").addClass("bootstrap-coral-ui"); </script>
+<style>
+	[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak { display: none !important; }
+	.bootstrap-coral-ui{ font-family: 'Open Sans', sans-serif; }
+</style>
+
+
+<div ng-app="AdobePublishForCMS" class="bootstrap-coral-ui">
+
+	<!-- TODO ADD NGIF SETTINGS IS FULL SCREEN -->
+	<style>
+		html, body, #wpcontent, #wpbody, #wpbody-content { height: auto; padding: 0px; margin: 0px; width: 100%; height: 100%; float: none; position: static; display: block; }
+		.update-nag { display:none !important; }
+		#wpcontent, #wpfooter { margin-left:0px; }
+		.auto-fold #wpcontent, .auto-fold #wpfooter { margin-left:0px; padding-left: 0px; }
+		
+		#wpadminbar, #wpfooter, #adminmenuwrap, #adminmenuback{ display: none !important; }
+		html.wp-toolbar { padding-top: 43px; }
+		
+		.updated.error { display: none; }
+		
+		iframe{
+			width: 100%;
+			height: 100%;
+			display: block;
+			border: none;
+			background: rgba(255,255,255, .7) !important;
+			margin: auto;
+			padding: 0px;
+		}
+		
+		.page-view.white{
+			text-align: center;
+			background: rgba(0,0,0, .05) !important;
+		}	
+		
+		iframe.phone{ max-width: 480px !important; }
+		iframe.tablet{ max-width: 768px !important; }
+		iframe.desktop{ max-width: auto !important; }
+
+	</style>
+
+	<!-- HEADER (only for full screen app) -->
+	<nav class="navbar navbar-default navbar-fixed-top">
+	    
+	    <div class="container-fluid">
+	        <div class="navbar-header">
+		        <a href="{{config.CMSUrl}}" class="navbar-brand"><span class="glyphicon glyphicon-chevron-left"></span> Back to WordPress</a>
+                <!-- <div class="navbar-brand">{{name}}</div> -->
+	        </div>
+	    </div>
+	    
+		<!-- Alerts -->
+		<div id="alerts" ng-controller="alerts" ng-include="config.viewPath + 'views/alerts.html'"></div>	    
+	</nav>
+				
+	<!-- SIDEBAR (only for full screen app) -->
+	<!-- http://shoppinpal.github.io/ng-mobile-menu/demo/#/skinny -->
+	<div ng-include="config.viewPath + 'views/side-navigation.html'" ng-controller="sideMenu"></div>
+
+    <!-- CONTENT -->
+	<div class="page-view coral-sidebar-open">
+        <div ui-view></div>
+	</div>
+	
+	<!-- Loading Screen -->
+	<style>
+		#loading{
+			position:fixed;
+			width: 100%;
+			height: 100%;
+			background-color:rgba(255,255,255,.8);
+			top: 0px;
+			left: 0px;
+			z-index: 99999999;
+			
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+	</style>
+	<div ng-include="config.viewPath + 'views/loading.html'" ng-controller="loading" id="loading" ng-show="show()"></div>
+        
+</div>

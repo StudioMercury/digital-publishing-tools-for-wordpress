@@ -1,0 +1,214 @@
+<!-- Column 1-->
+<div class="col-sm-4">
+
+	<div class="form-group">
+		<label for="entityName">Article Name</label>
+		<p>
+			<i>The collection name is used internally only and must be unique for collections within an application.</i>
+		</p>
+		<input 	type="text" 
+				pattern="[0-9a-zA-Z]{1}[0-9a-zA-Z.-]{0,62}[0-9a-zA-Z]{1}" 
+				class="form-control" 
+				name="entityName" 
+				placeholder="Name" 
+				ng-model="article.entityName" 
+				ng-disabled="article.entityId"/>
+	</div>	
+	
+	<br />
+	
+	<div class="form-group">
+		<label for="title">Article title</label>
+		<p>
+			<i>The user-facing title of the article that is displayed throughout the application.</i>
+		</p>
+		<input  type="text" 
+				class="form-control" 
+				ngMaxlength="250"
+				name="title" 
+				placeholder="Title" 
+				ng-model="article.title" />
+	</div>
+	
+	<br />
+	
+	<div class="form-group">
+		<label for="shortTitle">Article Short Title</label>
+		<p>
+			<i>A short article title for display on smaller device screens.</i>
+		</p>
+		<input  type="text" 
+				class="form-control" 
+				ngMaxlength="140"
+				name="shortTitle" 
+				placeholder="Short Title" 
+				ng-model="article.shortTitle" />
+	</div>			
+	
+	<br />		
+	
+	<div class="form-group">
+		<label for="abstract">Abstract</label>
+		<p>
+			<i>A description or summary of the article.</i>
+		</p>
+		<textarea 	class="form-control" 
+					placeholder="Abstract"
+					name="abstract"  
+					ngMaxlength="400"
+					ng-model="article.abstract"
+					rows="3"></textarea>
+	</div>			
+	
+	<br />
+	
+	<div class="form-group">
+		<label for="shortAbstract">Short Abstract</label>
+		<p>
+			<i>A short description or summary of the article that can be used on smaller device screens.</i>
+		</p>
+		<input  type="text" 
+				class="form-control" 
+				ngMaxlength="250"
+				name="shortAbstract" 
+				placeholder="Short Abstract" 
+				ng-model="article.shortAbstract" />
+	</div>						
+
+</div>
+
+
+
+<!-- Column 2-->
+<div class="col-sm-4">
+
+	<div class="form-group">
+		<label for="author">Author</label>
+		<p>
+			<i>Author byline associated with the article.</i>
+		</p>
+		<input  type="text" 
+				class="form-control" 
+				ngMaxlength="100"
+				name="author" 
+				placeholder="Author" 
+				ng-model="article.author" />
+	</div>	
+	
+	<br />
+	
+	<div class="form-group">
+		<label for="authorUrl">Author URL</label>
+		<p>
+			<i>Link to more information about the author.</i>
+		</p>
+		<input  type="text" 
+				class="form-control" 
+				ngMaxlength="150"
+				name="authorUrl" 
+				placeholder="Author URL" 
+				ng-model="article.authorUrl" />
+	</div>
+	
+	<br />
+	
+	<div class="checkbox">
+		<label for="hideFromBrowsePage">
+		    <input  type="checkbox" 
+					name="hideFromBrowsePage" 
+					ng-model="article.hideFromBrowsePage" />
+		    &nbsp; Hide from browse page				
+	    </label>				
+	</div>	
+	
+	<br />
+	
+	<div class="form-group">
+		<label for="department">Department</label>
+		<p>
+			<i>Department is used to categorize articles within the context of your application (sports, politics, style etc.).</i>
+		</p>
+		<input  type="text" 
+				class="form-control" 
+				name="department" 
+				placeholder="Department" 
+				ng-model="article.department" />
+	</div>	
+	
+	<div class="form-group">
+		<label for="category">Category</label>
+		<p>
+			<i>Category is more specific than department, but more general than keywords. There is only one specified category for the content.</i>
+		</p>
+		<input  type="text" 
+				class="form-control" 
+				ngMaxlength="140"
+				name="category" 
+				placeholder="Category" 
+				ng-model="article.category" />
+	</div>			
+	
+	<br />	
+	
+</div>			
+
+
+
+<!-- Column 3-->
+<div class="col-sm-4">		
+	
+	<div class="form-group">
+		<label for="keywords">Keywords</label>
+		<p>
+			<i>A list of separated keywords associated with the article. These keywords could be user-facing.</i>
+		</p>
+		<tags-input name="keywords" placeholder="Keywords" ng-model="article.keywords" replace-spaces-with-dashes="false"></tags-input>
+	</div>			
+	
+	<br />
+	
+	<div class="form-group">
+		<label for="internalKeywords">Internal Keywords</label>
+		<p>
+			<i>A list of separated, internally used keywords.</i>
+		</p>
+		<tags-input name="internalKeywords" placeholder="Internal Keywords" ng-model="article.internalKeywords" replace-spaces-with-dashes="false"></tags-input>
+	</div>							
+
+
+	<div class="form-group">
+		<label for="accessState">Article Access</label>
+		<p>
+			<i>Article Access determines which articles users can view without purchasing.</i>
+		</p>
+		
+		<select class="form-control" ng-options="state for state in ['free','metered','protected']" ng-model="article.accessState"></select>
+	</div>	
+	
+	<br />
+	
+	<div class="form-group">
+		<label for="importance">Article Importance</label>
+		<p>
+			<i>Specify the importance of this article in the context of your application</i>
+		</p>
+		<select class="form-control" ng-options="importance for importance in ['low', 'normal', 'high']" ng-model="article.importance"></select>
+	</div>
+	
+	<br />
+	
+	<div class="checkbox">
+	    <label for="isTrustedContent">
+		    <input  type="checkbox" 
+					name="isTrustedContent" 
+					ng-model="article.isTrustedContent" />
+		    &nbsp; Trusted Content	
+	    </label>					
+	</div>
+	<p>
+		<i>Flag that allows Article to access entitlement info / reading APIs.</i>
+	</p>
+	
+	<br />
+	
+</div>

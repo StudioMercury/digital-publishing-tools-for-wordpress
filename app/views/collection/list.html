@@ -1,0 +1,73 @@
+<!-- Main Navbar, this is always used even inside of wordpress -->	
+<nav class="navbar navbar-inverse navbar-secondary">
+    <div class="container-fluid">
+
+        <ul class="nav navbar-nav">
+            <li>
+            	<a href="#" onclick="toggleSidebar()">
+	            	<span class="glyphicon glyphicon-menu-hamburger" ></span>
+	            </a>
+            </li>
+            <li>
+            	<a href="#" data-toggle="modal" data-target="#add-collection">
+	            	<span class="glyphicon glyphicon-plus"></span>
+	            </a>
+	        </li>
+        </ul>
+        
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+            	<a data-toggle="collapse" href="#search-menu">
+	            	<span class="glyphicon glyphicon-search"></span>
+	            </a>
+	        </li>
+            <li>
+            	<a data-toggle="collapse" href="#filter-menu">
+	            	<span class="glyphicon glyphicon-filter"></span>
+	            </a>
+	        </li>
+        </ul>	    
+      
+    </div><!-- /.container-fluid -->
+</nav>	
+
+
+
+<!-- Boxy Module Collection View --> 
+<div class="collections">
+	
+	<!-- Single Collection --> 
+	<div class="col-xs-6 col-sm-4 col-lg-3" ng-repeat="collection in collections">
+		<div class="card-collection stack">
+		   <i class="select"></i>
+		   <i class="move"></i>
+		   <a ui-sref="collection.single({id: collection.id })">
+		       <span class="image"><img src="{{collection.thumbnail}}" alt=""></span>
+		       <div class="label">
+		           <h4>{{collection.title}}</h4>
+		           <p><span class="glyphicon glyphicon-cloud"></span> {{collection.status}}</p>
+		           <p><span class="glyphicon glyphicon-file"></span> {{collection.renditions}}</p>
+		       </div>
+		   </a>
+		</div>
+	</div>		
+		
+</div>
+
+
+
+<!-- If no collections are found, display the following --> 
+<div class="col-xs-12" ng-if="collections.length < 1">
+	<div class="no-articles text-center">
+    	<br />
+    	<h1>You don't have any collections.</h1>
+    	<p>
+        	<br />
+            <a href="#" data-toggle="modal" data-target="#add-collection" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Collection</a> 
+            <br />
+            <br />
+            <a href="http://www.google.com">Click here</a> to learn more about collections.
+        </p>
+	</div>      
+</div>
+

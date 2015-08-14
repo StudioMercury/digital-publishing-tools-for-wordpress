@@ -1,0 +1,50 @@
+<table class="table tablesorter">
+	
+	<!-- TABLE HEAD -->
+	<thead id="fixed-table-head" data-spy="affix" data-offset-top="60">
+		<tr class="table-head">
+			<th class="text-center select-all" data-sorter="false">
+				<input id="selectAll" type="checkbox" name="selectAll" ng-model="toggleAll.checked" ng-change="toggleAll()"><label for="selectAll"></label>
+			</th>
+			<th></th>
+			<th></th>
+			<th><b>Name</b></th>
+			<th><b>Title</b></th>
+			<th><b>Date Published</b></th>
+			<th><b>Last Modified</b></th>
+			<th><b>Status</b></th>
+			<th></th>
+		</tr>
+	</thead>
+	
+	<!-- TABLE BODY -->
+	<tbody>
+		<form>
+		<tr ng-repeat="article in entities" class="clickable">
+			
+			<td class="text-center">
+				<input type="checkbox" name="checked" ng-model="article.checked"><label for="checked"></label>
+			</td>
+			
+			<td>
+				<span ng-if="article.created" class="glyphicon glyphicon-cloud"></span>
+			</td>
+			
+			<td ui-sref="article.view({id: article.id})">
+				<img ng-src="{{article.contents.thumbnail.thumbnail}}" width="40" height="40" />
+			</td>
+			
+			<td ui-sref="article.view({id: article.id})">{{article.entityName}}</td>
+			<td ui-sref="article.view({id: article.id})">{{article.title}}</td>
+			<td ui-sref="article.view({id: article.id})">{{article.published}}</td>
+			<td ui-sref="article.view({id: article.id})">{{article.modified}}</td>
+			<td ui-sref="article.view({id: article.id})">{{article.status}}</td>
+			
+			<td ui-sref="article.view({id: article.id})" class="text-center">
+				<span class="glyphicon glyphicon-paperclip" ng-if="article.articleFolio"></span>
+			</td>
+			
+		</tr>		
+		</form>
+	</tbody>	
+</table>

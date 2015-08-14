@@ -1,0 +1,287 @@
+<h1>Article Defaults</h1>
+<p>Here you can set the defaults when creating or importing new articles.</p>
+<br />
+
+<h2>General</h2>
+<div class="form-group">
+	<label for="title">Article title</label>
+	<p>
+		<i>The user-facing title of the article that is displayed throughout the application.</i>
+	</p>
+	<input  type="text" 
+			class="form-control" 
+			ngMaxlength="250"
+			name="title" 
+			placeholder="Title" 
+			ng-model="settings.defaults.article.title" />
+</div>
+
+<br />
+
+<div class="form-group">
+	<label for="shortTitle">Article Short Title</label>
+	<p>
+		<i>A short article title for display on smaller device screens.</i>
+	</p>
+	<input  type="text" 
+			class="form-control" 
+			ngMaxlength="140"
+			name="shortTitle" 
+			placeholder="Short Title" 
+			ng-model="settings.defaults.article.shortTitle" />
+</div>			
+
+<br />		
+
+<div class="form-group">
+	<label for="abstract">Abstract</label>
+	<p>
+		<i>A description or summary of the article.</i>
+	</p>
+	<textarea 	class="form-control" 
+				placeholder="Abstract"
+				name="abstract"  
+				ngMaxlength="400"
+				ng-model="settings.defaults.article.abstract"
+				rows="3"></textarea>
+</div>			
+
+<br />
+
+<div class="form-group">
+	<label for="shortAbstract">Short Abstract</label>
+	<p>
+		<i>A short description or summary of the article that can be used on smaller device screens.</i>
+	</p>
+	<input  type="text" 
+			class="form-control" 
+			ngMaxlength="250"
+			name="shortAbstract" 
+			placeholder="Short Abstract" 
+			ng-model="settings.defaults.article.shortAbstract" />
+</div>	
+
+<br />
+
+<div class="form-group">
+	<label for="author">Author</label>
+	<p>
+		<i>Author byline associated with the article.</i>
+	</p>
+	<input  type="text" 
+			class="form-control" 
+			ngMaxlength="100"
+			name="author" 
+			placeholder="Author" 
+			ng-model="settings.defaults.article.author" />
+</div>	
+
+<br />
+
+<div class="form-group">
+	<label for="authorUrl">Author URL</label>
+	<p>
+		<i>Link to more information about the author.</i>
+	</p>
+	<input  type="text" 
+			class="form-control" 
+			ngMaxlength="150"
+			name="authorUrl" 
+			placeholder="Author URL" 
+			ng-model="settings.defaults.article.authorUrl" />
+</div>
+
+<br />
+
+<div class="checkbox">
+	<label for="hideFromBrowsePage">
+	    <input  type="checkbox" 
+				name="hideFromBrowsePage" 
+				ng-model="settings.defaults.article.hideFromBrowsePage" />
+	    &nbsp; Hide from browse page				
+    </label>				
+</div>	
+
+<br />
+
+<div class="form-group">
+	<label for="department">Department</label>
+	<p>
+		<i>Department is used to categorize articles within the context of your application (sports, politics, style etc.).</i>
+	</p>
+	<input  type="text" 
+			class="form-control" 
+			name="department" 
+			placeholder="Department" 
+			ng-model="settings.defaults.article.department" />
+</div>	
+
+<div class="form-group">
+	<label for="category">Category</label>
+	<p>
+		<i>Category is more specific than department, but more general than keywords. There is only one specified category for the content.</i>
+	</p>
+	<input  type="text" 
+			class="form-control" 
+			ngMaxlength="140"
+			name="category" 
+			placeholder="Category" 
+			ng-model="settings.defaults.article.category" />
+</div>			
+
+<br />	
+
+<div class="form-group">
+	<label for="keywords">Keywords</label>
+	<p>
+		<i>A list of separated keywords associated with the article. These keywords could be user-facing.</i>
+	</p>
+	<tags-input name="keywords" placeholder="Keywords" ng-model="settings.defaults.article.keywords" replace-spaces-with-dashes="false"></tags-input>
+</div>			
+
+<br />
+
+<div class="form-group">
+	<label for="internalKeywords">Internal Keywords</label>
+	<p>
+		<i>A list of separated, internally used keywords.</i>
+	</p>
+	<tags-input name="internalKeywords" placeholder="Internal Keywords" ng-model="settings.defaults.article.internalKeywords" replace-spaces-with-dashes="false"></tags-input>
+</div>							
+
+
+<div class="form-group">
+	<label for="accessState">Article Access</label>
+	<p>
+		<i>Article Access determines which articles users can view without purchasing.</i>
+	</p>
+	
+	<select class="form-control" ng-options="state for state in ['free','metered','protected']" ng-model="settings.defaults.article.accessState"></select>
+</div>	
+
+<br />
+
+<div class="form-group">
+	<label for="importance">Article Importance</label>
+	<p>
+		<i>Specify the importance of this article in the context of your application</i>
+	</p>
+	<select class="form-control" ng-options="importance for importance in ['low', 'normal', 'high']" ng-model="settings.defaults.article.importance"></select>
+</div>
+
+<br />
+
+<div class="checkbox">
+    <label for="isTrustedContent">
+	    <input  type="checkbox" 
+				name="isTrustedContent" 
+				ng-model="settings.defaults.article.isTrustedContent" />
+	    &nbsp; Trusted Content	
+    </label>					
+</div>
+<p>
+	<i>Flag that allows Article to access entitlement info / reading APIs.</i>
+</p>
+
+<br />
+
+<h2>Advertisement</h2>
+<p></p>
+
+<br/>
+
+<div class="checkbox">
+	<label for="isAd">
+	    <input  type="checkbox" 
+				name="isAd" 
+				ng-model="settings.defaults.article.isAd" />
+	    &nbsp; Advertisement	
+    </label>							
+</div>
+<p><i>Metrics for content tagged as advertisements are collected separately from content.</i></p>
+
+<br />
+
+<div class="form-group">
+	<label for="adType">Ad Type</label>
+	<p>
+		<i>Specify if an ad is static or enhanced for tablets (EFT).</i>
+	</p>
+	
+	<select class="form-control" ng-options="adType for adType in ['Static','EFT']" ng-model="settings.defaults.article.adType"></select>					
+</div>
+		
+<div class="form-group">
+	<label for="adCategory">Ad Category</label>
+	<p>
+		<i>Customers can define categories to group and measure all adds within a specific category.</i>
+	</p>
+	<input  type="text" 
+			class="form-control" 
+			ngMaxlength="40"
+			name="adCategory" 
+			placeholder="Ad Category" 
+			ng-model="settings.defaults.article.adCategory" />
+</div>
+
+<div class="form-group">
+	<label for="advertiser">Advertiser</label>
+	<p>
+		<i>The name of the advertiser that owns the ad. Ad name is used for metrics.</i>
+	</p>
+	<input  type="text" 
+			class="form-control" 
+			ngMaxlength="40"
+			name="advertiser" 
+			placeholder="Advertiser" 
+			ng-model="settings.defaults.article.advertiser" />
+</div>
+				
+
+<h2>Social</h2>
+<p></p>
+
+<BR/>
+
+<div class="form-group">
+	<label for="articleText">Article Text for Social Sharing</label>
+	<p>
+		<i>Text from the first couple paragraphs from the article content to be displayed on the social sharing landing page. If not used, we use the article abstract metadata.</i>
+	</p>
+	<textarea 	class="form-control" 
+				placeholder="Article text for Social Sharing"
+				name="articleText"  
+				ngMaxlength="2000"
+				ng-model="settings.defaults.article.articleText"
+				rows="5"></textarea>
+</div>	
+
+<br/>
+
+<div class="form-group">
+	<label for="socialShareUrl">Social Share URL</label>
+	<p>
+		<i>The social share URL is created by Adobe when the article is published. The social share URL will be displayed to enable customers to use the social share URL for linking purposes.</i>
+	</p>
+	<input 	type="text" 
+			class="form-control" 
+			name="socialShareUrl" 
+			placeholder="Social Share URL" 
+			ng-model="settings.defaults.article.socialShareUrl" />
+</div>
+
+<br/>
+
+<div class="form-group">
+	<label for="articleUrl">Article URL</label>
+	<p>
+		<i>Provide an Article URL if you have an equivalent article on your web site. The Article URL will be included in the Social Share page providing users with a link to read the article on your web site if they do not have the mobile app or an app is unavailable.</i>
+	</p>
+	<input 	type="text" 
+			class="form-control" 
+			name="articleUrl" 
+			placeholder="Article URL" 
+			ng-model="settings.defaults.article.articleUrl" />
+</div>	
+
+<br/>

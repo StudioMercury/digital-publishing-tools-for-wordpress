@@ -1,0 +1,15 @@
+<alert ng-repeat="alert in alerts.alerts" class="animate-repeat" type="{{alert.type}}" close="alerts.delete(alert)">
+	{{alert.msg}} 
+	<span ng-if="alert.options.raw" ng-click="alert.showRaw = alert.showRaw ? false : true"> <B class="clickable">[ Show Raw Response ]</B></span>
+	<div ng-show="alert.showRaw">
+		<BR/>
+		<label>Headers</label>
+		<p>{{alert.options.raw.headers}}</p>
+		
+		<label>Body</label>
+		<p>{{alert.options.raw.body}}</p>
+		
+		<label>URL</label>
+		<p>{{alert.options.raw.url}}</p>
+	</div>
+</alert>

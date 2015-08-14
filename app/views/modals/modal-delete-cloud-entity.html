@@ -1,0 +1,25 @@
+<!-- MODAL: DELETE ENTITY -->
+
+<!-- Modal Header -->
+<div class="modal-header">
+    <button type="button" class="close" ng-click="close()" aria-label="Close">
+    	<span aria-hidden="true">&times;</span>
+    </button>
+    <h2 class="modal-title" id="myModalLabel">Are you sure you want to delete?</h2>
+</div>
+
+<!-- Modal Body -->
+<div class="modal-body">
+	<p>
+		This will delete the {{ entity.entityType }} from the cloud. You can not undo this action.
+	</p>
+	  	
+	<br />
+	  	
+</div>
+
+<!-- Modal Footer -->
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button type="button" class="btn btn-primary warning" ng-click="doAction(entity.delete(true), 'delete')">Delete</button>
+</div>

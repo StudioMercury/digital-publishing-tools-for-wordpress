@@ -1,0 +1,13 @@
+{
+  "name": "adobe-coral-bootstrap-theme",
+  "homepage": "https://github.com/StudioMercury/adobe-coral-bootstrap-theme",
+  "_release": "262607e366",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "262607e366856ee3cba3c1bbd2b13cd7f0704623"
+  },
+  "_source": "https://github.com/StudioMercury/adobe-coral-bootstrap-theme.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/StudioMercury/adobe-coral-bootstrap-theme.git"
+}

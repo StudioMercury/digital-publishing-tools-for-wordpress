@@ -1,0 +1,56 @@
+<div class="col-sm-5 col-sm-offset-1">
+	
+	<div class="checkbox">
+		<label for="isAd">
+		    <input  type="checkbox" 
+					name="isAd" 
+					ng-model="article.isAd" />
+		    &nbsp; Advertisement	
+	    </label>							
+	</div>
+	<p><i>Metrics for content tagged as advertisements are collected separately from content.</i></p>
+	
+	<br />
+	
+	<div class="form-group">
+		<label for="adType">Ad Type</label>
+		<p>
+			<i>Specify if an ad is static or enhanced for tablets (EFT).</i>
+		</p>
+		
+		<select class="form-control" ng-options="adType for adType in ['Static','EFT']" ng-model="article.adType"></select>					
+	</div>
+								    
+</div>			
+    
+    
+<div class="col-sm-5">
+	
+	<div class="form-group">
+		<label for="adCategory">Ad Category</label>
+		<p>
+			<i>Customers can define categories to group and measure all adds within a specific category.</i>
+		</p>
+		<input  type="text" 
+				class="form-control" 
+				ngMaxlength="40"
+				name="adCategory" 
+				placeholder="Ad Category" 
+				ng-model="article.adCategory" />
+	</div>
+	
+	<div class="form-group">
+		<label for="advertiser">Advertiser</label>
+		<p>
+			<i>The name of the advertiser that owns the ad. Ad name is used for metrics.</i>
+		</p>
+		<input  type="text" 
+				class="form-control" 
+				ngMaxlength="40"
+				name="advertiser" 
+				placeholder="Advertiser" 
+				ng-model="article.advertiser" />
+	</div>
+										
+							    
+</div>	
