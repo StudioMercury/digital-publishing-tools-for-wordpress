@@ -66,37 +66,37 @@ define( 'DPS_API_CLIENT_VERSION', 		DPSFA_VERSION );
 define( 'DPS_API_CLIENT_ID', 			'us.smny.folioauthor' ); // ie: dps_folio_author-wordpress_2.0
 
 /* CONSTANTS FOR ENTITIES */
-// ARTICLE 
-define( 'DPSFA_Article_Name', 			'Article' ); 
+// ARTICLE
+define( 'DPSFA_Article_Name', 			'Article' );
 define( 'DPSFA_Article_Names', 			'Articles' );
 define( 'DPSFA_Article_Slug', 			DPSFA_PREFIX . 'article' );
-// BANNER 
-define( 'DPSFA_Banner_Name', 			'Banner' ); 
+// BANNER
+define( 'DPSFA_Banner_Name', 			'Banner' );
 define( 'DPSFA_Banner_Names', 			'Banners' );
 define( 'DPSFA_Banner_Slug', 			DPSFA_PREFIX . 'banner' );
 // FOLIO
-define( 'DPSFA_Folio_Name', 			'Folio' ); 
+define( 'DPSFA_Folio_Name', 			'Folio' );
 define( 'DPSFA_Folio_Names', 			'Folios' );
 define( 'DPSFA_Folio_Slug', 			DPSFA_PREFIX . 'folio' );
 // COLLECTION
-define( 'DPSFA_Collection_Name', 		'Collection' ); 
+define( 'DPSFA_Collection_Name', 		'Collection' );
 define( 'DPSFA_Collection_Names', 		'Collections' );
 define( 'DPSFA_Collection_Slug', 		DPSFA_PREFIX . 'collection' );
-// PUBLICATION 
-define( 'DPSFA_Publication_Name', 			'Publication' ); 
+// PUBLICATION
+define( 'DPSFA_Publication_Name', 			'Publication' );
 define( 'DPSFA_Publication_Names', 			'Publications' );
 define( 'DPSFA_Publication_Slug', 			DPSFA_PREFIX . 'publication' );
-// PRODUCT 
-define( 'DPSFA_Product_Name', 			'Product' ); 
+// PRODUCT
+define( 'DPSFA_Product_Name', 			'Product' );
 define( 'DPSFA_Product_Names', 			'Products' );
 define( 'DPSFA_Product_Slug', 			DPSFA_PREFIX . 'product' );
-// PRODUCT 
-define( 'DPSFA_Product_Bundle_Name', 			'Product Bundle' ); 
+// PRODUCT
+define( 'DPSFA_Product_Bundle_Name', 			'Product Bundle' );
 define( 'DPSFA_Product_Bundle_Names', 			'Product Bundles' );
 define( 'DPSFA_Product_Bundle_Slug', 			DPSFA_PREFIX . 'product-bundle' );
 
 // TODO:
-// An option to cache folios. 
+// An option to cache folios.
 // This allows publishers to download copies of their folios
 // Additionally, it should speed up uploading of folios if content hasn't changed
 define( 'DPSFA_CACHE_FOLIOS',	        false );
@@ -106,7 +106,7 @@ define( 'DPSFA_CACHE_ARTICLES',	        false );
 define( 'DPSFA_DEBUG_LOG',				DPSFA_DIR . "/log/debuglog.txt" );
 // Enable error logging text file
 if(DPSFA_DEBUGMODE){
-	if(!file_exists(DPSFA_DEBUG_LOG)){ 
+	if(!file_exists(DPSFA_DEBUG_LOG)){
 		try{
 			$created = mkdir(DPSFA_DIR."/log", 0777);
 			file_put_contents(DPSFA_DEBUG_LOG,"");
@@ -160,7 +160,7 @@ function dpsfa_server_requirements_met(){
 		if(DPSFA_DEBUGMODE) log_message($message);
 		die($message);
 	}
-	
+
 	if(DPSFA_DEBUGMODE){
 		$message = "Checking server requirements. Looking for v".DPSFA_REQUIRED_PHP_VERSION." and found v".PHP_VERSION.".";
 		if(DPSFA_DEBUGMODE) log_message($message);
@@ -185,10 +185,10 @@ function load_cms_wrapper(){
 		if(DPSFA_DEBUGMODE) log_message($message);
 		die($message);
 	}
-	
-	if(DPSFA_DEBUGMODE){ 
+
+	if(DPSFA_DEBUGMODE){
 		$message = "CMS module ".DPSFA_CMS." (".DPSFA_CMS.") loaded successfully. Looking for v".DPSFA_REQUIRED_CMS_VERSION." and found v".$CMS->get_cms_version();
-		log_message($message); 
+		log_message($message);
 	}
 }
 
@@ -197,7 +197,7 @@ function load_cms_wrapper(){
 function log_message($message) {
 	$save = "[".date(DATE_RFC2822)."] " . $message;
 	if(is_writable(DPSFA_DEBUG_LOG))
-		error_log($save . "\n", 3, DPSFA_DEBUG_LOG);   
+		error_log($save . "\n", 3, DPSFA_DEBUG_LOG);
 }
 
 function log_var( $object=null ){
@@ -206,4 +206,23 @@ function log_var( $object=null ){
     $contents = ob_get_contents(); // put the buffer into a variable
     ob_end_clean();                // end capture
     return $contents;
+}
+
+// getallheaders() is a alias function for a apache's apache_request_headers() method
+// the following emulates the behavoiur for nGinx environments
+// Source: http://php.net/manual/en/function.getallheaders.php
+if (!function_exists('getallheaders'))
+{
+    function getallheaders()
+    {
+       $headers = '';
+       foreach ($_SERVER as $name => $value)
+       {
+           if (substr($name, 0, 5) == 'HTTP_')
+           {
+               $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+           }
+       }
+       return $headers;
+    }
 }
