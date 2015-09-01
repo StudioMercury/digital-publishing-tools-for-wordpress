@@ -20,12 +20,14 @@ if(!class_exists('DPSFolioAuthor\Settings')) {
 	    public $refresh_token = "";
 		public $access_token = '';
 	    
+	    // API
 	    public $authentication_endpoint = DPS_API_AUTHENTICATION_END;
 	    public $authorization_endpoint = DPS_API_AUTHORIZATION_END;
 	    public $ingestion_endpoint = DPS_API_INGESTION_END;
 	    public $producer_endpoint = DPS_API_PRODUCER_END;
 	    public $product_endpoint = DPS_API_PRODUCT_END;
 	    public $portal_url = DPS_PORTAL;
+	    public $request_id = ""; // unique to a request (a single, logical "user" request) (([0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12})|([0-9a-zA-Z]{32}))	    
 	    
 	    // Classic Settings
 	    public $tooltips = true; // should tooltips appear
@@ -52,6 +54,7 @@ if(!class_exists('DPSFolioAuthor\Settings')) {
 
 		// CMS Settings
 		public $importRules = array();
+		public $version = DPSFA_VERSION;
 
 		
         public function __construct(){
@@ -120,6 +123,11 @@ if(!class_exists('DPSFolioAuthor\Settings')) {
         public function update_api(){
 	        // Check for API Credentials
 	        if($this->has_api_credentials()){
+		        // Make client has a stable valid request ID 
+		        if(empty($this->request_id)){
+			        $this->request_id = $this->create_guid();
+			        $this->save();
+		        }
 		        // Make sure credentials are valid
 		        $this->is_api_credentials_valid();
 		    	// Update user permissions
@@ -132,7 +140,17 @@ if(!class_exists('DPSFolioAuthor\Settings')) {
 				$this->permissions = array();
 				$this->save();
 	        }
-        }	
+        }
+        
+        public function create_guid(){
+		    if (function_exists('com_create_guid') === true){
+		        $guid = trim(com_create_guid(), '{}');
+		        return strtolower($guid);
+		    }
+		
+		    $guid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+		    return strtolower($guid);
+		}
 
 		public function get_settings(){
 			$CMS = new CMS();

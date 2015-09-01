@@ -58,9 +58,8 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			$this->device_token = $settings->device_token;
 			$this->device_id = $settings->device_id;
 
-		    // TODO: CREATE CUSTOM REQUEST AND SESSION ID 
-		    $this->request_id = "client-123456";
-			$this->session_id = "session-1234567";
+		    $this->request_id = $settings->request_id;
+			$this->session_id = "87654321-0cba-9efg-4321-987650fedcba"; //(([0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12})|([0-9a-zA-Z]{32}))			
 						
 			$this->publications = $settings->publications;
 	    }
@@ -501,11 +500,11 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			// [+] X-DPS-Api-Key: {base-64 encoded}
 			// [+] Authorization: bearer {base-64 encoded}
 			// [+] Accept: application/json
-
+			
 		    // CONSTRUCT HEADER
 			$headers = array();
 			$headers[] = "X-DPS-Client-Version: ". $this->client_version;
-			$headers[] = "X-DPS-Client-Request-Id: ". $this->create_guid();
+			$headers[] = "X-DPS-Client-Request-Id: ". $this->request_id;
 			$headers[] = "X-DPS-Client-Session-Id: ". $this->create_guid();
 			$headers[] = "X-DPS-Api-Key: ". $this->client_id;
 			$headers[] = "Authorization: bearer ". $this->get_access_token();
@@ -729,7 +728,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			$headers = array();
 			$headers[] = 'X-DPS-Client-Id: ' . $this->client_app_id;
 			$headers[] = "X-DPS-Client-Version: ". $this->client_version;
-			$headers[] = "X-DPS-Client-Request-Id: ". $this->create_guid();
+			$headers[] = "X-DPS-Client-Request-Id: ". $this->request_id;
 			$headers[] = "X-DPS-Client-Session-Id: ". $this->create_guid();
 			$headers[] = "X-DPS-Api-Key: ". $this->client_id;
 			$headers[] = "Authorization: bearer ". $this->get_access_token();
@@ -814,10 +813,12 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 		
 		private function create_guid(){
 		    if (function_exists('com_create_guid') === true){
-		        return trim(com_create_guid(), '{}');
+		        $guid = trim(com_create_guid(), '{}');
+		        return strtolower($guid);
 		    }
 		
-		    return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+		    $guid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+		    return strtolower($guid);
 		}
 		
 		private function prepEntity($entity){

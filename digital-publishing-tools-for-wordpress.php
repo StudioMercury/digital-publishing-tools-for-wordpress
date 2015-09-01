@@ -25,7 +25,6 @@ define( 'DPSFA_SYNC_SUFFIX',			'_modtime' );
 define( 'DPSFA_TIMEFORMAT',				'Y-m-d\TH:i:s' );
 define( 'DPS_API_VERSION',				2.0); // Version of the API to use 1.0 or 2.0
 
-
 // Requirements
 define( 'DPSFA_DEBUGMODE',				FALSE );
 define( 'DPSFA_REQUIRED_PHP_VERSION',	"5.3" );
@@ -52,7 +51,7 @@ define( 'DPSFA_VERSION_SLUG',	        DPSFA_SLUG . "_version" );
 define( 'DPSFA_TMPDIR',					(substr(sys_get_temp_dir(), -1) == '/') ? sys_get_temp_dir() : sys_get_temp_dir() . "/" );
 
 // DPS API
-define( 'DPSFA_VERSION',				2.0 ); // default is 2.0
+define( 'DPSFA_VERSION',				'2.0.1' ); // default is 2.0
 
 // VERSION 2.0 specific
 define( 'DPS_API_AUTHENTICATION_END',	'https://ims-na1.adobelogin.com/' ); // Authentication server endpoints
@@ -62,7 +61,6 @@ define( 'DPS_API_PRODUCER_END',			'https://pecs.publish.adobe.io/' ); // Produce
 define( 'DPS_API_PRODUCT_END',			'https://ps.publish.adobe.io/' ); // Product service endpoints
 define( 'DPS_PORTAL',					'https://publish.adobe.com/' ); // Publish Portal
 define( 'DPS_API_CLIENT_VERSION', 		DPSFA_VERSION );
-//define( 'DPS_API_CLIENT_VERSION', 		DPSFA_SLUG . '-' . DPSFA_CMS . '_' . DPSFA_VERSION ); // ie: dps_folio_author-wordpress_2.0
 define( 'DPS_API_CLIENT_ID', 			'us.smny.folioauthor' ); // ie: dps_folio_author-wordpress_2.0
 
 /* CONSTANTS FOR ENTITIES */
