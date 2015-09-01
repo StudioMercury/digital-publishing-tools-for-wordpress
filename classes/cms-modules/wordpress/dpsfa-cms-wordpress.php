@@ -173,6 +173,8 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 				return new CMS_Collection();
 			}else if($entityType == 'folio'){
 				return new CMS_Folio();
+			}else{
+				die("CAN'T FIND ENTITY TYPE: $entityType");
 			}
 		}
 		
@@ -400,9 +402,11 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 				$taxonomy_names = get_object_taxonomies( $post->post_type );
 				foreach($taxonomy_names as $taxonomy){
 					$terms = get_the_terms( $post->ID, $taxonomy );
-					foreach($terms as $term){
-						array_push($internalKeywords, $term->name);
-						array_push($internalKeywords, $term->slug);
+					if($terms){
+						foreach($terms as $term){
+							array_push($internalKeywords, $term->name);
+							array_push($internalKeywords, $term->slug);
+						}
 					}
 				}
 				
@@ -441,10 +445,10 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 					'original' => wp_get_attachment_url($postThumbID),
 					'path' => $upload_dir["basedir"] . "/" . $uploadDatePath . $renditionName
 				);
-				$cmsEntity = $this->get_cms_entity($entityType);
+				
+				$cmsEntity = $this->get_cms_entity($entity->entityType);
 				$cmsEntity->save_field($entity, 'contents', $contents);
 				$cmsEntity->save_field($entity, "thumbnail", $contents["thumbnail"]['original']);
-				
 			}
 		}
 		

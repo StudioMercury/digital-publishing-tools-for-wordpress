@@ -431,13 +431,14 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 					'entityType' => 'article'
 				)
 			);
-
+			
 			$response = array();
 			try{
 				$entity->sync();
+				$entity->refresh();
 				$response["code"] = 200;
 				$response["message"] = "Synced article";
-				$response['entity'] = $entity->refresh();
+				$response["entity"] = $entity;
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
 				$response["message"] = $error->getMessage();
