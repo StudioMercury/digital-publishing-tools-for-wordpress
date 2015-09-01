@@ -474,9 +474,11 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 			$taxonomy_names = get_object_taxonomies( $post->post_type );
 			foreach($taxonomy_names as $taxonomy){
 				$terms = get_the_terms( $id, $taxonomy );
-				foreach($terms as $term){
-					array_push($internalKeywords, $term->name);
-				}
+                if($terms) {
+    				foreach($terms as $term){
+    					array_push($internalKeywords, $term->name);
+    				}
+                }
 			}
 			
 			$entity->title = $post->post_title;
