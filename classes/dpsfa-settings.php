@@ -88,7 +88,7 @@ if(!class_exists('DPSFolioAuthor\Settings')) {
 	        // Make sure all credentials have been entered
 	        
 	        // If nothign has been entered, return false
-	        if(empty($this->key) && empty($this->secret) && empty($this->device_token) && empty($this->device_id)){
+	        if( empty($this->key) && empty($this->secret) && empty($this->device_token) && empty($this->device_id) ){
 		        return false;
 	        }else{
 		        $missing = array();
@@ -100,11 +100,20 @@ if(!class_exists('DPSFolioAuthor\Settings')) {
 		        if(empty($missing)){
 			        return true;
 		        }else{
+			        // remove old tokens + publications
+			        $this->access_token = "";
+					$this->refresh_token = "";
+					$this->publications = array();
+					$this->permissions = array();
+					$this->save();
+					
 			        // Throw new error
 					$error = new Error("Error", $code);
 					$error->setTitle('Missing Credentials');
 					$error->setMessage('One of the required API credentials is missing, please fill out: ' . implode(", ", $missing) );
 					throw $error;
+					
+					return false;
 		        }
 	        }
         }
@@ -133,12 +142,6 @@ if(!class_exists('DPSFolioAuthor\Settings')) {
 		    	// Update user permissions
 		    	$this->update_api_permissions();
 		    	$this->refresh();
-	        }else{
-		        $this->access_token = "";
-				$this->refresh_token = "";
-				$this->publications = array();
-				$this->permissions = array();
-				$this->save();
 	        }
         }
         

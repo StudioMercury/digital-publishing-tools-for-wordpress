@@ -44,7 +44,7 @@ if(!class_exists('DPSFolioAuthor\Curl')) {
 			$this->setOptions();
 			$this->exec();
 		}
-		
+				
 		public function updateRequestData($request_data){
 			$this->request_data = $request_data;
 		}
@@ -150,6 +150,14 @@ if(!class_exists('DPSFolioAuthor\Curl')) {
 			$this->formatResponse();
 			// close cURL request
 			curl_close($this->curl);
+			
+			if(curl_errno($this->curl)){
+				$error = new Error("Error", curl_errno($this->curl));
+				$error = new Error("Error", $code);
+				$error->setTitle('Unable to send a request to the Adobe API');
+				$error->setMessage(curl_error($this->curl));
+				throw $error;
+			}
 		}
 		
 		/**

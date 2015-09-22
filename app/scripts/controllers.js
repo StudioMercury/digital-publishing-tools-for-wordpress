@@ -53,7 +53,7 @@ angular.module('AdobePublishForCMS.controllers', [])
 	
 	$scope.refresh = function(){
 		Alerts.add("warning", "Refreshing settings", { group: 'refresh' });
-		$scope.settings.get()
+		Settings.getSettings()
 		.then(function(settings){
 			if(!_.isEmpty(settings)){ $scope.settings = settings; }
 			Alerts.add("success", "Settings were refreshed.", { group: 'refresh' });
