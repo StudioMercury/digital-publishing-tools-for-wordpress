@@ -723,12 +723,21 @@
 					<p><b>bundle</b> <i>required</i> - When the plugin goes to render the page it will pass “true” to the attribute bundle in order to change all file paths to be relative to the HTMLResources folder. When including new files in your template you’ll want to use the $filePath variable for the file path.</p>				
 				
 							    				
-					<!--
+					<br />
+					
 				    <h6>Including Additional Files</h6>
 				    <p>On bundle, a template can declare files that should be included in the article file. To do this simply add this line (for each file you'd like to include) to your html. </p>
 					<p>It's also in article.php if you'd like to see how we use it.</p>
-					-->
 				
+					<code style="white-space: normal;">		
+					      add_filter('dpsfa_bundle_article', function($entity){
+					<br />&nbsp; &nbsp; $path = pathinfo($entity->template);
+					<br />&nbsp; &nbsp; return array(
+					<br />&nbsp; &nbsp; &nbsp; &nbsp; "HTMLResources/fonts/glyphicons-halflings-regular.eot" => $path['dirname'] . '/HTMLResources/fonts/glyphicons-halflings-regular.eot',
+					<br />&nbsp; &nbsp; );
+					<br />});
+					</code>				
+					
 				
 				
 					<br />
