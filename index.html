@@ -83,7 +83,7 @@
 				</div>
 
 		 		<div class="video video-fit-header">
-					<video id="fitVideoYT" src="" class="video-js vjs-sublime-skin" controls preload="auto" width="100%" height="100%" poster="img/header.jpg" data-setup='{ "techOrder": ["youtube"], "src": "https://www.youtube.com/watch?v=spu8KZvWxGw" }'></video>
+					<video id="fitVideoYT" src="" class="video-js vjs-sublime-skin" controls preload="auto" width="100%" height="100%" poster="img/header.jpg" data-setup='{ "techOrder": ["youtube"], "src": "https://www.youtube.com/watch?v=spu8KZvWxGw" }' style="display:none;"></video>
 					<div id="closeFit" class="close-video">
 						<i class="fa fa-times fa-2x"></i>
 					</div>
@@ -695,7 +695,11 @@
 				
 				    <p>The plugin comes with a sample article template. The template is built using Bootstrap and is responsive for phone, tablet and desktop.</p>
 				    
-				    <p>To make your own templates, copy the folder <b>publish-templates</b> from the plugin folder into your active theme folder. Once in your theme’s folder the plugin will look there first when searching for a source of templates.</p>
+				    <p>To make your own templates, <u>copy the folder <b>publish-templates</b> from the plugin folder into your active theme folder</u>. Once in your theme’s folder the plugin will look there first when searching for a source of templates.</p>
+				
+				    <p>You can then duplicate article.php and make your own template editing the html to make it your own.</p>
+				
+				
 				
 					<br />
 				    <h6>Template folder organization</h6>
@@ -717,6 +721,15 @@
 				    <p>The top of a template file includes some crucial code needed to bundle the template when publishing it to the cloud.</p>
 					
 					<p><b>bundle</b> <i>required</i> - When the plugin goes to render the page it will pass “true” to the attribute bundle in order to change all file paths to be relative to the HTMLResources folder. When including new files in your template you’ll want to use the $filePath variable for the file path.</p>				
+				
+							    				
+				
+				    <h6>Including Additional Files</h6>
+				    <p>On bundle, a template can declare files that should be included in the article file. To do this simply add this line (for each file you'd like to include) to your html. </p>
+					<p>It's also in article.php if you'd like to see how we use it.</p>
+				
+				
+				
 				
 					<br />
 					<br />
@@ -760,12 +773,12 @@
 								<div class="device-content">
 									<div class="flexslider">
 										<ul class="slides">
-											<li style="background-image: url('img/showcase/gather-journal/1.PNG');" class="flex-active-slide"></li>
-											<li style="background-image: url('img/showcase/gather-journal/2.PNG');"></li>
-											<li style="background-image: url('img/showcase/gather-journal/3.PNG');"></li>
-											<li style="background-image: url('img/showcase/gather-journal/4.PNG');"></li>
-											<li style="background-image: url('img/showcase/gather-journal/5.PNG');"></li>
-											<li style="background-image: url('img/showcase/gather-journal/6.PNG');"></li>
+											<li style="background-image: url('img/showcase/gather-journal/1.jpg');" class="flex-active-slide"></li>
+											<li style="background-image: url('img/showcase/gather-journal/2.jpg');"></li>
+											<li style="background-image: url('img/showcase/gather-journal/3.jpg');"></li>
+											<li style="background-image: url('img/showcase/gather-journal/4.jpg');"></li>
+											<li style="background-image: url('img/showcase/gather-journal/5.jpg');"></li>
+											<li style="background-image: url('img/showcase/gather-journal/6.jpg');"></li>
 										</ul>
 									</div>
 								</div>
