@@ -148,16 +148,17 @@ if(!class_exists('DPSFolioAuthor\Curl')) {
 			$this->curl_response_size = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
 			// call helper to parse & store the response header and body
 			$this->formatResponse();
-			// close cURL request
-			curl_close($this->curl);
 			
 			if(curl_errno($this->curl)){
 				$error = new Error("Error", curl_errno($this->curl));
-				$error = new Error("Error", $code);
+				$error = new Error("Error", 300);
 				$error->setTitle('Unable to send a request to the Adobe API');
 				$error->setMessage(curl_error($this->curl));
 				throw $error;
 			}
+			
+			// close cURL request
+			curl_close($this->curl);
 		}
 		
 		/**

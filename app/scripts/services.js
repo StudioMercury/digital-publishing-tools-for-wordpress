@@ -189,7 +189,7 @@ angular.module('AdobePublishForCMS.services', [])
 			$http(req)
 			.success(function(data, status, headers, config){
 				if(!_.isObject(data)){
-					Alerts.add("danger", "Failed. No response from the server. Please make sure the CMS is responding.", {clearGroup: true, group: 'request'});
+					Alerts.add("danger", "Failed. The server's response wasn't recognized.", {clearGroup: true, group: 'request'});
 					deferred.reject(config);
 				}else{
 					console.log("SUCCESS", data, status, headers, config);
@@ -198,7 +198,7 @@ angular.module('AdobePublishForCMS.services', [])
 			})
 			.error(function(data, status, headers, config){
 				console.log("FAIL", data, status, headers, config);
-				deferred.reject;
+				deferred.reject(data);
 				
 				var options = {};
 					options.responseText = (_.has(data,"responseText") && !_.isUndefined(data.responseText)) ? data.responseText : null ;

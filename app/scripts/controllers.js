@@ -48,6 +48,8 @@ angular.module('AdobePublishForCMS.controllers', [])
 		.then(function(settings){
 			if(!_.isEmpty(settings)){ $scope.settings = settings; }
 			Alerts.add("success", "Settings were saved.", { group: 'saving' });
+		},function(response){
+			if(!_.has(response, "settings")){ $scope.settings = settings; }
 		});
 	}
 	
@@ -57,6 +59,8 @@ angular.module('AdobePublishForCMS.controllers', [])
 		.then(function(settings){
 			if(!_.isEmpty(settings)){ $scope.settings = settings; }
 			Alerts.add("success", "Settings were refreshed.", { group: 'refresh' });
+		},function(response){
+			if(!_.has(response, "settings")){ $scope.settings = settings; }
 		});
 	}
 	

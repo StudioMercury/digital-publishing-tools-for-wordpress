@@ -542,8 +542,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 			}
 		}
 		
-		private function return_json($code, $data = array()){
-			header("HTTP/1.1 $code Internal Server Error");
+		private function return_json($code = 200, $data = array()){
+			http_response_code($code);
 			header("Content-Type: application/json; charset=UTF-8");
 			if(!empty($_REQUEST['callback'])){
 				echo $_REQUEST['callback'] . "(" . json_encode($data) . ")";
