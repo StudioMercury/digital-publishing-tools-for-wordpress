@@ -36,6 +36,17 @@ Template Name: Adobe Publish - Sample Article
 </head>
 
 <body class="article">
+	
+	
+	<!-- ADDITIONAL FILES TO INCLUDE -->
+	<!-- Use the below tags to declare files for the bundler to include -->
+    <img style="display:none;" src="<?php echo $filePath; ?>fonts/glyphicons-halflings-regular.eot" />
+    <img style="display:none;" src="<?php echo $filePath; ?>fonts/glyphicons-halflings-regular.svg" />
+    <img style="display:none;" src="<?php echo $filePath; ?>fonts/glyphicons-halflings-regular.ttf" />
+    <img style="display:none;" src="<?php echo $filePath; ?>fonts/glyphicons-halflings-regular.woff" />
+    <img style="display:none;" src="<?php echo $filePath; ?>fonts/glyphicons-halflings-regular.woff2" />
+	<!-- End include -->
+
 
     <div class="container">
 
