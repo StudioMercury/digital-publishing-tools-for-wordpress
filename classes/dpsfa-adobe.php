@@ -518,7 +518,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 		    
 			// VERIFY RESPONSE
 			try{
-				$this->verify_response($curl, $entity);
+				$this->verify_response($curl);
 				
 				// Extract current publications and permissions (if available)
 				$publications = $this->get_publications_from_response($curl->getResponseBody());
@@ -641,7 +641,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 		}
 		
 		// Check response
-		private function verify_response($curl, $entity, $retry = TRUE){
+		private function verify_response($curl, $entity = null, $retry = TRUE){
 			
 			// Get error code 
 			$code = $curl->getHTTPCode();			

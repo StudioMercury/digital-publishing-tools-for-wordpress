@@ -108,9 +108,14 @@ if(!class_exists('DPSFolioAuthor\Settings')) {
 					$this->save();
 					
 			        // Throw new error
-					$error = new Error("Error", $code);
+					$error = new Error("Error", 300);
 					$error->setTitle('Missing Credentials');
 					$error->setMessage('One of the required API credentials is missing, please fill out: ' . implode(", ", $missing) );
+					$this->access_token = "";
+					$this->refresh_token = "";
+					$this->publications = array();
+					$this->permissions = array();
+					$this->save();
 					throw $error;
 					
 					return false;

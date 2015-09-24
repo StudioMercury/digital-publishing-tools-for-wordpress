@@ -136,8 +136,8 @@ require_once(  DPSFA_DIR . '/classes/dpsfa-sync.php' );                    		// 
 require_once(  DPSFA_DIR . '/classes/dpsfa-entity.php' );						// Class for Adobe Publish Entity
 require_once(  DPSFA_DIR . '/classes/dpsfa-content.php' );						// Class for Adobe Publish Entity - Content
 require_once(  DPSFA_DIR . '/classes/dpsfa-article.php' );						// Class for Adobe Publish Entity - Article
-require_once(  DPSFA_DIR . '/classes/dpsfa-collection.php' );					// Class for Adobe Publish Entity - Collection
-require_once(  DPSFA_DIR . '/classes/dpsfa-publication.php' );					// Class for Adobe Publish Entity - Publication
+// require_once(  DPSFA_DIR . '/classes/dpsfa-collection.php' );					// Class for Adobe Publish Entity - Collection
+// require_once(  DPSFA_DIR . '/classes/dpsfa-publication.php' );					// Class for Adobe Publish Entity - Publication
 
 /*
 require_once(  DPSFA_DIR . '/classes/dpsfa-ajax.php' );                           // Class for Ajax calls
