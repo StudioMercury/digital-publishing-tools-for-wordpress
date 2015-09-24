@@ -351,7 +351,7 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 		}
 		
 		public function get_template_files($entity){
-			return apply_filters( 'dpsfa_bundle_article', array(), $entity );
+			return apply_filters( 'dpsfa_bundle_article', $entity );
 		}
 		
 		public function get_entity_url($entity){

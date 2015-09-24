@@ -62,11 +62,12 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
             //$files["scrubber_p.png"] = $this->create_scrubber_image();
             //$files["thumb_p.png"] = $this->create_thumb();
             
-			/* COLLECT ADDITIONAL FILES FROM A TEMPLATE (CMS) */
-            $files = array_merge($files, $this->get_files_from_template( $entity ));
-            
             /* HTML OF ARTICLE */
-            $html = $this->get_html_content($entity);                 
+            $html = $this->get_html_content($entity);
+            
+            /* COLLECT ADDITIONAL FILES FROM A TEMPLATE (CMS) */
+            $files = array_merge($files, $this->get_files_from_template( $entity ));
+                     
             /* COLLECT LINKED IMAGES / MEDIA / CSS / JS FILES */
             $collected = $this->get_linked_assets_from_html($html);
             
@@ -76,20 +77,22 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
             /* ADD FOLIO SPECIFIC FILES */
             $files["Folio.xml"] = $this->create_folio_xml($entity);
             $files["META-INF/pkgproperties.xml"] = $this->create_meta_pkg_properties($files);
-			
 			return $files;
         }
 
 	    /* Bring together all article files */
         private function collect_article_files($entity){
 			$files = array();
-
-			/* COLLECT ADDITIONAL FILES FROM A TEMPLATE (CMS) */
-            $files = $this->get_files_from_template( $entity );
             
             /* HTML OF ARTICLE */
             $html = $this->get_html_content($entity);  
             
+            /* COLLECT ADDITIONAL FILES FROM A TEMPLATE (CMS) */
+            ob_start();
+            include_once($entity->template);
+			$output = ob_get_clean();
+            $files = $this->get_files_from_template( $entity );
+
             /* COLLECT LINKED IMAGES / MEDIA / CSS / JS FILES */
 			$collected = $this->get_linked_assets_from_html($html);
             $files = array_merge( $files, $collected["assets"] );
@@ -97,7 +100,6 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
 
 			/* CREATE ARTICLE MANIFEST */ 
 			$files["manifest.xml"] = $this->make_file("manifest", $this->create_article_manifest($files));
-			
             return $files;           
         }
     	
@@ -380,7 +382,7 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
     		
     		// Append folioBuilder attribute in URL
     		$URL = $CMS->get_entity_url($entity);
-    		$URL = parse_url($URL, PHP_URL_QUERY) ? $URL . "&folioBuilder=true&width=$width" : $URL . "?folioBuilder=true&width=$width";
+    		$URL = parse_url($URL, PHP_URL_QUERY) ? $URL . "&bundlr=true&width=$width" : $URL . "?bundlr=true&width=$width";
     		
             if(empty($URL)){ return ""; }
     	    

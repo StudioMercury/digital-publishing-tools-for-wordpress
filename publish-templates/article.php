@@ -5,14 +5,34 @@ Template Name: Adobe Publish - Sample Article
 ?>
 
 <?php
-    // If bundling set the file path to be relative to the
-    if( isset($_GET["bundle"]) ) {
+    // If bundling set the file path to be relative to the article
+    if( isset($_GET["bundlr"]) ) {
         $filePath = '../HTMLResources/';
         $urlPath = 'navto://';
     } else {
         $filePath = get_bloginfo('template_directory') . '/publish-templates/HTMLResources/';
     }
-
+    
+	/*
+	   
+	    WP Filter to include additional files
+	    Should return an array( "file path relative to article" => "filepath relative to server" );
+		This filter also gives you the entity (article) object so you can include additional files 
+		based on certain criteria of the entity's metadata
+		
+	*/
+	
+	add_filter('dpsfa_bundle_article', function($entity){
+		$path = pathinfo($entity->template);
+	    return array(
+		    "HTMLResources/fonts/glyphicons-halflings-regular.eot" => $path['dirname'] . '/HTMLResources/fonts/glyphicons-halflings-regular.eot',
+		    "HTMLResources/fonts/glyphicons-halflings-regular.svg" => $path['dirname'] . '/HTMLResources/fonts/glyphicons-halflings-regular.svg',
+		    "HTMLResources/fonts/glyphicons-halflings-regular.ttf" => $path['dirname'] . '/HTMLResources/fonts/glyphicons-halflings-regular.ttf',
+		    "HTMLResources/fonts/glyphicons-halflings-regular.woff" => $path['dirname'] . '/HTMLResources/fonts/glyphicons-halflings-regular.woff',
+		    "HTMLResources/fonts/glyphicons-halflings-regular.woff2" => $path['dirname'] . '/HTMLResources/fonts/glyphicons-halflings-regular.woff2',
+	    );
+	});
+	
 ?>
 
 <?php if ( have_posts() ) : while (have_posts()) : the_post(); ?>
@@ -32,21 +52,10 @@ Template Name: Adobe Publish - Sample Article
 
     <link rel="stylesheet" href="<?php echo $filePath; ?>css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo $filePath; ?>css/template-article.css">
-
+	
 </head>
 
 <body class="article">
-	
-	
-	<!-- ADDITIONAL FILES TO INCLUDE -->
-	<!-- Use the below tags to declare files for the bundler to include -->
-    <img style="display:none;" src="<?php echo $filePath; ?>fonts/glyphicons-halflings-regular.eot" />
-    <img style="display:none;" src="<?php echo $filePath; ?>fonts/glyphicons-halflings-regular.svg" />
-    <img style="display:none;" src="<?php echo $filePath; ?>fonts/glyphicons-halflings-regular.ttf" />
-    <img style="display:none;" src="<?php echo $filePath; ?>fonts/glyphicons-halflings-regular.woff" />
-    <img style="display:none;" src="<?php echo $filePath; ?>fonts/glyphicons-halflings-regular.woff2" />
-	<!-- End include -->
-
 
     <div class="container">
 
