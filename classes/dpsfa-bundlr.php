@@ -446,9 +446,9 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
 		            	$path = $this->get_asset_relative($image->src, $template);
 						$assets[$image->src] = $this->save_file($image->src, $path);
 	            	}else{
-	               		$path = $this->get_asset_path($image->src);
-				   		$assets[$path] = $this->save_file(basename($path), $image->src);
-				   		$image->src = $path;
+						$path = $this->get_asset_path($image->src);
+						$assets[$path] = $this->save_file(basename($path), $image->src);
+						$image->src = ltrim($path, '/');
 	            	}
                 }
             }
@@ -464,7 +464,7 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
 	            	}else{
 	               		$path = $this->get_asset_path($media->src);
 				   		$assets[$path] = $this->save_file(basename($path), $media->src);
-				   		$media->src = $path;
+				   		$media->src = ltrim($path, '/');
 	            	}
                 }
             }
@@ -480,7 +480,7 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
 	            	}else{
 	               		$path = $this->get_asset_path($style->href);
 				   		$assets[$path] = $this->save_file(basename($path), $style->href);
-				   		$style->href = $path;
+				   		$style->href = ltrim($path, '/');
 	            	}
                 }
             }
@@ -496,7 +496,7 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
 	            	}else{
 	               		$path = $this->get_asset_path($script->src);
 				   		$assets[$path] = $this->save_file(basename($path), $script->src);
-				   		$script->src = $path;
+				   		$script->src = ltrim($path, '/');
 	            	}
                 }
             }
