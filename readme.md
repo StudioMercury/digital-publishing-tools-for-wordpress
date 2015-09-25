@@ -54,6 +54,17 @@ We haven't tested or explicitly built the plugin to work with Wordpress MU. That
 
 
 ## Changelog
+
+### 2.03
+* Fixed a bug where a "/" was being prepended to assets during article bundle. 
+
+### 2.02
+* Fixed an error when saving in settings
+* Updated the example article.php to expose a function to bundle additional files for an article. 
+
+### 2.01
+* Cleaned up sample templates
+
 ### 2.0
 * NEW Access to the new DPS 2015 API's and services
 * Article Creation
