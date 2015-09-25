@@ -258,12 +258,14 @@
 			<tr class="table-head">
 				<td><b>Publication Name</b></td>
 				<td><b>Namespace</b></td>
+				<td style="text-align:center;"><b>Default</b></td>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="publication in settings.publications">
 				<td>{{publication.title}}</td>
 				<td>{{publication.name}}</td>
+				<td style="text-align:center;"><input type="radio" name="defaultPublication" ng-model="settings.defaultPublication" value="{{publication.id}}"/></td>
 			</tr>
 		</tbody>	
 	</table> 

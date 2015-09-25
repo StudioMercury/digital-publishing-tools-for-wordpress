@@ -7,7 +7,7 @@ Template Name: Adobe Publish - Sample Article
 <?php
     // If bundling set the file path to be relative to the article
     if( isset($_GET["bundlr"]) ) {
-        $filePath = '../HTMLResources/';
+        $filePath = 'HTMLResources/';
         $urlPath = 'navto://';
     } else {
         $filePath = get_bloginfo('template_directory') . '/publish-templates/HTMLResources/';

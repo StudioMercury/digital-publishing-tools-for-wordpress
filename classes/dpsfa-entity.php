@@ -35,7 +35,7 @@ if(!class_exists('DPSFolioAuthor\Entity')) {
 	    public $origin; // if this entity was imported from another entity
 	    public $images;
 	    public $editUrl; // CMS edit url
-
+		public $publications; // reference to publication Entity is attached to
 	    
 	    public function __construct($data = array()) {
 		    $this->populate_object($data);

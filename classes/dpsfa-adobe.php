@@ -32,7 +32,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 	    private $authorization_endpoint;
 	    private $ingestion_endpoint;
 	    
-	    private $publications;
+	    private $defaultPublication;
 	    private $response;
 	    
 	    public function __construct(){
@@ -61,10 +61,10 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 		    $this->request_id = $settings->request_id;
 			$this->session_id = "87654321-0cba-9efg-4321-987650fedcba"; //(([0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12})|([0-9a-zA-Z]{32}))			
 						
-			$this->publications = $settings->publications;
+			$this->defaultPublication = !empty($settings->defaultPublication) ? $settings->defaultPublication : $settings->publications[0]['id'];
 	    }
 	    
-	    public function create_entity($entity){
+	    public function create_entity($entity, $publicationId = null){
 			// [+] X-DPS-Client-Id: {client-id}
 			// [+] X-DPS-Client-Version: {double-dot style notation}
 			// [+] X-DPS-Client-Request-Id: {UUID}
@@ -79,7 +79,8 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			
 			// CONSTRUCT URL
 			$endpoint = $this->producer_endpoint;
-			$publication = $this->publications[0]['id'];
+			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
+			$publication = (!empty($this->defaultPublication)) ? $this->defaultPublication : $this->publications[0]['id'];
 			$entityType = $entity->entityType;
 			$entityName = $entity->entityName;
 			
@@ -96,7 +97,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 
 	    }
 	    
-	    public function delete_entity($entity){
+	    public function delete_entity($entity, $publicationId = null){
 		    // set request header:
 			// [+] X-DPS-Client-Id: {client-id}
 			// [+] X-DPS-Client-Version: {double-dot style notation}
@@ -111,7 +112,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			
 			// CONSTRUCT URL
 			$endpoint = $this->producer_endpoint;
-			$publication = $this->publications[0]['id'];
+			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
 			$entityType = $entity->entityType;
 			$entityName = $entity->entityName;
 			$version = $entity->version;
@@ -125,7 +126,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			$this->verify_response($curl, $entity);
 	    }
 	    
-	    public function update_entity($entity){
+	    public function update_entity($entity, $publicationId = null){
 			// [+] X-DPS-Client-Id: {client-id}
 			// [+] X-DPS-Client-Version: {double-dot style notation}
 			// [+] X-DPS-Client-Request-Id: {UUID}
@@ -142,7 +143,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			
 			// CONSTRUCT URL
 			$endpoint = $this->producer_endpoint;
-			$publication = $this->publications[0]['id'];
+			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
 			$entityType = $entity->entityType;
 			$entityName = $entity->entityName;
 			$version = $entity->version;
@@ -185,7 +186,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			return $curl->getResponseBody();
 	    }
 	    
-	    public function get_entity($entity, $version = null){
+	    public function get_entity($entity, $version = null, $publicationId = null){
 			// [+] X-DPS-Client-Id: {client-id}
 			// [+] X-DPS-Client-Version: {double-dot style notation}
 			// [+] X-DPS-Client-Request-Id: {UUID}
@@ -199,7 +200,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			
 			// CONSTRUCT URL
 			$endpoint = $this->producer_endpoint;
-			$publication = $this->publications[0]['id'];
+			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
 			$entityType = $entity->entityType;
 			$entityName = $entity->entityName;
 			$version = $entity->version;
@@ -217,7 +218,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			$entity->refresh($curl->getResponseBody());
 	    }
 	    
-	    public function get_entity_list($publication, $filter = "", $pageSize = 25, $page = 0, $sortField = "modified", $descending = true){
+	    public function get_entity_list($publicationId = null, $filter = "", $pageSize = 25, $page = 0, $sortField = "modified", $descending = true){
 			// [+] X-DPS-Client-Id: {client-id}
 			// [+] X-DPS-Client-Version: {double-dot style notation}
 			// [+] X-DPS-Client-Request-Id: {UUID}
@@ -231,7 +232,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			
 			// CONSTRUCT URL
 			$endpoint = $this->producer_endpoint;
-			$publication = $this->publications[0]['id'];
+			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
 			$entityType = $entity->entityType;
 			$entityName = $entity->entityName;
 			
@@ -247,7 +248,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			return $curl->getResponseBody();
 	    }
 	    
-	    public function seal_entity($entity, $uploadID = null){
+	    public function seal_entity($entity, $uploadID = null, $publicationId = null){
 			// [+] X-DPS-Client-Id: {client-id}
 			// [+] X-DPS-Client-Version: {double-dot style notation}
 			// [+] X-DPS-Client-Request-Id: {UUID}
@@ -262,7 +263,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			
 			// CONSTRUCT URL
 			$endpoint = $this->producer_endpoint;
-			$publication = $this->publications[0]['id'];
+			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
 			$entityType = $entity->entityType;
 			$entityName = $entity->entityName;
 			$version = $entity->version;
@@ -280,7 +281,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 	    }
 	    
 	    // Entity can be single or array of entities
-	    public function publish_entity($entity, $schedule_date = null){
+	    public function publish_entity($entity, $schedule_date = null, $publicationId = null){
 			// [+] X-DPS-Client-Id: {client-id}
 			// [+] X-DPS-Client-Version: {double-dot style notation}
 			// [+] X-DPS-Client-Request-Id: {UUID}
@@ -307,13 +308,15 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 				$data['scheduled'] = $this->formatDate($schedule_date);
 			}
 			
+			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
+			
 			if(is_array($entity)){
 				foreach($entity as $single){
-					$toPublish = '/publication/' . $this->publications[0]['id'] . '/' . $single->entityType . '/' . $single->entityName . ';version=' . $single->version;
+					$toPublish = '/publication/' . $publication . '/' . $single->entityType . '/' . $single->entityName . ';version=' . $single->version;
 					array_push($data['entities'], $toPublish);
 				}
 			}else{
-				$toPublish = '/publication/' . $this->publications[0]['id'] . '/' . $entity->entityType . '/' . $entity->entityName . ';version=' . $entity->version;
+				$toPublish = '/publication/' . $publication . '/' . $entity->entityType . '/' . $entity->entityName . ';version=' . $entity->version;
 				array_push($data['entities'], $toPublish);
 			}
 			
@@ -328,7 +331,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 	    }
 	    
 	    // Retrieves the manifest of all committed assets associated with the specified version of content bucket for this entity
-	    public function get_entity_manifest($entity){
+	    public function get_entity_manifest($entity, $publicationId = null){
 			// [+] X-DPS-Client-Id: {client-id}
 			// [+] X-DPS-Client-Version: {double-dot style notation}
 			// [+] X-DPS-Client-Request-Id: {UUID}
@@ -342,7 +345,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			
 			// CONSTRUCT URL
 			$endpoint = $this->producer_endpoint;
-			$publication = $this->publications[0]['id'];
+			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
 			$entityType = $entity->entityType;
 			$entityName = $entity->entityName;
 			$contentVersion = $entity->contentVersion;
@@ -359,7 +362,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			$this->save_response($curl->getResponseBody(), $entity);
 	    }
 	    
-	    public function delete_asset($entity, $content_path){
+	    public function delete_asset($entity, $content_path, $publicationId = null){
 			// [+] X-DPS-Client-Id: {client-id}
 			// [+] X-DPS-Client-Version: {double-dot style notation}
 			// [+] X-DPS-Client-Request-Id: {UUID}
@@ -375,7 +378,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			
 			// CONSTRUCT URL
 			$endpoint = $this->producer_endpoint;
-			$publication = $this->publications[0]['id'];
+			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
 			$entityType = $entity->entityType;
 			$entityName = $entity->entityName;
 			$contentVersion = $entity->contentVersion;
@@ -390,7 +393,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			$this->verify_response($curl, $entity);
 	    }
 	    	    
-	    public function upload_article_folio($entity, $asset){
+	    public function upload_article_folio($entity, $asset, $publicationId = null){
 		    // [+] X-DPS-Client-Id: {client-id}
 			// [+] X-DPS-Client-Version: {double-dot style notation}
 			// [+] X-DPS-Client-Request-Id: {UUID}
@@ -406,7 +409,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 
 			// CONSTRUCT URL
 			$endpoint = $this->ingestion_endpoint;
-			$publication = $this->publications[0]['id'];
+			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
 			$entityType = $entity->entityType;
 			$entityName = $entity->entityName;
 			$version = $entity->version;
@@ -423,7 +426,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			$this->verify_response($curl, $entity);
 	    }
 	    
-	    public function upload_asset($entity, $asset, $content_path, $content_type = null, $uploadID = null){
+	    public function upload_asset($entity, $asset, $content_path, $content_type = null, $uploadID = null, $publicationId = null){
 		    // [+] X-DPS-Client-Id: {client-id}
 			// [+] X-DPS-Client-Version: {double-dot style notation}
 			// [+] X-DPS-Client-Request-Id: {UUID}
@@ -447,7 +450,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 
 			// CONSTRUCT URL
 			$endpoint = $this->producer_endpoint;
-			$publication = $this->publications[0]['id'];
+			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
 			$entityType = $entity->entityType;
 			$entityName = $entity->entityName;
 			$contentVersion = $entity->contentVersion;

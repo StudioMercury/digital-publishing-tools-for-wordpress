@@ -51,7 +51,7 @@ define( 'DPSFA_VERSION_SLUG',	        DPSFA_SLUG . "_version" );
 define( 'DPSFA_TMPDIR',					(substr(sys_get_temp_dir(), -1) == '/') ? sys_get_temp_dir() : sys_get_temp_dir() . "/" );
 
 // DPS API
-define( 'DPSFA_VERSION',				'2.0.1' ); // default is 2.0
+define( 'DPSFA_VERSION',				'2.0.2' ); // default is 2.0
 
 // VERSION 2.0 specific
 define( 'DPS_API_AUTHENTICATION_END',	'https://ims-na1.adobelogin.com/' ); // Authentication server endpoints

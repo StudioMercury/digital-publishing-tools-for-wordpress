@@ -49,7 +49,6 @@ if(!class_exists('DPSFolioAuthor\Settings')) {
 		// DEFAULTS
 		public $defaultTemplate = "";
 		public $defaultPublication = "";
-		public $recipeDefaults = array();
 		public $collectionDefaults = array();
 
 		// CMS Settings

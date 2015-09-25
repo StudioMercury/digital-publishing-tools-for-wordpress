@@ -33,8 +33,7 @@ if(!class_exists('DPSFolioAuthor\Content')) {
 	    public $thumbnail; // image url
 	    public $productIds;
 	    public $collections; // list of collections that content belongs to (not setable)
-		public $publications; // reference to publication Entity is attached to
-		
+
 	    // CMS
 		public $device; // if this entity is associated with a device (rendition)
 		
