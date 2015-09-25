@@ -85,7 +85,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Article')) {
 			$articles = array();
 			
 			$args = array(
-				'post_type' => DPSFA_Article_Slug,
+				'posts_per_page' => -1,
+				'post_type' => DPSFA_Article_Slug
 			);
 						
 			// TODO: FIGURE OUT FILTERS
