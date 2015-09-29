@@ -17,13 +17,14 @@ namespace DPSFolioAuthor;
 if ( !defined('__DIR__') ) define('__DIR__', dirname(__FILE__));
 
 // Generic Plugin Settings
+define( 'DPSFA_VERSION',				'2.0.4' );
 define( 'DPSFA_NAME',					'Digital Publishing Tools for WordPress' );
 define( 'DPSFA_SHORT_NAME',				'Digital Publishing' );
 define( 'DPSFA_SLUG',					'dps_folio_author' );
 define( 'DPSFA_PREFIX',					'dpsfa_' );
 define( 'DPSFA_SYNC_SUFFIX',			'_modtime' );
 define( 'DPSFA_TIMEFORMAT',				'Y-m-d\TH:i:s' );
-define( 'DPS_API_VERSION',				2.0); // Version of the API to use 1.0 or 2.0
+define( 'DPS_API_VERSION',				2.0); // Version of the API to use 1.0 or 2.0 (default)
 
 // Requirements
 define( 'DPSFA_DEBUGMODE',				FALSE );
@@ -49,9 +50,6 @@ define( 'DPSFA_ASSETS_DIR',				DPSFA_DIR . "/assets/" );
 define( 'DPSFA_ASSETS_URL',	            DPSFA_URL . "/assets/" );
 define( 'DPSFA_VERSION_SLUG',	        DPSFA_SLUG . "_version" );
 define( 'DPSFA_TMPDIR',					(substr(sys_get_temp_dir(), -1) == '/') ? sys_get_temp_dir() : sys_get_temp_dir() . "/" );
-
-// DPS API
-define( 'DPSFA_VERSION',				'2.0.3' ); // default is 2.0
 
 // VERSION 2.0 specific
 define( 'DPS_API_AUTHENTICATION_END',	'https://ims-na1.adobelogin.com/' ); // Authentication server endpoints
@@ -124,6 +122,7 @@ load_cms_wrapper();
 
 // Load required classes
 require_once(  DPSFA_DIR . '/classes/dpsfa-error.php' );						// Class for extending PHP's error handling
+require_once(  DPSFA_DIR . '/classes/dpsfa-error-logging.php' );				// Class for extending PHP's error logging
 require_once(  DPSFA_DIR . '/classes/dpsfa-curl.php' );							// Class for making cURL calls
 require_once(  DPSFA_DIR . '/classes/dpsfa-adobe.php' );						// Class for the Adobe DPS API
 require_once(  DPSFA_DIR . '/classes/dpsfa-settings.php' );						// Class for settings of the plugin

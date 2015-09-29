@@ -63,6 +63,7 @@ if(!class_exists('DPSFolioAuthor\Settings')) {
 		    }
 		    $this->update_templates();
 		    $this->update_endpoints();
+		    $this->version = DPSFA_VERSION;
         }
         
         public function update_endpoints(){

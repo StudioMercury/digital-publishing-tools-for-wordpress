@@ -6,15 +6,6 @@
  * Description: This class contains ajax specific parameters and functions for WordPress.
  */
  
- //http://stackoverflow.com/questions/18641618/how-can-i-denote-which-input-fields-have-changed-in-angularjs
- // TESTING DIFFERENCES IN FORM INPUTS - only send those value that are different
- 
- // long list
- //https://github.com/kamilkp/angular-vs-repeat
- //http://mono.software/posts/Improving-AngularJS-long-list-rendering-performance-using-ReactJS/
- //http://www.williambrownstreet.net/blog/2013/07/angularjs-my-solution-to-the-ng-repeat-performance-problem/
- 
- 
 namespace DPSFolioAuthor;
 
 if( $_SERVER[ 'SCRIPT_FILENAME' ] == __FILE__ )
@@ -26,6 +17,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		public function __construct(){ }
 		
 		public function registerHookCallbacks(){
+		// BACKEND	
 			// register entity calls
 			add_action( 'wp_ajax_get_entity', 						array( $this, 'get_entity' ) );
 			add_action( 'wp_ajax_create_entity', 					array( $this, 'create_entity' ) );
@@ -51,7 +43,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 			add_action( 'wp_ajax_save_settings', 					array( $this, 'save_settings' ) );
 			add_action( 'wp_ajax_refresh_settings', 				array( $this, 'refresh_settings' ) );
 
-			// NON BACKEND
+		// NON BACKEND
 			// register entity calls
 			add_action( 'wp_ajax_nopriv_get_entity', 				array( $this, 'get_entity' ) );
 			add_action( 'wp_ajax_nopriv_create_entity', 			array( $this, 'create_entity' ) );
@@ -79,6 +71,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function create_entity(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 
@@ -97,11 +90,12 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function link_entity(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 			
@@ -120,11 +114,12 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function unlink_entity(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 
@@ -142,11 +137,12 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function publish_entity(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 
@@ -164,11 +160,12 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function get_entity(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 			
@@ -186,11 +183,12 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-			
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function update_entity(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 
@@ -209,11 +207,12 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function save_entity(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 			
@@ -232,11 +231,12 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-			
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function delete_entity(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 			
@@ -254,11 +254,12 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function entity_list(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 			
@@ -279,11 +280,12 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-			
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function add_entity_content(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			
 			// Check for files
@@ -304,11 +306,12 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-			
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function push_entity(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 			
@@ -333,11 +336,12 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-			
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function push_entity_metadata(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 			
@@ -355,11 +359,12 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-			
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function push_article_folio(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 			
@@ -377,11 +382,12 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-			
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function push_entity_contents(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 			
@@ -400,7 +406,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-			
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
@@ -411,6 +417,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 			$entity = $this->construct_entity(array('id' => $_REQUEST['id'], 'entityType' => 'article' ));
 			$bundlr = new Bundlr();
 			$bundlr->download_zip($entity, true);
+			
 		}
 		
 		public function search_entities(){
@@ -422,6 +429,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function sync_article(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 			
@@ -445,15 +453,17 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-						
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function refresh_settings(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			
 			$settings = new Settings();
 			
+			$response = array();
 			try{
 				$settings->update_api();
 				$settings->refresh();
@@ -468,18 +478,26 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["raw"] = $error->getRaw();
 				$response['settings'] = $settings;
 			}
-			
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response["code"], $response);
 			
 		}
 		
 		public function get_settings(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$settings = new Settings();
-			$this->return_json(200, array("settings" => $settings));
+			
+			$response = array(
+				"settings" => $settings, 
+				"phpErrors" => $errorLogging->getErrors()
+			);
+			
+			$this->return_json(200, $response);
 		}
 		
 		public function save_settings(){
+			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			
 			$data = $this->get_response_data();
@@ -487,9 +505,9 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 
 			$settings = new Settings();
 			foreach ( $settingsData as $key => $val) { $settings->$key = $val; }
-			
 			$settings->save();
-        
+			
+			$response = array();
 			try{
 				$settings->update_api();
 				$settings->refresh();
@@ -503,7 +521,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$response["raw"] = $error->getRaw();
 				$response['settings'] = $settings;
 			}
-			
+			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response["code"], $response);
 		}
 		
