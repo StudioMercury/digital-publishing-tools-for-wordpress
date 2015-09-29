@@ -17,7 +17,7 @@ namespace DPSFolioAuthor;
 if ( !defined('__DIR__') ) define('__DIR__', dirname(__FILE__));
 
 // Generic Plugin Settings
-define( 'DPSFA_VERSION',				'2.0.4' );
+define( 'DPSFA_VERSION',				'2.0.5' );
 define( 'DPSFA_NAME',					'Digital Publishing Tools for WordPress' );
 define( 'DPSFA_SHORT_NAME',				'Digital Publishing' );
 define( 'DPSFA_SLUG',					'dps_folio_author' );
@@ -79,17 +79,17 @@ define( 'DPSFA_Collection_Name', 		'Collection' );
 define( 'DPSFA_Collection_Names', 		'Collections' );
 define( 'DPSFA_Collection_Slug', 		DPSFA_PREFIX . 'collection' );
 // PUBLICATION
-define( 'DPSFA_Publication_Name', 			'Publication' );
-define( 'DPSFA_Publication_Names', 			'Publications' );
-define( 'DPSFA_Publication_Slug', 			DPSFA_PREFIX . 'publication' );
+define( 'DPSFA_Publication_Name', 		'Publication' );
+define( 'DPSFA_Publication_Names', 		'Publications' );
+define( 'DPSFA_Publication_Slug', 		DPSFA_PREFIX . 'publication' );
 // PRODUCT
 define( 'DPSFA_Product_Name', 			'Product' );
 define( 'DPSFA_Product_Names', 			'Products' );
 define( 'DPSFA_Product_Slug', 			DPSFA_PREFIX . 'product' );
 // PRODUCT
-define( 'DPSFA_Product_Bundle_Name', 			'Product Bundle' );
-define( 'DPSFA_Product_Bundle_Names', 			'Product Bundles' );
-define( 'DPSFA_Product_Bundle_Slug', 			DPSFA_PREFIX . 'product-bundle' );
+define( 'DPSFA_Product_Bundle_Name', 	'Product Bundle' );
+define( 'DPSFA_Product_Bundle_Names', 	'Product Bundles' );
+define( 'DPSFA_Product_Bundle_Slug', 	DPSFA_PREFIX . 'product-bundle' );
 
 // TODO:
 // An option to cache folios.
@@ -168,7 +168,7 @@ function dpsfa_server_requirements_met(){
 function load_cms_wrapper(){
 	// Load CMS Class
 	if(file_exists(DPSFA_DIR . '/classes/cms-modules/' . DPSFA_CMS . '/dpsfa-cms-'.DPSFA_CMS.'.php')){
-		include_once( DPSFA_DIR . '/classes/cms-modules/' . DPSFA_CMS . '/dpsfa-cms-'.DPSFA_CMS.'.php' );
+		require_once( DPSFA_DIR . '/classes/cms-modules/' . DPSFA_CMS . '/dpsfa-cms-'.DPSFA_CMS.'.php' );
 		$CMS = new CMS();
 		// Verify CMS Version
 		if( version_compare( $CMS->get_cms_version(), DPSFA_REQUIRED_CMS_VERSION, '<' ) ){
@@ -197,29 +197,10 @@ function log_message($message) {
 		error_log($save . "\n", 3, DPSFA_DEBUG_LOG);
 }
 
-function log_var( $object=null ){
+function log_var( $object = null ){
     ob_start();                    // start buffer capture
     var_dump( $object );           // dump the values
     $contents = ob_get_contents(); // put the buffer into a variable
     ob_end_clean();                // end capture
     return $contents;
-}
-
-// getallheaders() is a alias function for a apache's apache_request_headers() method
-// the following emulates the behavoiur for nGinx environments
-// Source: http://php.net/manual/en/function.getallheaders.php
-if (!function_exists('getallheaders'))
-{
-    function getallheaders()
-    {
-       $headers = '';
-       foreach ($_SERVER as $name => $value)
-       {
-           if (substr($name, 0, 5) == 'HTTP_')
-           {
-               $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
-           }
-       }
-       return $headers;
-    }
 }

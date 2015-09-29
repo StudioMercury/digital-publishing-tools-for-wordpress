@@ -244,6 +244,7 @@ angular.module('AdobePublishForCMS.services', [])
 .factory('Settings', function(CMS, _){
 		
 	function Settings(args) {
+/*
 	// API
 		this.company = '';
 		this.key = '';
@@ -256,6 +257,7 @@ angular.module('AdobePublishForCMS.services', [])
 	    this.ingestion_endpoint = '';
 	    this.producer_endpoint = '';
 	    this.product_endpoint = '';
+	    this.version = '';
 	    
 	// Classic Settings
 	    this.tooltips = true;
@@ -272,7 +274,7 @@ angular.module('AdobePublishForCMS.services', [])
 		this.permissions = [];
 		this.devices = [];
 		this.templates = [];
-		
+*/
 		angular.extend(this, args);	
 	};
 	

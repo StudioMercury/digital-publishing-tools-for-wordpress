@@ -59,7 +59,12 @@ if(!class_exists('DPSFolioAuthor\Entity')) {
 				$CMS = new CMS();
 				$CMS->save_entity($this);
 			}
-	    }		
+	    }	
+	    
+	    public function save_field($field){
+		    $CMS = new CMS();
+			$CMS->save_field($this, $field);
+	    }	
 		
 		public function delete($cloud = false){
 			if($cloud){ // If cloud, delete entity in Adobe's Cloud
@@ -143,7 +148,14 @@ if(!class_exists('DPSFolioAuthor\Entity')) {
 				
 		public function add_content($type, $File){
 			$CMS = new CMS();
-			$CMS->add_entity_content($this, $type, $File);
+			
+			// Process file upload
+			$contentId = $CMS->handle_file_upload($this, $File);
+			
+			// Add file to entity
+			$CMS->add_entity_content($this, $type, $contentId);
+			
+			// Refresh the entity
 			$this->refresh();
 /*
 			contents

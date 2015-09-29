@@ -110,7 +110,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Article')) {
 			
 			$data = array();
 			foreach($meta as $key => $value){
-				if((@unserialize($value[0]) !== false)){
+				// If serialized
+				if(preg_match( "/^(O:|a:)/", $value[0] )){
 					$data[str_replace(DPSFA_Article_Slug . '_', '', $key)] = unserialize($value[0]);
 				}else{
 					$data[str_replace(DPSFA_Article_Slug . '_', '', $key)] = $value[0];

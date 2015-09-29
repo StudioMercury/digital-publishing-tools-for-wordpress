@@ -29,22 +29,19 @@ if(!class_exists('DPSFolioAuthor\Content')) {
 	    public $_links = array();
 	    public $isPublishable = true;
 	    
-	    public $socialSharing; // image url
-	    public $thumbnail; // image url
+	    public $socialSharing; // array of social sharing image sizes and paths
+	    public $thumbnail; // array of thumbnail image sizes and paths
 	    public $productIds;
 	    public $collections; // list of collections that content belongs to (not setable)
 
 	    // CMS
 		public $device; // if this entity is associated with a device (rendition)
-		
+		public $thumbnailId; // media ID associated with thumbnail image
+		public $socialSharingId; // media ID associated with social share image
 
 	    public function __construct($data = array()) {
 			parent::__construct($data);
 		}
-		
-		public function add_to_collection($collectionId){
-			
-		}
-				        
+						        
     } // END class Content 
 }

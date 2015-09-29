@@ -41,8 +41,7 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 	    }
                 
         public function get_cms_version(){
-	        global $wp_version;
-	        return $wp_version;
+	        return get_bloginfo('version');
         }
                         
         public function registerHookCallbacks(){	
@@ -88,9 +87,7 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
         }
 		
 		static function activate(){}
-		
 		static function deactivate(){}
-		
 		static function uninstall(){}
 		
 		
@@ -204,6 +201,11 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 			$cmsEntity->save($entity);
 		}
 		
+		public function save_field($entity, $field){
+			$cmsEntity = $this->get_cms_entity($entity->entityType);
+			$cmsEntity->save_field($entity, $field, $entity->$field);
+		}
+		
 		public function delete_entity($entity){
 			$cmsEntity = $this->get_cms_entity($entity->entityType);
 			$cmsEntity->delete($entity);
@@ -214,21 +216,23 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 			$cmsEntity->update($entity);
 		}
 		
-		public function add_entity_content($entity, $type, $File){
-			$cmsEntity = $this->get_cms_entity($entity->entityType);
-			$attachment_id = media_handle_upload(key($File), $entity->id, array(), array( 'test_form' => false ));
+		public function handle_file_upload($entity, $FILE){
+			return media_handle_upload(key($FILE), $entity->id, array(), array( 'test_form' => false ));
+		}
+		
+		public function add_entity_content($entity, $type, $attachment_id){
 			if(!is_wp_error($attachment_id)){
-				$contents = $cmsEntity->get_field($entity, 'contents');
-				$contents = is_array($contents) ? $contents : array();
 				$attachmentThumb = wp_get_attachment_image_src($attachment_id, array(500,500));
-				$contents[$type] = array(
+				$entity->contents[$type] = array(
 					'id' => $attachment_id,
 					'thumbnail' => $attachmentThumb[0],
 					'original' => wp_get_attachment_url($attachment_id),
 					'path' => get_attached_file($attachment_id)
 				);
-				$cmsEntity->save_field($entity, 'contents', $contents);
-				$cmsEntity->save_field($entity, $type, $contents[$type]['original']);
+				$entity->$type = $entity->contents[$type]['original'];
+				$typeId = $type . "Id";
+				$entity->$typeId = $attachment_id;
+				$entity->save();
 				return $attachment_id;
 			}else{
 				return FALSE;
@@ -410,15 +414,20 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 					}
 				}
 				
+				// Remove any duplicates with the same string just different cases
+				$internalKeywords = array_intersect_key(
+			        $internalKeywords,
+			        array_unique(array_map("StrToLower",$internalKeywords))
+			    );
+				
 				$entity->title = $post->post_title;
 				$entity->abstract = $post->post_excerpt;
 				$entity->socialShareUrl = get_permalink($id);
 				$entity->url = get_permalink($id);
 				$entity->articleText = $post->post_excerpt;
-				$entity->internalKeywords = $internalKeywords;
-				
+				$entity->internalKeywords = array_values($internalKeywords);
+
 				$entity->save();
-				
 
 				// Duplciate taxonomies
 				$taxonomies = get_object_taxonomies($post->post_type); // returns array of taxonomy names for post type, ex array("category", "post_tag");
@@ -427,31 +436,11 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 					wp_set_object_terms($entity->id, $post_terms, $taxonomy, false);
 				}
 				
-		
 				$postThumbID = get_post_thumbnail_id($id);
-				$attachmentThumb = wp_get_attachment_image_src($postThumbID, array(500,500));
-				$contents = array();
-				
-				$upload_dir = wp_upload_dir();
-				$filename = basename( get_attached_file( $postThumbID ) ); // Just the file name
-				$metadata = wp_get_attachment_metadata( $postThumbID );
-				$uploadDatePath =  str_replace($filename, "", $metadata["file"]);
-				$renditionName = $metadata["sizes"]["publish-thumb-recipe"]["file"];
-				// TODO REPLACE PUBLISH THUMB WITH ONE FROM SETTINGS
-				
-				$contents["thumbnail"] = array(
-					'id' => $postThumbID,
-					'thumbnail' => $attachmentThumb[0],
-					'original' => wp_get_attachment_url($postThumbID),
-					'path' => $upload_dir["basedir"] . "/" . $uploadDatePath . $renditionName
-				);
-				
-				$cmsEntity = $this->get_cms_entity($entity->entityType);
-				$cmsEntity->save_field($entity, 'contents', $contents);
-				$cmsEntity->save_field($entity, "thumbnail", $contents["thumbnail"]['original']);
+				$this->add_entity_content($entity, 'thumbnail', $postThumbID);
 			}
 		}
-		
+				
 		public function import($id, $entity = ""){
 
 			// Get Post to Import
@@ -464,7 +453,7 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 				$entityType = $entity;
 				$class = "DPSFolioAuthor\\".ucwords($entityType);
 				$entity = new $class();
-				$entity->entityName = sanitize_title($post->post_title,"untitled");
+				$entity->entityName = sanitize_title($post->post_title, "untitled");
 				$entity->origin = $id;
 			}
 
@@ -475,6 +464,7 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 				$postType->labels->singular_name,
 				$postType->labels->name
 			);
+		    
 			$taxonomy_names = get_object_taxonomies( $post->post_type );
 			foreach($taxonomy_names as $taxonomy){
 				$terms = get_the_terms( $id, $taxonomy );
@@ -484,6 +474,12 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 					}
 				}
 			}
+			
+			// Remove any duplicates with the same string just different cases
+			$internalKeywords = array_intersect_key(
+		        $internalKeywords,
+		        array_unique(array_map("StrToLower",$internalKeywords))
+		    );
 			
 			$entity->title = $post->post_title;
 			$entity->abstract = $post->post_excerpt;
@@ -528,27 +524,28 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 			// If Article, set featured image as thumbnail
 			if($entityType == "article"){
 				$postThumbID = get_post_thumbnail_id($id);
-				$attachmentThumb = wp_get_attachment_image_src($postThumbID, array(500,500));
-				$contents = array();
-				
-				$upload_dir = wp_upload_dir();
-				$filename = basename( get_attached_file( $postThumbID ) ); // Just the file name
-				$metadata = wp_get_attachment_metadata( $postThumbID );
-				$uploadDatePath =  str_replace($filename, "", $metadata["file"]);
-				$renditionName = $metadata["sizes"]["publish-thumb-recipe"]["file"];
-				// TODO REPLACE PUBLISH THUMB WITH ONE FROM SETTINGS
-				
-				$contents["thumbnail"] = array(
-					'id' => $postThumbID,
-					'thumbnail' => $attachmentThumb[0],
-					'original' => wp_get_attachment_url($postThumbID),
-					'path' => $upload_dir["basedir"] . "/" . $uploadDatePath . $renditionName
-					//'path' => str_replace(".jpg", "-550x697.jpg", get_attached_file($postThumbID)) // FOR SMALLER RENDITIONS
-				);
-				$cmsEntity = $this->get_cms_entity($entityType);
-				$cmsEntity->save_field($entity, 'contents', $contents);
-				$cmsEntity->save_field($entity, "thumbnail", $contents["thumbnail"]['original']);
+				$this->add_entity_content($entity, 'thumbnail', $postThumbID);
 			}
+			
+			// TODO:
+/*
+			$attachmentThumb = wp_get_attachment_image_src($postThumbID, array(500,500));
+			$contents = array();
+			
+			$upload_dir = wp_upload_dir();
+			$filename = basename( get_attached_file( $postThumbID ) ); // Just the file name
+			$metadata = wp_get_attachment_metadata( $postThumbID );
+			$uploadDatePath =  str_replace($filename, "", $metadata["file"]);
+			$renditionName = $metadata["sizes"]["publish-thumb-recipe"]["file"];
+			// TODO REPLACE PUBLISH THUMB WITH ONE FROM SETTINGS
+			
+			$contents["thumbnail"] = array(
+				'id' => $postThumbID,
+				'thumbnail' => $attachmentThumb[0],
+				'original' => wp_get_attachment_url($postThumbID),
+				'path' => $upload_dir["basedir"] . "/" . $uploadDatePath . $renditionName
+			);
+*/
 			
 		}
 		
@@ -567,19 +564,13 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 		
 		public function bulk_import(){
 
-			// 1. get the action
 			$wp_list_table = _get_list_table('WP_Posts_List_Table');
 			$action = $wp_list_table->current_action();
 
 			switch($action) {
-				// 3. Perform the action
 				case 'importArticle':
 					check_admin_referer('bulk-posts');
 
-					// if we set up user permissions/capabilities, the code might look like:
-					//if ( !current_user_can($post_type_object->cap->export_post, $post_id) )
-					//  pp_die( __('You are not allowed to export this post.') );
-					
 					$imported = 0;
 					$post_ids = $_REQUEST["post"];
 					foreach( $post_ids as $post_id ) {
