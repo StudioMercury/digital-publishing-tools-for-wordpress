@@ -2,11 +2,11 @@
 ### Digital Publishing Tools for WordPress is a plugin that allows anyone to create HTML articles for Digital Publishing Solution directly from WordPress.
 
 **Contributors**: StudioMercury  
-**Website**: http://www.smny.us  
+**Website**: http://studiomercury.github.io/digital-publishing-tools-for-wordpress/ 
 **Tags**: digital publishing, publishing, Adobe, DPS, Digital Publishing Solution  
 **Requires at least**: Wordpress 3.5  
-**Tested up to**: Wordpress 4.2  
-**Stable tag**: Wordpress 4.2  
+**Tested up to**: Wordpress 4.3  
+**Stable tag**: Wordpress 4.3  
 **License**: GPLv2 or later 
 **License URI**: http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -47,29 +47,40 @@ At this time the plugin only supports one project. Multi-project support is on o
 We haven't tested or explicitly built the plugin to work with Wordpress MU. That's not to say it won't work, only that our initial release didn't target a multi-user enviroment. 
 
 ## Screenshots
-![](assets/screenshot-1.png)  
-![](assets/screenshot-2.jpeg)  
-![](assets/screenshot-3.jpeg)  
-![](assets/screenshot-4.png)
+1. Keep track of all of your articles. You can easily create new or import existing articles directly from WordPress.
+2. Easily edit Article metadata.
+3. Preview articles before you export them or upload them into the Adobe Digital Publishing Solution platform.
+4. The plugin works with Adobe's Digital Publishing Solution. Entering API credentials for DPS will allow you to upload and manipulate articles in Adobe's platform.
 
 
 ## Changelog
 
-### 2.03
+### 2.0.5
+* Resolved error in checking for serialized meta values
+* Resolved error in the article thumbnail when importing them from
+existing posts
+* Internal keywords now sync
+
+### 2.0.4
+* Fixed error in getting settings / refreshing settings
+* Added error logging for php errors that show up
+* Resolved error in returning and saving settings using AJAX
+
+### 2.0.3
 * Fixed a bug where a "/" was being prepended to assets during article bundle. 
 
-### 2.02
+### 2.0.2
 * Fixed an error when saving in settings
 * Updated the example article.php to expose a function to bundle additional files for an article. 
 
-### 2.01
+### 2.0.1
 * Cleaned up sample templates
 
-### 2.0
+### 2.0.0
 * NEW Access to the new DPS 2015 API's and services
 * Article Creation
 
-### 1.0
+### 1.0.0
 * Old Release with access to the original version of DPS, this is currently deprecated.
 
 
