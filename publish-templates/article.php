@@ -10,7 +10,9 @@ Template Name: Adobe Publish - Sample Article
         $filePath = 'HTMLResources/';
         $urlPath = 'navto://';
     } else {
-        $filePath = get_bloginfo('template_directory') . '/publish-templates/HTMLResources/';
+        $filePath = plugins_url( DPSFA_DIR_NAME . '/publish-templates/HTMLResources/' );	    
+	    // If you move the publish-templates folder into your template directory then uncomment the below line and comment out the line above.
+	    // $filePath = get_bloginfo('template_directory') . '/publish-templates/HTMLResources/';
     }
     
 	/*
