@@ -58,6 +58,8 @@ We haven't tested or explicitly built the plugin to work with Wordpress MU. That
 ### 2.0.6
 * Resolved article folio uploads with 0bytes (missing files).
 * Resolved an issue if template files went missing or were changed
+* publish-templates/article.php - now has a file path for files relative to the plugin folder and the theme folder. If you're upgrading to 2.0.6 please make sure to re-copy the publish-templates folder from the plugin folder to the active theme folder you are working in.
+
 
 ### 2.0.5
 * Resolved error in checking for serialized meta values
