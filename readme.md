@@ -1,14 +1,14 @@
 # Digital Publishing Tools for WordPress
 ### Digital Publishing Tools for WordPress is a plugin that allows anyone to create HTML articles for Digital Publishing Solution directly from WordPress.
 
-**Contributors**: StudioMercury  
-**Website**: http://studiomercury.github.io/digital-publishing-tools-for-wordpress/ 
-**Tags**: digital publishing, publishing, Adobe, DPS, Digital Publishing Solution  
-**Requires at least**: Wordpress 3.5  
-**Tested up to**: Wordpress 4.3  
-**Stable tag**: Wordpress 4.3  
-**License**: GPLv2 or later 
-**License URI**: http://www.gnu.org/licenses/gpl-2.0.html  
+**Contributors**: StudioMercury   
+**Website**: http://studiomercury.github.io/digital-publishing-tools-for-wordpress/   
+**Tags**: digital publishing, publishing, Adobe, DPS, Digital Publishing Solution   
+**Requires at least**: Wordpress 3.5   
+**Tested up to**: Wordpress 4.3   
+**Stable tag**: Wordpress 4.3   
+**License**: GPLv2 or later  
+**License URI**: http://www.gnu.org/licenses/gpl-2.0.html   
 
 
 **PREREQUISITE KNOWLEDGE**
