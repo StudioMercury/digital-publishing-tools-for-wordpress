@@ -47,9 +47,16 @@ At this time the plugin only supports one project. Multi-project support is on o
 We haven't tested or explicitly built the plugin to work with Wordpress MU. That's not to say it won't work, only that our initial release didn't target a multi-user enviroment. 
 
 ## Screenshots
+![](assets/screenshot-1.png)  
 1. Keep track of all of your articles. You can easily create new or import existing articles directly from WordPress.
+
+![](assets/screenshot-2.jpeg)  
 2. Easily edit Article metadata.
+
+![](assets/screenshot-3.jpeg)  
 3. Preview articles before you export them or upload them into the Adobe Digital Publishing Solution platform.
+
+![](assets/screenshot-4.png)
 4. The plugin works with Adobe's Digital Publishing Solution. Entering API credentials for DPS will allow you to upload and manipulate articles in Adobe's platform.
 
 
