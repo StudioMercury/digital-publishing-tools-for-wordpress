@@ -85,21 +85,39 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
 			$files = array();
             
             /* HTML OF ARTICLE */
-            $html = $this->get_html_content($entity);  
+            $html = $this->get_html_content($entity);
+            
+            /* VERIFY TEMPLATE */
+            if(file_exists($entity->template)){
+	        	$template = $entity->template;
+	        }else{
+		        $templates = new Templates();
+				$defaultTemplate = $templates->get_default();
+		        $template = $defaultTemplate['path'];
+	        }
             
             /* COLLECT ADDITIONAL FILES FROM A TEMPLATE (CMS) */
             ob_start();
-            include_once($entity->template);
+            include_once($template);
 			$output = ob_get_clean();
             $files = $this->get_files_from_template( $entity );
 
             /* COLLECT LINKED IMAGES / MEDIA / CSS / JS FILES */
-			$collected = $this->get_linked_assets_from_html($html, $entity->template);
+			$collected = $this->get_linked_assets_from_html($html, $template);
             $files = array_merge( $files, $collected["assets"] );
             $files["index.html"] = $this->make_file("index", (string)$collected["html"]);
-
+			
+			/* VERIFY ARTICLE FILES */
+			foreach($files as $key => $file){
+				$size = filesize($file);
+				if($size < 1 || $size === FALSE){
+					unset($files[$key]);
+				}
+			}
+			
 			/* CREATE ARTICLE MANIFEST */ 
 			$files["manifest.xml"] = $this->make_file("manifest", $this->create_article_manifest($files));
+			
             return $files;           
         }
     	

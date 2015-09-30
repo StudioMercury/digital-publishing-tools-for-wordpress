@@ -339,7 +339,7 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 		public function get_custom_templates($templateFolder){
 			$cmsPath = rtrim(get_template_directory(), '/\\');
 			$directory = $cmsPath . "/" . $templateFolder;
-			$files = @scandir($directory) ?: array();
+			$files = file_exists($directory) ? @scandir($directory) : array();
 			$templates = array();
 			foreach($files as $file){
 				$fileParts = pathinfo($file);

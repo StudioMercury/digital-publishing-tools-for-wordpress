@@ -55,6 +55,10 @@ We haven't tested or explicitly built the plugin to work with Wordpress MU. That
 
 ## Changelog
 
+### 2.0.6
+* Resolved article folio uploads with 0bytes (missing files).
+* Resolved an issue if template files went missing or were changed
+
 ### 2.0.5
 * Resolved error in checking for serialized meta values
 * Resolved error in the article thumbnail when importing them from

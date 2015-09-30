@@ -45,7 +45,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Article')) {
 		        <select name="<?php echo DPSFA_Article_Slug."_template";?>" id="<?php echo DPSFA_Article_Slug."template";?>">
 		            <?php foreach($templates as $template):?>
 		            <option value="<?php echo $template['path'];?>" <?php selected( $articleTemplate, $template['path'] ); ?>>
-		            	<?php echo $template['type'];?>: <?php echo $template['name']; ?>
+		            	<?php echo $template['name']; ?>
 		            </option>
 		            <?php endforeach; ?>
 		        </select>
@@ -60,9 +60,9 @@ if(!class_exists('DPSFolioAuthor\CMS_Article')) {
 		     
 		    // if our nonce isn't there, or we can't verify it, bail
 		    if( !isset( $_POST['article_meta_template'] ) || !wp_verify_nonce( $_POST['article_meta_template'], 'article_meta_template' ) ) return;
-		     
+
 		    // if our current user can't edit this post, bail
-		    if( !current_user_can( 'edit_post' ) ) return;
+		    if( !current_user_can( 'edit_post', $post_id ) ) return;
 		    
 		    // Save Template
 		    if( isset( $_POST[DPSFA_Article_Slug."_template"] ) ){
@@ -158,7 +158,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Article')) {
 					if( $value === null || $value == ""){
 						$wpResponse = delete_post_meta($article->id, DPSFA_Article_Slug . '_' . $key);
 					}else{
-						if((@unserialize($value) !== false)){
+						if(preg_match( "/^(O:|a:)/", $value[0] )){
 							$wpResponse = update_post_meta($article->id, DPSFA_Article_Slug . '_' . $key, unserialize($value));
 						}else{
 							$wpResponse = update_post_meta($article->id, DPSFA_Article_Slug . '_' . $key, $value);
