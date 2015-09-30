@@ -245,8 +245,15 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
     	private function get_files_from_template( $entity ){
             /* Call filter for getting additional files from a custom template */
             $CMS = new CMS();
-            $templateFiles = $CMS->get_template_files($entity);            
-            return is_array($templateFiles) ? $templateFiles : array();
+            $templateFiles = $CMS->get_template_files($entity);        
+            $templateFiles = is_array($templateFiles) ? $templateFiles : array();
+            
+            // Download files
+            foreach($templateFiles as $key=>$file){
+	            $templateFiles[$key] = $this->save_file(basename($key), $file);
+            }
+            
+            return $templateFiles;
     	}
     	
     	// Create Table of Content PNG for an entity
