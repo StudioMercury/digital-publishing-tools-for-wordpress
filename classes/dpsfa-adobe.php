@@ -671,7 +671,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 						// Refresh auth token and try again
 						$this->refresh_access_token();
 						$error->setTitle('Token Invalid or Expired');
-						$error->setMessage('Your OAuth token is invalid. Please refresh it and save the new token in your settings');
+						$error->setMessage('Your OAuth token is invalid. Please try refresh the page and trying again. If that doesn\'t work please update your API credentials in the plugin settings.');
 						throw $error;
 						break;
 					case 403: // Forbidden - user's quota exceeded.
@@ -694,7 +694,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 						$entity->save();
 						
 						$error->setTitle('Version Conflict');
-						$error->setMessage('The version trying to update is not the latest version.');
+						$error->setMessage('The version trying to update is not the latest version. Please refresh the page and try updating again.');
 						throw $error;
 						break;
 					case 410: // Gone - Specified entity was deleted
