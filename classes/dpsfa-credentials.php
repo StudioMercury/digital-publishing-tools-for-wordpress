@@ -53,8 +53,6 @@ if(!class_exists('DPSFolioAuthor\Credentials')) {
 				
 			*/
 		}
-	
-    }
 			        
     } // END class Credentials 
 }
