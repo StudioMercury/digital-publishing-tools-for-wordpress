@@ -66,7 +66,7 @@ if(!class_exists('DPSFolioAuthor\Article')) {
 			$CMS = new CMS();
 			$CMS->sync_from_origin($this);
 		}
-				
+						
 		public $apiAllowed = array(
 		    'author', 
 		    'authorUrl', 
@@ -93,6 +93,18 @@ if(!class_exists('DPSFolioAuthor\Article')) {
 		    'socialShareUrl', 
 		    'availabilityDate'
 		);
+		
+		public $internalFields = array(
+			'_links',
+			'version',
+			'contentVersion',
+			'url',
+			'modified',
+			'created',
+			'published',
+			'userData',
+			'articleFolio'
+		)
 			        
     } // END class Article 
 }

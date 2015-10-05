@@ -825,15 +825,16 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 		}
 		
 		private function prepEntity($entity){
-			$clean = array();
+			/* Filter out only attributes allowed by the API */
+			$attributes = array();
 			foreach(get_object_vars($entity) as $key => $value){
 				if(in_array($key, $entity->apiAllowed) && !empty($value)){ 
-					$clean[$key] = $value; 
+					$attributes[$key] = $value; 
 				}
 			}
-			return $clean;
+			return $attributes;
 		}
-			        
+					        
     } // END class Adobe 
     
 }

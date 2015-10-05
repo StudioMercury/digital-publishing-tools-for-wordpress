@@ -123,6 +123,27 @@ if(!class_exists('DPSFolioAuthor\CMS_Article')) {
 			$data["local_modified"] = $post->post_modified;
 			$data["cmsPreview"] = get_permalink($id);
 			$data["editUrl"] = get_edit_post_link($id, '');
+			
+			$data = $this->clean_data($data);
+			return $data;
+		}
+		
+		private function clean_data($data){
+			/* Filter out duplicate internal keywords */
+			if(array_key_exists('internalKeywords', $data)){
+				$data['internalKeywords'] = array_intersect_key(
+			        $data['internalKeywords'],
+			        array_unique(array_map("StrToLower",$data['internalKeywords']))
+			    );
+			}
+			
+			/* Filter out duplicate keywords */
+			if(array_key_exists('keywords', $data)){
+				$data['keywords'] = array_intersect_key(
+			        $data['keywords'],
+			        array_unique(array_map("StrToLower",$data['keywords']))
+			    );
+			}
 			return $data;
 		}
 		
@@ -154,7 +175,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Article')) {
 				$this->create($article);
 			}else{
 				// Update existing article
-				foreach( get_object_vars($article) as $key => $value ){
+				$data = $this->clean_data(get_object_vars($article));
+				foreach( $data as $key => $value ){
 					if( $value === null || $value == ""){
 						$wpResponse = delete_post_meta($article->id, DPSFA_Article_Slug . '_' . $key);
 					}else{
@@ -222,7 +244,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Article')) {
 				'show_ui' 				=> true,
 				'singular_label'		=> DPSFA_Article_Name,
 				'public'				=> true,
-				'show_in_menu'          => DPSFA_SLUG,
+				//'show_in_menu'          => DPSFA_SLUG, // For native view
+				'show_in_menu'          => false,
 				'publicly_queryable' 	=> true,
 				'exclude_from_search' 	=> false,
 				'hierarchical'			=> true,

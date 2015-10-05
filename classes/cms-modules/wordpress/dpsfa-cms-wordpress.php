@@ -21,8 +21,8 @@ if( $_SERVER[ 'SCRIPT_FILENAME' ] == __FILE__ )
 //require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-admin.php' );		
 // Class for WP Post Types
 require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-cpt-article.php' );	
-require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-cpt-folio.php' );		
-require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-cpt-collection.php' );		
+//require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-cpt-folio.php' );		
+//require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-cpt-collection.php' );		
 require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-ajax.php' );		
 
 if(!class_exists('DPSFolioAuthor\CMS')) { 
@@ -58,12 +58,12 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
     		$Article->registerHookCallbacks();
     		
     		// Register Issue (folio) Posttype
-    		$Issue = new CMS_Issue();
-    		$Issue->registerHookCallbacks();
+    		//$Issue = new CMS_Issue();
+    		//$Issue->registerHookCallbacks();
     		
     		// Register Collection Posttype
-    		$Collection = new CMS_Collection();
-    		$Collection->registerHookCallbacks();  
+    		//$Collection = new CMS_Collection();
+    		//$Collection->registerHookCallbacks();  
     		
     		// Register AJAX Calls for WordPress
     		$Ajax = new CMS_Ajax();
@@ -95,7 +95,7 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 		
 		public function register_plugin_page(){
 			add_menu_page( DPSFA_NAME, DPSFA_SHORT_NAME, 'manage_options', DPSFA_SLUG, array($this, 'plugin_page'), 'dashicons-book', 58.1234 );
-			add_submenu_page( DPSFA_SLUG, DPSFA_NAME, 'Settings', 'manage_options', DPSFA_SLUG."_home", array($this, 'plugin_home_page') );
+			//add_submenu_page( DPSFA_SLUG, DPSFA_NAME, 'Settings', 'manage_options', DPSFA_SLUG."_home", array($this, 'plugin_home_page') ); // For native view instead of full app
 		}
 		
 		public function template_override($template){
