@@ -104,7 +104,7 @@ if(!class_exists('DPSFolioAuthor\Article')) {
 			'published',
 			'userData',
 			'articleFolio'
-		)
+		);
 			        
     } // END class Article 
 }
