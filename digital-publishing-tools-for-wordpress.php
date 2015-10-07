@@ -2,7 +2,7 @@
 /*
  *   Plugin Name: Digital Publishing Tools for WordPress
  *   Plugin URI: http://studiomercury.github.io/digital-publishing-tools-for-wordpress
- *   Description: A plugin to author content from WordPress into Adobe's Digital Publishing Environment. Please note this plugin is not maintained by Adobe.
+ *   Description: Digital Publishing Tools for WordPress is a plugin that allows anyone to create articles for Adobe's Digital Publishing Solution directly from WordPress.
  *   Version: 2.0.7
  *   Author: Studio Mercury
  *   Author URI: http://studiomercury.github.io/digital-publishing-tools-for-wordpress
