@@ -3,7 +3,7 @@
  *   Plugin Name: Digital Publishing Tools for WordPress
  *   Plugin URI: http://studiomercury.github.io/digital-publishing-tools-for-wordpress
  *   Description: Digital Publishing Tools for WordPress is a plugin that allows anyone to create articles for Adobe's Digital Publishing Solution directly from WordPress.
- *   Version: 2.0.7
+ *   Version: 2.0.8
  *   Author: Studio Mercury
  *   Author URI: http://studiomercury.github.io/digital-publishing-tools-for-wordpress
  *   Author Email: https://github.com/StudioMercury/digital-publishing-tools-for-wordpress/issues
@@ -16,7 +16,7 @@ namespace DPSFolioAuthor;
 if ( !defined('__DIR__') ) define('__DIR__', dirname(__FILE__));
 
 // Generic Plugin Settings
-define( 'DPSFA_VERSION',				'2.0.7' );
+define( 'DPSFA_VERSION',				'2.0.8' );
 define( 'DPSFA_NAME',					'Digital Publishing Tools for WordPress' );
 define( 'DPSFA_SHORT_NAME',				'Digital Publishing' );
 define( 'DPSFA_SLUG',					'dps_folio_author' );
