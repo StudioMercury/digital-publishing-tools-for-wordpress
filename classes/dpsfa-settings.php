@@ -146,7 +146,6 @@ if(!class_exists('DPSFolioAuthor\Settings')) {
 		        $this->is_api_credentials_valid();
 		    	// Update user permissions
 		    	$this->update_api_permissions();
-		    	$this->refresh();
 	        }
         }
         
@@ -161,6 +160,7 @@ if(!class_exists('DPSFolioAuthor\Settings')) {
 		}
 
 		public function get_settings(){
+			$this->update_api();
 			$CMS = new CMS();
 			return $CMS->get_settings();
 		}

@@ -12,7 +12,6 @@ namespace DPSFolioAuthor;
 if( $_SERVER[ 'SCRIPT_FILENAME' ] == __FILE__ )
 	die( 'Access denied.' );
 
-
 require_once( DPSFA_DIR . '/libs/Mustache/Autoloader.php' );
 require_once( DPSFA_DIR . '/libs/simple_html_dom/simple_html_dom.php' );
 
@@ -99,13 +98,24 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
             /* COLLECT ADDITIONAL FILES FROM A TEMPLATE (CMS) */
             ob_start();
             include_once($template);
-			$output = ob_get_clean();
-            $files = $this->get_files_from_template( $entity );
+			ob_get_clean();
+            $templateFiles = $this->get_files_from_template( $entity );
+            
+            /* DOWNLOAD COLLECTED FILES FROM TEMPLATE FILES */
+            foreach($templateFiles as $file){
+	            if(is_array($file)){
+		            foreach($file as $key => $path){
+	            		$files[$key] = $this->save_file(basename($key), $path);
+		            }
+	            }else if(is_string($file)){
+	            	$files[$this->build_asset_path($file)] = $this->save_file(basename($file), $file);
+	            }
+            }
 
-            /* COLLECT LINKED IMAGES / MEDIA / CSS / JS FILES */
-			$collected = $this->get_linked_assets_from_html($html, $template);
+            /* PARSE HTML AND DOWNLOAD LINKED IMAGES / MEDIA / CSS / JS FILES */
+			$collected = $this->get_linked_assets_from_html($html, $entity);
             $files = array_merge( $files, $collected["assets"] );
-            $files["index.html"] = $this->make_file("index", (string)$collected["html"]);
+            $files["index.html"] = $this->make_file("index", $this->pretty_html( (string)$collected["html"] ));
 			
 			/* VERIFY ARTICLE FILES */
 			foreach($files as $key => $file){
@@ -3173,18 +3183,11 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
 	        return $manifest_data; // returns manifest XML as string
     	}
     	
+        /* Call filter for getting additional files from a custom template */
     	private function get_files_from_template( $entity ){
-            /* Call filter for getting additional files from a custom template */
             $CMS = new CMS();
             $templateFiles = $CMS->get_template_files($entity);        
-            $templateFiles = is_array($templateFiles) ? $templateFiles : array();
-            
-            // Download files
-            foreach($templateFiles as $key=>$file){
-	            $templateFiles[$key] = $this->save_file(basename($key), $file);
-            }
-            
-            return $templateFiles;
+            return is_array($templateFiles) ? $templateFiles : array();
     	}
     	
     	// Create Table of Content PNG for an entity
@@ -3331,21 +3334,24 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
     	
     	private function get_html_content( $entity ){
     		$file = tempnam(DPSFA_TMPDIR,"dps-");
-    		$CMS = new CMS();
-    		
-    		// If entity is associated with a device add it to the URL for the template
-	    	$width = !empty($entity->device) ? $entity->device->width : "";
-    		
-    		// Append folioBuilder attribute in URL
-    		$URL = $CMS->get_entity_url($entity);
-    		$URL = parse_url($URL, PHP_URL_QUERY) ? $URL . "&bundlr=true&width=$width" : $URL . "?bundlr=true&width=$width";
-    		
-            if(empty($URL)){ return ""; }
+    		$URL = $this->get_entity_url($entity);
     	    
     	    $HTML = file_get_contents( $URL );
             return str_get_html($HTML);
     	}
-    
+    	
+    	private function get_entity_url( $entity ){    		
+    		// If entity is associated with a device add it to the URL for the template
+	    	$width = !empty($entity->device) ? $entity->device->width : "";
+    		
+    		// Append folioBuilder attribute in URL
+    		$CMS = new CMS();
+    		$URL = $CMS->get_entity_url($entity);
+    		$URL = parse_url($URL, PHP_URL_QUERY) ? $URL . "&bundlr=true&width=$width" : $URL . "?bundlr=true&width=$width";
+    		
+    		return empty($URL) ? "" : $URL;
+    	}
+    	    
     	private function pretty_html( $htmlString = "" ){            
             // Tidy the HTML
     	    if(extension_loaded('tidy')){
@@ -3376,7 +3382,7 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
 		/* THIS WILL PARSE THE HTML TO FIND EXTERNAL ASSETS */
 		/* ANY ASSETS FOUND WILL BE SAVED / RETURNED AS FILES */
 		/* THE HTML WILL ALSO BE UPDATED WITH THESE NEW LINKS */
-        private function get_linked_assets_from_html($htmlStr, $template) {
+        private function get_linked_assets_from_html($htmlStr, $entity) {
 	        if(empty($htmlStr)){
 		        return array(
 	                "html" => $html,
@@ -3387,80 +3393,50 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
             $html = str_get_html($htmlStr);
             $assets = array();
             
-            $images = $html->find('img');
-            $mediaSources = $html->find('source');
-            
-            $styles = $html->find('link');
-            $scripts = $html->find('script');
-            
+            $URL = $this->get_entity_url($entity);
+		    // TODO: ADD BUNDLE=FALSE for items you don't want the bundlr to touch
+
             // update image to local assets folder
+            $images = $html->find('img');
             foreach($images as $image) {
                 if( isset($image->src) && pathinfo($image->src, PATHINFO_EXTENSION)){
-	            	$relative = (strpos($image->src, "//") === false) ? true : false;
-	            	
-	            	if($relative){
-		            	$path = $this->get_asset_relative($image->src, $template);
-						$assets[$image->src] = $this->save_file($image->src, $path);
-	            	}else{
-						$path = $this->get_asset_path($image->src);
-						$path = ltrim($path, '/');
-						$assets[$path] = $this->save_file(basename($path), $image->src);
-						$image->src = $path;
-	            	}
+	            	$assetUrl = (strpos($image->src, "//") === false) ? $this->make_absolute($image->src, $URL) : $image->src;
+	            	$assetPath = $this->build_asset_path($assetUrl);
+	            	$assets[$assetPath] = $this->save_file(basename($assetUrl), $assetUrl);
+					$image->src = $assetPath;
                 }
             }
             
             // update audio / video source to local assets folder
+            $mediaSources = $html->find('source');
             foreach($mediaSources as $media) {
                 if( isset($media->src) && pathinfo($media->src, PATHINFO_EXTENSION)){
-	                $relative = (strpos($media->src, "//") === false) ? true : false;
-	            	
-	            	if($relative){
-		            	$path = $this->get_asset_relative($media->src, $template);
-						$path = ltrim($path, '/');
-						$assets[$media->src] = $this->save_file($media->src, $path);
-	            	}else{
-	               		$path = $this->get_asset_path($media->src);
-						$path = ltrim($path, '/');
-				   		$assets[$path] = $this->save_file(basename($path), $media->src);
-				   		$media->src = $path;
-	            	}
+	                $assetUrl = (strpos($media->src, "//") === false) ? $this->make_absolute($media->src, $URL) : $media->src;
+	            	$assetPath = $this->build_asset_path($assetUrl);
+	            	$assets[$assetPath] = $this->save_file(basename($assetUrl), $assetUrl);
+					$media->src = $assetPath;
                 }
             }
             
             // update css to local assets folder
+            $styles = $html->find('link');
             foreach($styles as $style) {
                 if( isset($style->href) && $style->rel == 'stylesheet' && pathinfo($style->href, PATHINFO_EXTENSION)){
-	                $relative = (strpos($style->href, "//") === false) ? true : false;
-	            	
-	            	if($relative){
-		            	$path = $this->get_asset_relative($style->href, $template);
-						$path = ltrim($path, '/');
-						$assets[$style->href] = $this->save_file($style->href, $path);
-	            	}else{
-	               		$path = $this->get_asset_path($style->href);
-						$path = ltrim($path, '/');
-				   		$assets[$path] = $this->save_file(basename($path), $style->href);
-				   		$style->href = $path;
-	            	}
+	                $assetUrl = (strpos($style->href, "//") === false) ? $this->make_absolute($style->href, $URL) : $style->href;
+	            	$assetPath = $this->build_asset_path($assetUrl);
+	            	$assets[$assetPath] = $this->save_file(basename($assetUrl), $assetUrl);
+					$style->href = $assetPath;
                 }
             }
     
             // update javascript to local assets folder
+            $scripts = $html->find('script');
             foreach($scripts as $script) {
                 if( isset($script->src) && pathinfo($script->src, PATHINFO_EXTENSION)){
-	                $relative = (strpos($script->src, "//") === false) ? true : false;
-	            	
-	            	if($relative){
-		            	$path = $this->get_asset_relative($script->src, $template);
-						$path = ltrim($path, '/');
-						$assets[$script->src] = $this->save_file($script->src, $path);
-	            	}else{
-	               		$path = $this->get_asset_path($script->src);
-						$path = ltrim($path, '/');
-				   		$assets[$path] = $this->save_file(basename($path), $script->src);
-				   		$script->src = $path;
-	            	}
+	                $assetUrl = (strpos($script->src, "//") === false) ? $this->make_absolute($script->src, $URL) : $script->src;
+	            	$assetPath = $this->build_asset_path($assetUrl);
+	            	$assets[$assetPath] = $this->save_file(basename($assetUrl), $assetUrl);
+					$script->src = $assetPath;
                 }
             }
             // return the modified HTML + array of assets         
@@ -3470,53 +3446,16 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
             );
         }
         
-        /* HELPER TO DISECT ASSET URL */
-        private function get_asset_path( $url ){
-	    	$url = $this->make_absolute($url, "");
-			$url_parts = parse_url($url);
-			$path = isset($url_parts["path"]) ? $url_parts["path"] : "";
-	        return $path;
-        }
-        
-        private function get_asset_relative($url, $template){
-	        $templatePath = pathinfo($template);
-		    $path = $templatePath['dirname'] . "/" . ltrim($url, '/');
-		    return $path;
+        private function build_asset_path( $url ){
+	        $pathParts = parse_url($url);
+	        $hostFolder = isset($pathParts["host"]) ? preg_replace('/[^a-z0-9\.]/', '', strtolower($pathParts["host"])) : "";
+	        return $hostFolder . $pathParts["path"];
         }
                 
-        // HELPER TO MAKE ABS URL
-        private function make_absolute($url, $base) {
-		    // Return base if no url
-		    if( ! $url) return $base;
-		
-		    // Return if already absolute URL
-		    if(parse_url($url, PHP_URL_SCHEME) != '') return $url;
-		    
-		    // Urls only containing query or anchor
-		    if($url[0] == '#' || $url[0] == '?') return $base.$url;
-		    
-		    // Parse base URL and convert to local variables: $scheme, $host, $path
-		    extract(parse_url($base));
-		
-		    // If no path, use /
-		    if( ! isset($path)) $path = '/';
-		 
-		    // Remove non-directory element from path
-		    $path = preg_replace('#/[^/]*$#', '', $path);
-		 
-		    // Destroy path if relative url points to root
-		    if($url[0] == '/') $path = '';
-		    
-		    // Dirty absolute URL
-		    $abs = "$host$path/$url";
-		 
-		    // Replace '//' or '/./' or '/foo/../' with '/'
-		    $re = array('#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#');
-		    for($n = 1; $n > 0; $abs = preg_replace($re, '/', $abs, -1, $n)) {}
-		    
-		    // Absolute URL is ready!
-		    return $scheme.'://'.$abs;
-		}
+        private function make_absolute( $relative, $url ){
+	        require_once( DPSFA_DIR . '/libs/phpuri/phpuri.php' );
+            return \phpUri::parse($url)->join($relative);
+        }
 
     } // END Bundlr
 }

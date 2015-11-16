@@ -133,7 +133,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Article')) {
 			if(array_key_exists('internalKeywords', $data)){
 				$data['internalKeywords'] = array_intersect_key( 
 					$data['internalKeywords'], 
-					array_unique(array_map(strtolower,$data['internalKeywords']))
+					array_unique(array_map('strtolower',$data['internalKeywords']))
 				);
 				$data['internalKeywords'] = array_values($data['internalKeywords']);
 			}
@@ -142,7 +142,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Article')) {
 			if(array_key_exists('keywords', $data)){
 				$data['keywords'] = array_intersect_key(
 					$data['keywords'],
-					array_unique(array_map(strtolower,$data['keywords']))
+					array_unique(array_map('strtolower',$data['keywords']))
 				);
 				$data['keywords'] = array_values($data['keywords']);
 			}

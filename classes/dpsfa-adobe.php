@@ -85,10 +85,10 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			$entityName = $entity->entityName;
 			
 			$url = "$endpoint/publication/$publication/$entityType/$entityName";
-			
+
 			// EXECUTE
 		    $curl = new Curl('PUT', $url, $headers, $this->prepEntity($entity));		    
-		    
+
 		    // VERIFY RESPONSE
 			$this->verify_response($curl, $entity);
 			
@@ -828,7 +828,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			/* Filter out only attributes allowed by the API */
 			$attributes = array();
 			foreach(get_object_vars($entity) as $key => $value){
-				if(in_array($key, $entity->apiAllowed) && !empty($value)){ 
+				if(in_array($key, $entity->apiAllowed()) && !empty($value)){ 
 					$attributes[$key] = $value; 
 				}
 			}

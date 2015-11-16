@@ -67,32 +67,34 @@ if(!class_exists('DPSFolioAuthor\Article')) {
 			$CMS->sync_from_origin($this);
 		}
 						
-		public $apiAllowed = array(
-		    'author', 
-		    'authorUrl', 
-		    'articleText', 
-		    'isAd', 
-		    'adType', 
-		    'adCategory', 
-		    'advertiser', 
-		    'accessState', 
-		    'hideFromBrowsePage', 
-		    'isTrustedContent', 
-		    'entityType', 
-		    'entityName', 
-		    'title', 
-		    '_links',
-		    'shortTitle', 
-		    'abstract', 
-		    'shortAbstract', 
-		    'keywords',
-		    'internalKeywords', 
-		    'department', 
-		    'category', 
-		    'importance', 
-		    'socialShareUrl', 
-		    'availabilityDate'
-		);
+		public function apiAllowed(){
+			return array(
+				'author', 
+				'authorUrl', 
+				'articleText', 
+				'isAd', 
+				'adType', 
+				'adCategory', 
+				'advertiser', 
+				'accessState', 
+				'hideFromBrowsePage', 
+				'isTrustedContent', 
+				'entityType', 
+				'entityName', 
+				'title', 
+				'_links',
+				'shortTitle', 
+				'abstract', 
+				'shortAbstract', 
+				'keywords',
+				'internalKeywords', 
+				'department', 
+				'category', 
+				'importance', 
+				'socialShareUrl', 
+				'availabilityDate'
+			);
+		}
 		
 		public $internalFields = array(
 			'_links',
