@@ -19,7 +19,7 @@ if(!class_exists('DPSFolioAuthor\Article')) {
 	    public $authorUrl = '';
 	    public $articleText = '';
 	    public $isAd = FALSE;
-	    public $adType = 'static';
+	    public $adType = '';
 	    public $adCategory = '';
 	    public $advertiser = '';
 	    public $accessState = 'metered';
@@ -49,6 +49,12 @@ if(!class_exists('DPSFolioAuthor\Article')) {
 				$templates = new Templates();
 				$defaultTemplate = $templates->get_default();
 				$this->template = $defaultTemplate['path'];
+			}
+			
+			if(!$this->isAd){
+				$this->adType = null;
+				$this->advertiser = null;
+				$this->adCategory = null;
 			}
 		}
 		
