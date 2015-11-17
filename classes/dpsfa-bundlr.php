@@ -8,7 +8,10 @@
 
 
 namespace DPSFolioAuthor;
- 
+
+error_reporting(-1);
+ini_set('error_reporting', E_ALL);
+
 if( $_SERVER[ 'SCRIPT_FILENAME' ] == __FILE__ )
 	die( 'Access denied.' );
 
@@ -115,7 +118,7 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
             /* PARSE HTML AND DOWNLOAD LINKED IMAGES / MEDIA / CSS / JS FILES */
 			$collected = $this->get_linked_assets_from_html($html, $entity);
             $files = array_merge( $files, $collected["assets"] );
-            $files["index.html"] = $this->make_file("index", $this->pretty_html( (string)$collected["html"] ));
+            $files["index.html"] = $this->make_file("index", (string)$collected["html"] );
 			
 			/* VERIFY ARTICLE FILES */
 			foreach($files as $key => $file){
@@ -127,7 +130,6 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
 			
 			/* CREATE ARTICLE MANIFEST */ 
 			$files["manifest.xml"] = $this->make_file("manifest", $this->create_article_manifest($files));
-			
             return $files;           
         }
     	
@@ -3310,7 +3312,7 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
             $contents = $m->render(file_get_contents( dirname( __DIR__ ) . "/views/templates/folio-xml.mustache" ), $theMeta );
             
             $file = tempnam(DPSFA_TMPDIR,"dps-");
-            $result = file_put_contents($file, $contents);
+            $result = file_put_contents($file, $contents, LOCK_EX);
             return $result ? $file : false;
     	}   	
     
@@ -3328,7 +3330,7 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
             $contents = $m->render( file_get_contents( dirname( __DIR__ ) . "/views/templates/pkgproperties.mustache" ), array("file" => $metaFiles) );
     
             $file = tempnam(DPSFA_TMPDIR,"dps-");
-            $result = file_put_contents($file, $contents);
+            $result = file_put_contents($file, $contents, LOCK_EX);
             return $result ? $file : false;
     	}
     	
@@ -3375,7 +3377,7 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
         
         private function make_file( $name = "", $str = "" ){
     	    $file = tempnam(DPSFA_TMPDIR,$name);
-    	    file_put_contents($file, $str);
+    	    file_put_contents($file, $str, LOCK_EX);
     	    return $file;
         }
 		
