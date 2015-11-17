@@ -69,6 +69,27 @@ We haven't tested or explicitly built the plugin to work with Wordpress MU. That
 
 == Changelog ==
 
+= 2.0.10 =
+* TEMPLATE CHANGES
+
+1. If you are using the default template and you haven't moved the `publish-templates` folder into the theme folder, you don't have to do anything.
+2. If you're using the default template and have moved the `publish-templates` folder into the theme folder, you need to copy the new `publish-templates` folder into your current theme.
+3. If you've created your own, please review the information below:
+
+-- All relative links will be turned into full URLs: for example: if you create a link `/image/1.jpg` the packager will turn this into: `http://yourdomain.com/image/1.jpg`. Relative links are no longer relative to the .article file. This is part of a bigger move to allow any theme / template to be packaged. That will come in a release soon.
+
+-- There's a new way to add files to the .article using the `dpsfa_bundle_article` filter:
+
+Automatic: Specify full url to file (array of images)
+Specifying the full url will create the necessary folder scructure in the article and download the external file
+Folder structure for external resources: ARTICLE > sanitized hostname > path > file
+Example: array('http://www.domain.com/wp-content/themes/theme/file.jpg') will put that file in the article as: domaincom/wp-content/themes/theme/file.jpg
+    
+Manual: Specify the full paths array( "file path relative in article" => "filepath relative to server (or url)" )
+You can have control over where the file is placed in the article and where to pull it from the server
+Example: array( array('slideshow/image/file.jpg' => 'www/wp-content/themes/theme/file.jpg') ) will put that file in the article as: domaincom/wp-content/themes/theme/file.jpg
+
+
 = 2.0.6 =
 * Resolved article folio uploads with 0bytes (missing files).
 * Resolved an issue if template files went missing or were changed
