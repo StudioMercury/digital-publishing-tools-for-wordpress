@@ -5,34 +5,42 @@ Template Name: Adobe Publish - Sample Article
 ?>
 
 <?php
-    // If bundling set the file path to be relative to the article
+    /* == File path for publish-templates located inside the plugin folder: == */
+    $filePath = plugins_url( DPSFA_DIR_NAME . '/publish-templates/HTMLResources/' );	    
+    // If you move the publish-templates folder into your template directory then uncomment the below line and comment out the line above.
+	// $filePath = get_bloginfo('template_directory') . '/publish-templates/HTMLResources/';
+	    
     if( isset($_GET["bundlr"]) ) {
-        $filePath = 'HTMLResources/';
+	    // This could be used for changing links to navto:// links
         $urlPath = 'navto://';
-    } else {
-        $filePath = plugins_url( DPSFA_DIR_NAME . '/publish-templates/HTMLResources/' );	    
-	    // If you move the publish-templates folder into your template directory then uncomment the below line and comment out the line above.
-	    // $filePath = get_bloginfo('template_directory') . '/publish-templates/HTMLResources/';
     }
     
 	/*
-	   
-	    WP Filter to include additional files
-	    Should return an array( "file path relative to article" => "filepath relative to server" );
-		This filter also gives you the entity (article) object so you can include additional files 
-		based on certain criteria of the entity's metadata
-		
+	    == WP Filter to include additional files ==
+	    You can add additional files to the article using the filter below. You can add file two ways:
+	    	    
+	    1. Automatic: Specify full url to file (array of images)
+	    Specifying the full url will create the necessary folder scructure in the article and download the external file
+	    Folder struture for external resources: ARTICLE > sanitized hostname > path > file
+	    Example: array('http://www.domain.com/wp-content/themes/theme/file.jpg') will put that file in the article as: domaincom/wp-content/themes/theme/file.jpg
+	    
+	    2. Manual: Specify the full paths array( "file path relative in article" => "filepath relative to server (or url)" )
+	    You can have control over where the file is placed in the article and where to pull it from the server
+	    Example: array( array('slideshow/image/file.jpg' => 'www/wp-content/themes/theme/file.jpg') ) will put that file in the article as: domaincom/wp-content/themes/theme/file.jpg
 	*/
 	
 	add_filter('dpsfa_bundle_article', function($entity){
-		$path = pathinfo($entity->template);
-	    return array(
-		    "HTMLResources/fonts/glyphicons-halflings-regular.eot" => $path['dirname'] . '/HTMLResources/fonts/glyphicons-halflings-regular.eot',
-		    "HTMLResources/fonts/glyphicons-halflings-regular.svg" => $path['dirname'] . '/HTMLResources/fonts/glyphicons-halflings-regular.svg',
-		    "HTMLResources/fonts/glyphicons-halflings-regular.ttf" => $path['dirname'] . '/HTMLResources/fonts/glyphicons-halflings-regular.ttf',
-		    "HTMLResources/fonts/glyphicons-halflings-regular.woff" => $path['dirname'] . '/HTMLResources/fonts/glyphicons-halflings-regular.woff',
-		    "HTMLResources/fonts/glyphicons-halflings-regular.woff2" => $path['dirname'] . '/HTMLResources/fonts/glyphicons-halflings-regular.woff2',
-	    );
+		// $entity will contain all of the info of the article (metadata / template / etc.)
+		$filePath = plugins_url( DPSFA_DIR_NAME . '/publish-templates/HTMLResources/' ); // If inside plugin folder	    
+		// $filePath = get_bloginfo('template_directory') . '/publish-templates/HTMLResources/'; // If inside theme folder
+		
+		return array(
+			$filePath . 'fonts/glyphicons-halflings-regular.eot',
+			$filePath . 'fonts/glyphicons-halflings-regular.svg',
+			$filePath . 'fonts/glyphicons-halflings-regular.ttf',
+			$filePath . 'fonts/glyphicons-halflings-regular.woff',
+			$filePath . 'fonts/glyphicons-halflings-regular.woff2',
+		);
 	});
 	
 ?>
