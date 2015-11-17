@@ -78,6 +78,7 @@ Specifying the full url will create the necessary folder scructure in the articl
 Folder structure for external resources: ARTICLE > sanitized hostname > path > file
 Example: array('http://www.domain.com/wp-content/themes/theme/file.jpg') will put that file in the article as: domaincom/wp-content/themes/theme/file.jpg
     
+
    **Manual:** Specify the full paths array( "file path relative in article" => "filepath relative to server (or url)" )
 You can have control over where the file is placed in the article and where to pull it from the server
 Example: array( array('slideshow/image/file.jpg' => 'www/wp-content/themes/theme/file.jpg') ) will put that file in the article as: domaincom/wp-content/themes/theme/file.jpg
