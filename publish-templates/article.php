@@ -9,15 +9,18 @@ Template Name: Adobe DPS - Sample Article
 	/* Adobe DPS Required */
 	/* ================== */
 	
-	/* FILE PATH FOR BUNDLE */ 
 	
-    /* DEFAULT file path */
-	/* relative to the DPS Tools for Wordpress plugin folder == */
-    $filePath = plugins_url( DPSFA_DIR_NAME . '/publish-templates/HTMLResources/' );	    
- 
-    /* CUSTOM file path */
-    /* If you've moved the publish-templates folder to the active theme folder uncomment out the below line == */
-	// $filePath = get_bloginfo('template_directory') . '/publish-templates/HTMLResources/';
+	
+	/* FILE PATH FOR BUNDLE (publish templates in the plugin folder vs theme folder) */ 
+	$isInPlugin = (strpos(__FILE__, DPSFA_DIR_NAME . "/publish-templates") !== FALSE); 
+	if($isInPlugin){
+		// Create file path based on plugin folder
+    	$filePath = ($_SERVER['SERVER_NAME'] == 'localhost') ? plugins_url(). '/' . DPSFA_DIR_NAME . '/publish-templates/' : plugin_dir_url( (__FILE__) . "/publish-templates/");
+	}else{
+		// Create file path based on template folder
+    	$filePath = get_template_directory_uri(). "/publish-templates/";
+	}
+
 ?>
 
 
@@ -47,15 +50,22 @@ Template Name: Adobe DPS - Sample Article
 		
 		// $entity will contain all of the info of the article (metadata / template / etc.)
 		
-		$filePath = plugins_url( DPSFA_DIR_NAME . '/publish-templates/HTMLResources/' ); // If inside plugin folder	    
-		// $filePath = get_bloginfo('template_directory') . '/publish-templates/HTMLResources/'; // If inside theme folder
+		/* FILE PATH FOR BUNDLE (publish templates in the plugin folder vs theme folder) */ 
+		$isInPlugin = (strpos(__FILE__, DPSFA_DIR_NAME . "/publish-templates") !== FALSE); 
+		if($isInPlugin){
+			// Create file path based on plugin folder
+	    	$filePath = ($_SERVER['SERVER_NAME'] == 'localhost') ? plugins_url(). '/' . DPSFA_DIR_NAME . '/publish-templates/' : plugin_dir_url( (__FILE__) . "/publish-templates/");
+		}else{
+			// Create file path based on template folder
+	    	$filePath = get_template_directory_uri(). "/publish-templates/";
+		}
 		
 		return array(
-			$filePath . 'fonts/glyphicons-halflings-regular.eot',
-			$filePath . 'fonts/glyphicons-halflings-regular.svg',
-			$filePath . 'fonts/glyphicons-halflings-regular.ttf',
-			$filePath . 'fonts/glyphicons-halflings-regular.woff',
-			$filePath . 'fonts/glyphicons-halflings-regular.woff2',
+			$filePath . 'HTMLResources/fonts/glyphicons-halflings-regular.eot',
+			$filePath . 'HTMLResources/fonts/glyphicons-halflings-regular.svg',
+			$filePath . 'HTMLResources/fonts/glyphicons-halflings-regular.ttf',
+			$filePath . 'HTMLResources/fonts/glyphicons-halflings-regular.woff',
+			$filePath . 'HTMLResources/fonts/glyphicons-halflings-regular.woff2',
 		);
 		
 	});
@@ -77,8 +87,8 @@ Template Name: Adobe DPS - Sample Article
 
     <title><?php the_title(); ?></title>
 
-    <link rel="stylesheet" href="<?php echo $filePath; ?>css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?php echo $filePath; ?>css/template-article.css">
+    <link rel="stylesheet" href="<?php echo $filePath; ?>HTMLResources/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $filePath; ?>HTMLResources/css/template-article.css">
 	
 </head>
 
@@ -104,9 +114,9 @@ Template Name: Adobe DPS - Sample Article
 
 
 
-    <script src="<?php echo $filePath; ?>js/jquery-2.1.4.min.js"></script>
-    <script src="<?php echo $filePath; ?>js/bootstrap.min.js"></script>
-    <script src="<?php echo $filePath; ?>js/main.js"></script>
+    <script src="<?php echo $filePath; ?>HTMLResources/js/jquery-2.1.4.min.js"></script>
+    <script src="<?php echo $filePath; ?>HTMLResources/js/bootstrap.min.js"></script>
+    <script src="<?php echo $filePath; ?>HTMLResources/js/main.js"></script>
 
 
 </body>

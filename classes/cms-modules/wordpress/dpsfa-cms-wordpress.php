@@ -17,13 +17,8 @@ if( $_SERVER[ 'SCRIPT_FILENAME' ] == __FILE__ )
 
 
 // Load all wordpress classes:
-// Class for WP Admin
-//require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-admin.php' );		
-// Class for WP Post Types
-require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-cpt-article.php' );	
-//require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-cpt-folio.php' );		
-//require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-cpt-collection.php' );		
-require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-ajax.php' );		
+require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-cpt-article.php' ); // Class for WP Article Post Type
+require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-ajax.php' );	// Class for WP Ajax Calls	
 
 if(!class_exists('DPSFolioAuthor\CMS')) { 
 	
