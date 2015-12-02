@@ -1,21 +1,35 @@
 <?php
 /*
-Template Name: Adobe Publish - Sample Article
+Template Name: Adobe DPS - Sample Article
 */
 ?>
 
 <?php
-    /* == File path for publish-templates located inside the plugin folder: == */
+	/* ================== */
+	/* Adobe DPS Required */
+	/* ================== */
+	
+	/* FILE PATH FOR BUNDLE */ 
+	
+    /* DEFAULT file path */
+	/* relative to the DPS Tools for Wordpress plugin folder == */
     $filePath = plugins_url( DPSFA_DIR_NAME . '/publish-templates/HTMLResources/' );	    
-    // If you move the publish-templates folder into your template directory then uncomment the below line and comment out the line above.
+ 
+    /* CUSTOM file path */
+    /* If you've moved the publish-templates folder to the active theme folder uncomment out the below line == */
 	// $filePath = get_bloginfo('template_directory') . '/publish-templates/HTMLResources/';
-	    
+?>
+
+
+<?php	 
+	/* Additional options during the bundle */
     if( isset($_GET["bundlr"]) ) {
 	    // This could be used for changing links to navto:// links
         $urlPath = 'navto://';
     }
     
 	/*
+		===========================================
 	    == WP Filter to include additional files ==
 	    You can add additional files to the article using the filter below. You can add file two ways:
 	    	    
@@ -30,7 +44,9 @@ Template Name: Adobe Publish - Sample Article
 	*/
 	
 	add_filter('dpsfa_bundle_article', function($entity){
+		
 		// $entity will contain all of the info of the article (metadata / template / etc.)
+		
 		$filePath = plugins_url( DPSFA_DIR_NAME . '/publish-templates/HTMLResources/' ); // If inside plugin folder	    
 		// $filePath = get_bloginfo('template_directory') . '/publish-templates/HTMLResources/'; // If inside theme folder
 		
@@ -41,6 +57,7 @@ Template Name: Adobe Publish - Sample Article
 			$filePath . 'fonts/glyphicons-halflings-regular.woff',
 			$filePath . 'fonts/glyphicons-halflings-regular.woff2',
 		);
+		
 	});
 	
 ?>
