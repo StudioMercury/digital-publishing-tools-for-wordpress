@@ -44,7 +44,6 @@ define( 'DPSFA_HASH_ALGO',				'sha256' ); // Encrpytion Hash
 define( 'DPSFA_FILE',					__FILE__ );
 define( 'DPSFA_DIR_NAME',               basename(__DIR__) );
 define( 'DPSFA_DIR',					dirname(DPSFA_FILE) );
-define( 'DPSFA_URL',					substr_replace(str_replace($_SERVER['DOCUMENT_ROOT'], '', str_replace('\\', '/', DPSFA_DIR)), "", -6));
 define( 'DPSFA_ASSETS_DIR',				DPSFA_DIR . "/assets/" );
 define( 'DPSFA_ASSETS_URL',	            DPSFA_URL . "/assets/" );
 define( 'DPSFA_VERSION_SLUG',	        DPSFA_SLUG . "_version" );
