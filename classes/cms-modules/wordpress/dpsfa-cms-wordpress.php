@@ -578,7 +578,7 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 					}
 					
 					// build the redirect url
-					$sendback = add_query_arg( array('imported' => $imported, 'ids' => join(',', $post_ids) ), $sendback );
+					$sendback = add_query_arg( array('imported' => $imported, 'ids' => join(',', $post_ids) ), "" );
 				
 					break;
 				default: return;
