@@ -33,6 +33,7 @@
 				<span class="error" ng-show="addEntity.entityName.$error.required">A Name is required</span>
 				<span class="error" ng-show="addEntity.entityName.$error.pattern">{{ entity.entityType.charAt(0).toUpperCase() + entity.entityType.slice(1) }} name must be greater than one character and contain no special characters or spaces</span>
 			</div>
+			
 		</form>
 	</div>			  	
 </div>
@@ -40,5 +41,5 @@
 <!-- Modal Footer -->
 <div class="modal-footer">
     <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
-    <button type="button" class="btn btn-primary" ng-click="doAction(entity.create(), 'create')">Create</button>
+    <button type="button" class="btn btn-primary" ng-disabled="!entity.entityName" ng-click="doAction(entity.create(), 'create')">Create</button>
 </div>

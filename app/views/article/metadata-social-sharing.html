@@ -7,7 +7,7 @@
 		<textarea 	class="form-control" 
 					placeholder="Article text for Social Sharing"
 					name="articleText"  
-					ngMaxlength="2000"
+					ng-maxlength="2000"
 					ng-model="article.articleText"
 					rows="5"></textarea>
 	</div>							    
@@ -20,11 +20,12 @@
 		<p>
 			<i>The social share URL is created by Adobe when the article is published. The social share URL will be displayed to enable customers to use the social share URL for linking purposes.</i>
 		</p>
-		<input 	type="text" 
+		<input 	type="url" 
 				class="form-control" 
 				name="socialShareUrl" 
 				placeholder="Social Share URL" 
 				ng-model="article.socialShareUrl" />
+		<span class="metadata-error" ng-show="metadata.socialShareUrl.$error.url">This is not a valid url.</span>
 	</div>
 	
 	<div class="form-group">
@@ -32,11 +33,12 @@
 		<p>
 			<i>Provide an Article URL if you have an equivalent article on your web site. The Article URL will be included in the Social Share page providing users with a link to read the article on your web site if they do not have the mobile app or an app is unavailable.</i>
 		</p>
-		<input 	type="text" 
+		<input 	type="url" 
 				class="form-control" 
-				name="articleUrl" 
+				name="url" 
 				placeholder="Article URL" 
-				ng-model="article.articleUrl" />
+				ng-model="article.url" />
+		<span class="metadata-error" ng-show="metadata.url.$error.url">This is not a valid url.</span>
 	</div>	
 						    
 </div>	

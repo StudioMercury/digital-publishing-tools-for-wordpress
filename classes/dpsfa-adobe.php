@@ -16,52 +16,19 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
     
     class Adobe {
 	    
-	    private $client_id;
-	    private $client_secret;
-	    private $client_version;
-	    private $request_id;
-	    private $session_id;
-	    private $refresh_token;
-	    private $access_token;
-	    private $device_token;
-	    private $device_id;
+	    private $settings;
 	    
-	    private $producer_endpoint;
-	    private $product_endpoint;
-	    private $authentication_endpoint;
-	    private $authorization_endpoint;
-	    private $ingestion_endpoint;
-	    
-	    private $defaultPublication;
-	    private $response;
+	    const MIME_ALL = 'application/json, text/plain, */*'; 
+	    const MIME_ENTITY = 'application/vnd.adobe.entity+json'; 
+	    const MIME_ARTICLE = 'application/vnd.adobe.article+zip'; 
+	    const MIME_ZIP = 'application/zip'; 
+	    const MIME_FILE = 'multipart/form-data'; 
+	    const MIME_JSON = 'application/json'; 
+	    const MIME_SYMLINK = 'application/vnd.adobe.symboliclink+json'; 
+	    const MIME_URLENCODED = 'application/x-www-form-urlencoded'; 
 	    
 	    public function __construct(){
-		    
-		    $settings = new Settings();
-		    
-		    // API ENDPOINTS
-			$this->producer_endpoint =  rtrim($settings->producer_endpoint, '/\\');
-			$this->authentication_endpoint = rtrim($settings->authentication_endpoint, '/\\');
-			$this->authorization_endpoint = rtrim($settings->authorization_endpoint, '/\\');
-			$this->ingestion_endpoint = rtrim($settings->ingestion_endpoint, '/\\');
-			$this->product_endpoint = rtrim($settings->product_endpoint, '/\\');
-			
-			// API CREDENTIALS
-		    $this->client_app_id = DPS_API_CLIENT_ID;
-		    $this->client_id = $settings->key;
-		    $this->client_secret = $settings->secret;
-		    $this->client_version = DPS_API_CLIENT_VERSION;
-			$this->api_key = $settings->key;
-			
-			$this->refresh_token = $settings->refresh_token;
-			$this->access_token = $settings->access_token;
-			$this->device_token = $settings->device_token;
-			$this->device_id = $settings->device_id;
-
-		    $this->request_id = $settings->request_id;
-			$this->session_id = "87654321-0cba-9efg-4321-987650fedcba"; //(([0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12})|([0-9a-zA-Z]{32}))			
-						
-			$this->defaultPublication = !empty($settings->defaultPublication) ? $settings->defaultPublication : $settings->publications[0]['id'];
+		    $this->settings = new Settings();
 	    }
 	    
 	    public function create_entity($entity, $publicationId = null){
@@ -75,26 +42,24 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			// [+] Content-Type: application/json
 			
 		    // CONSTRUCT HEADER
-			$headers = $this->set_headers("application/json", "application/json");
+			$headers = $this->set_headers();
+						
+			// CONSTRUCT URL: $endpoint/publication/$publication/$entityType/$entityName
+			$url = sprintf("%s/publication/%s/%s/%s",
+				$this->settings->producer_endpoint, // $endpoint
+				!empty($publicationId) ? $publicationId : $this->default_publication(), // $publication
+				$entity->entityType, // $entityType
+				$entity->entityName // $entityName
+			);
 			
-			// CONSTRUCT URL
-			$endpoint = $this->producer_endpoint;
-			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
-			$publication = (!empty($this->defaultPublication)) ? $this->defaultPublication : $this->publications[0]['id'];
-			$entityType = $entity->entityType;
-			$entityName = $entity->entityName;
-			
-			$url = "$endpoint/publication/$publication/$entityType/$entityName";
-
 			// EXECUTE
 		    $curl = new Curl('PUT', $url, $headers, $this->prepEntity($entity));		    
 
 		    // VERIFY RESPONSE
-			$this->verify_response($curl, $entity);
+		    $this->verify_response($curl, $entity);
 			
-			// SAVE RESPONSE
-			$this->save_response($curl->getResponseBody(), $entity);
-
+			// RETURN RESPONSE
+			return $this->collect_data($curl->getResponseBody());
 	    }
 	    
 	    public function delete_entity($entity, $publicationId = null){
@@ -108,17 +73,17 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			// [+] Accept: application/json
 			
 			 // CONSTRUCT HEADER
-			$headers = $this->set_headers("application/json");
-			
-			// CONSTRUCT URL
-			$endpoint = $this->producer_endpoint;
-			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
-			$entityType = $entity->entityType;
-			$entityName = $entity->entityName;
-			$version = $entity->version;
-			
-			$url = "$endpoint/publication/$publication/$entityType/$entityName;version=$version";
-			
+			$headers = $this->set_headers();
+						
+			// CONSTRUCT URL: $endpoint/publication/$publication/$entityType/$entityName;version=$version
+			$url = sprintf("%s/publication/%s/%s/%s;version=%s",
+				$this->settings->producer_endpoint, // $endpoint
+				!empty($publicationId) ? $publicationId : $this->default_publication(), // $publication
+				$entity->entityType, // $entityType
+				$entity->entityName, // $entityName
+				$entity->version // $version
+			);
+						
 			// EXECUTE
 		    $curl = new Curl('DELETE', $url, $headers);
 		    
@@ -126,7 +91,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			$this->verify_response($curl, $entity);
 	    }
 	    
-	    public function update_entity($entity, $publicationId = null){
+	    public function update_entity($entity, $publicationId = null, $overrides = array()){
 			// [+] X-DPS-Client-Id: {client-id}
 			// [+] X-DPS-Client-Version: {double-dot style notation}
 			// [+] X-DPS-Client-Request-Id: {UUID}
@@ -137,22 +102,20 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			// [+] Content-Type: application/json
 			
 		    // CONSTRUCT HEADER
-			$headers = $this->set_headers("application/json", "application/json");
-			
-			// TODO: ALWAYS GRAB CURRENT ENTITY AND MERGE CHANGES
-			
-			// CONSTRUCT URL
-			$endpoint = $this->producer_endpoint;
-			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
-			$entityType = $entity->entityType;
-			$entityName = $entity->entityName;
-			$version = $entity->version;
-			
-			$url = "$endpoint/publication/$publication/$entityType/$entityName;version=$version";
+			$headers = $this->set_headers();
+						
+			// CONSTRUCT URL: $endpoint/publication/$publication/$entityType/$entityName;version=$version
+			$url = sprintf("%s/publication/%s/%s/%s;version=%s",
+				$this->settings->producer_endpoint, // $endpoint
+				!empty($publicationId) ? $publicationId : $this->default_publication(), // $publication
+				$entity->entityType, // $entityType
+				$entity->entityName, // $entityName
+				$entity->version // $version
+			);
 
 			// EXECUTE
-		    $curl = new Curl('PUT', $url, $headers, $this->prepEntity($entity));
-		   	
+		    $curl = new Curl('PUT', $url, $headers, $this->prepEntity($entity, $overrides));
+
 		    // VERIFY RESPONSE
 			$this->verify_response($curl, $entity);
 			
@@ -170,11 +133,13 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			// [+] Accept: application/json
 		    
 		    // CONSTRUCT HEADER
-			$headers = $this->set_headers("application/json");
+			$headers = $this->set_headers();
 			
-			// CONSTRUCT URL
-			$endpoint = $this->producer_endpoint;
-			$url = "$endpoint/publication/$id";
+			// CONSTRUCT URL: $endpoint/publication/$id
+			$url = sprintf("%s/publication/%s",
+				$this->settings->producer_endpoint, // $endpoint
+				$id // $id
+			);
 
 			// EXECUTE
 		    $curl = new Curl('GET', $url, $headers); 		    
@@ -186,7 +151,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			return $curl->getResponseBody();
 	    }
 	    
-	    public function get_entity($entity, $version = null, $publicationId = null){
+	    public function get_entity($entity, $publicationId = null){
 			// [+] X-DPS-Client-Id: {client-id}
 			// [+] X-DPS-Client-Version: {double-dot style notation}
 			// [+] X-DPS-Client-Request-Id: {UUID}
@@ -196,17 +161,20 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			// [+] Accept: application/json
 		    
 		    // CONSTRUCT HEADER
-			$headers = $this->set_headers("application/json");
+			$headers = $this->set_headers();
 			
-			// CONSTRUCT URL
-			$endpoint = $this->producer_endpoint;
-			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
-			$entityType = $entity->entityType;
-			$entityName = $entity->entityName;
-			$version = $entity->version;
+			// CONSTRUCT URL: $endpoint/publication/$publication/$entityType/$entityName;version=$version
+			$url = sprintf("%s/publication/%s/%s/%s",
+				$this->settings->producer_endpoint, // $endpoint
+				!empty($publicationId) ? $publicationId : $this->default_publication(), // $publication
+				$entity->entityType, // $entityType
+				$entity->entityName // $entityName
+			);
 			
-			$url = "$endpoint/publication/$publication/$entityType/$entityName";
-			$url .= !empty($version) ? ";version=$version" : "";
+			// Include version if there's a version
+			if(!empty($this->version)){
+				$url .= ";version=" . $this->version;
+			}
 
 			// EXECUTE
 		    $curl = new Curl('GET', $url, $headers); 		    
@@ -214,11 +182,25 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 		    // VERIFY RESPONSE
 			$this->verify_response($curl, $entity);
 			
-			// UPDATE ENTITY
-			$entity->refresh($curl->getResponseBody());
+			$version = $this->get_version($curl->getResponseBody());
+			$contentVersion = $this->get_content_version($curl->getResponseBody());
+			$entity->version = empty($version) ? $entity->version: $version;
+			$entity->contentVersion = empty($contentVersion) ? $entity->contentVersion: $contentVersion;
+						
+			// RETURN DATA
+			$data = $curl->getResponseBody();
+			return empty($data) ? array() : $data;
 	    }
 	    
-	    public function get_entity_list($publicationId = null, $filter = "", $pageSize = 25, $page = 0, $sortField = "modified", $descending = true){
+	    /* 
+			Query parameters: An optional query string defines what subset of entities are returned. For example, "q=keyword==cars" would return all entities with the keyword 'cars'. 
+			1. A semi-colon separated list of keywords will return only entites that have all the keywords (AND), e.g. "q=keyword==cars;keyword==BMW" would only include BMW cars. 
+			2. Multiple entity types are specified in a comma separated list, e.g. "q=entityType==article,entityType==collection" would find all articles and collections.
+			3. Field values may be required with a double equals, e.g. author==Fred.
+			Relative values for numeric or date types are specified with '=gt=', '=lt=', e.g. "q=publishedDate=lt=2014-10-14T19:09:00Z". 
+			4. 'sortField' and 'descending' control the order of results    
+		*/
+	    public function get_entity_list($entityType, $publicationId = null, $query = "", $pageSize = 25, $page = 0, $sortField = "modified", $descending = true){
 			// [+] X-DPS-Client-Id: {client-id}
 			// [+] X-DPS-Client-Version: {double-dot style notation}
 			// [+] X-DPS-Client-Request-Id: {UUID}
@@ -228,15 +210,19 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			// [+] Accept: application/json
 			
 		    // CONSTRUCT HEADER
-			$headers = $this->set_headers("application/json");
+			$headers = $this->set_headers();
 			
-			// CONSTRUCT URL
-			$endpoint = $this->producer_endpoint;
-			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
-			$entityType = $entity->entityType;
-			$entityName = $entity->entityName;
-			
-			$url = "$endpoint/publication/$publication/$entityType?q=$filter&pageSize=$pageSize&page=$page&sortField=$sortField&descending=$descending";
+			// CONSTRUCT URL: $endpoint/publication/$publication/$entityType?pageSize=$pageSize&page=$page&sortField=$sortField&descending=$descending&q=$query
+			$url = sprintf("%s/publication/%s/%s?pageSize=%s&page=%s&sortField=%s&descending=%s&q=%s",
+				$this->settings->producer_endpoint, // $endpoint
+				!empty($publicationId) ? $publicationId : $this->default_publication(), // $publication
+				$entityType, // $entityType
+				$pageSize, // $pageSize
+				$page, // $page
+				$sortField, // $sortField
+				$descending, // $descending
+				$query // $query
+			);
 
 			// EXECUTE
 		    $curl = new Curl('GET', $url, $headers);
@@ -259,17 +245,17 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			// [+] Accept: application/json
 		    
 		    // CONSTRUCT HEADER
-			$headers = $this->set_headers("application/json","application/json", $uploadID);
+			$headers = $this->set_headers(self::MIME_JSON, self::MIME_JSON, $uploadID);
 			
-			// CONSTRUCT URL
-			$endpoint = $this->producer_endpoint;
-			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
-			$entityType = $entity->entityType;
-			$entityName = $entity->entityName;
-			$version = $entity->version;
-			
-			$url = "$endpoint/publication/$publication/$entityType/$entityName;version=$version/contents";
-			
+			// CONSTRUCT URL: $endpoint/publication/$publication/$entityType/$entityName;version=$version/contents
+			$url = sprintf("%s/publication/%s/%s/%s;version=%s/contents",
+				$this->settings->producer_endpoint, // $endpoint
+				!empty($publicationId) ? $publicationId : $this->default_publication(), // $publication
+				$entity->entityType, // $entityType
+				$entity->entityName, // $entityName
+				$entity->version // $version
+			);
+						
 			// EXECUTE
 		    $curl = new Curl('PUT', $url, $headers, $this->prepEntity($entity));
 
@@ -292,11 +278,10 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			// [+] Content-Type: application/json
 			
 			// CONSTRUCT HEADER
-			$headers = $this->set_headers("application/json", "application/json");
+			$headers = $this->set_headers();
 			
 			// CONSTRUCT URL
-			$endpoint = $this->producer_endpoint;
-			$url = "$endpoint/job";
+			$url = $this->settings->producer_endpoint . "/job";
 			
 			// CONSTRUCT DATA
 			$data = array(
@@ -308,7 +293,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 				$data['scheduled'] = $this->formatDate($schedule_date);
 			}
 			
-			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
+			$publication = !empty($publicationId) ? $publicationId : $this->settings->defaultPublication;
 			
 			if(is_array($entity)){
 				foreach($entity as $single){
@@ -325,10 +310,122 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 		    
 		    // VERIFY RESPONSE
 			$this->verify_response($curl, $entity);
-			
-			// SAVE RESPONSE
-			//$this->save_response($curl->getResponseBody(), $entity);
 	    }
+	    
+	    // Entity can be single or array of entities
+	    public function workflow_job($type, $entity, $list = null, $schedule_date = null, $publicationId = null){
+			// [+] X-DPS-Client-Id: {client-id}
+			// [+] X-DPS-Client-Version: {double-dot style notation}
+			// [+] X-DPS-Client-Request-Id: {UUID}
+			// [+] X-DPS-Client-Session-Id: {UUID}
+			// [+] X-DPS-Api-Key: {base-64 encoded}
+			// [+] Authorization: bearer {base-64 encoded}
+			// [+] Accept: application/json
+			// [+] Content-Type: application/json
+			
+			// CONSTRUCT HEADER
+			$headers = $this->set_headers();
+			
+			// CONSTRUCT URL
+			$url = $this->settings->producer_endpoint . "/job";
+			
+			// CLEANUP WORKFLOW TYPE
+		    switch ($type) {
+			   
+			    // PREVIEW
+				case 'preview':
+					// triggers the preview for the publication, should only be called by the publication
+					$workflow = 'publicationId';
+					$workflow_entry = $this->entityId;
+					break;
+				
+				// PUBLISH
+				case 'publish':
+					// fail-safe: autocorrects the publish namespace for layout & cardTemplate to "layout"
+					if ($this->entityType === 'layout' || $this->entityType === 'cardTemplate') {
+						$workflow_type = 'layout';
+						$workflow = 'entities';
+					}else if($this->entityType === 'collection'){
+						$workflow = 'collectionUrl';
+					}else{
+						$workflow = 'entities';
+					}
+					break;
+				
+				// UNPUBLISH
+				case 'unpublish':
+					if ($this->entityType === 'layout' || $this->entityType === 'cardTemplate') {
+						$type = 'unpublishLayout';
+					}
+					$workflow = 'entities';
+					break;
+				
+				// NO RECOGNIZED JOB
+				default:
+					break;
+				
+		    }
+			
+			// CONSTRUCT DATA
+			$data = array(
+				'workflowType' => $type,
+				$workflow => $workflow_entry,
+			);
+			
+			// SET SCHEDULE DATE
+			if(!empty($schedule_date)){
+				$data['scheduled'] = $this->formatDate($schedule_date);
+			}
+			
+			$publication = !empty($publicationId) ? $publicationId : $this->settings->defaultPublication;
+			
+			if(is_array($entity)){
+				foreach($entity as $single){
+					$toPublish = '/publication/' . $publication . '/' . $single->entityType . '/' . $single->entityName . ';version=' . $single->version;
+					array_push($data['entities'], $toPublish);
+				}
+			}else{
+				$toPublish = '/publication/' . $publication . '/' . $entity->entityType . '/' . $entity->entityName . ';version=' . $entity->version;
+				array_push($data['entities'], $toPublish);
+			}
+			
+			// EXECUTE
+		    $curl = new Curl('POST', $url, $headers, $data);
+		    
+		    // VERIFY RESPONSE
+			$this->verify_response($curl, $entity);
+	    }
+	    
+	    public function get_status($entity, $publicationId = null){
+		    // [+] X-DPS-Client-Id: {client-id}
+			// [+] X-DPS-Client-Version: {double-dot style notation}
+			// [+] X-DPS-Client-Request-Id: {UUID}
+			// [+] X-DPS-Client-Session-Id: {UUID}
+			// [+] X-DPS-Api-Key: {base-64 encoded}
+			// [+] Authorization: bearer {base-64 encoded}
+			// [+] Accept: application/json
+		    
+		    // CONSTRUCT HEADER
+			$headers = $this->set_headers();
+			
+			// CONSTRUCT URL: $endpoint/publication/$publication/$entityType/$entityName/contents;contentVersion=$contentVersion/
+			$url = sprintf("%s/status/%s/%s/%s",
+				$this->settings->producer_endpoint, // $endpoint
+				!empty($publicationId) ? $publicationId : $this->default_publication(), // $publication
+				$entity->entityType, // $entityType
+				$entity->entityName // $entityName
+			);
+
+			// EXECUTE
+		    $curl = new Curl('GET', $url, $headers); 
+		    
+		    // VERIFY RESPONSE
+			$this->verify_response($curl, $entity);
+			
+			// RETURN RESPONSE
+			return $curl->getResponseBody();
+		
+		}
 	    
 	    // Retrieves the manifest of all committed assets associated with the specified version of content bucket for this entity
 	    public function get_entity_manifest($entity, $publicationId = null){
@@ -341,16 +438,16 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			// [+] Accept: application/json
 		    
 		    // CONSTRUCT HEADER
-			$headers = $this->set_headers("application/json", "application/json");
+			$headers = $this->set_headers();
 			
-			// CONSTRUCT URL
-			$endpoint = $this->producer_endpoint;
-			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
-			$entityType = $entity->entityType;
-			$entityName = $entity->entityName;
-			$contentVersion = $entity->contentVersion;
-			
-			echo "$endpoint/publication/$publication/$entityType/$entityName/contents;contentVersion=$contentVersion/";
+			// CONSTRUCT URL: $endpoint/publication/$publication/$entityType/$entityName/contents;contentVersion=$contentVersion/
+			$url = sprintf("%s/publication/%s/%s/%s/contents;contentVersion=%s/",
+				$this->settings->producer_endpoint, // $endpoint
+				!empty($publicationId) ? $publicationId : $this->default_publication(), // $publication
+				$entity->entityType, // $entityType
+				$entity->entityName, // $entityName
+				$entity->contentVersion // $contentVersion
+			);
 
 			// EXECUTE
 		    $curl = new Curl('GET', $url, $headers); 
@@ -374,17 +471,17 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			// [+] Content-Type: {ASSET TYPE}
 			
 			// CONSTRUCT HEADER
-			$headers = $this->set_headers("application/json", $content_type);
-			
-			// CONSTRUCT URL
-			$endpoint = $this->producer_endpoint;
-			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
-			$entityType = $entity->entityType;
-			$entityName = $entity->entityName;
-			$contentVersion = $entity->contentVersion;
-			$content_path = ltrim($content_path, '/');
-			
-			$url = "$endpoint/publication/$publication/$entityType/$entityName/contents;contentVersion=$contentVersion/$content_path";
+			$headers = $this->set_headers(self::MIME_JSON, $content_type);
+									
+			// CONSTRUCT URL: $endpoint/publication/$publication/$entityType/$entityName/contents;contentVersion=$contentVersion/$content_path
+			$url = sprintf("%s/publication/%s/%s/%s/contents;contentVersion=%s/$content_path",
+				$this->settings->producer_endpoint, // $endpoint
+				!empty($publicationId) ? $publicationId : $this->default_publication(), // $publication
+				$entity->entityType, // $entityType
+				$entity->entityName, // $entityName
+				$entity->contentVersion, // $contentVersion
+				ltrim($content_path, '/') // $content_path
+			);
 			
 			// EXECUTE
 		    $curl = new Curl('DELETE', $url, $headers, $file_path, TRUE);
@@ -405,17 +502,18 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			// [+] Content-Type: {ASSET TYPE}
 
 			// CONSTRUCT HEADER
-			$headers = $this->set_headers("application/json", 'application/zip');
-
-			// CONSTRUCT URL
-			$endpoint = $this->ingestion_endpoint;
-			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
-			$entityType = $entity->entityType;
-			$entityName = $entity->entityName;
-			$version = $entity->version;
+			// WAS: 'application/zip'
+			$headers = $this->set_headers(self::MIME_JSON, self::MIME_ZIP);
 			
-			$url = "$endpoint/publication/$publication/$entityType/$entityName;version=$version/contents/folio";
-			
+			// CONSTRUCT URL: $endpoint/publication/$publication/$entityType/$entityName;version=$version/contents/folio
+			$url = sprintf("%s/publication/%s/%s/%s;version=%s/contents/folio",
+				$this->settings->ingestion_endpoint, // $endpoint
+				!empty($publicationId) ? $publicationId : $this->default_publication(), // $publication
+				$entity->entityType, // $entityType
+				$entity->entityName, // $entityName
+				$entity->version // $version
+			);
+				
 			// CONSTRUCT FILE PATH 
 			$file_path = realpath($asset);
 			
@@ -445,18 +543,24 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			}
 
 			// CONSTRUCT HEADER
-			$uploadId = empty($uploadID) ? $this->create_guid() : $uploadID;
-			$headers = $this->set_headers("application/json", $content_type, $uploadId);
-
-			// CONSTRUCT URL
-			$endpoint = $this->producer_endpoint;
-			$publication = !empty($publicationId) ? $publicationId : $this->defaultPublication;
-			$entityType = $entity->entityType;
-			$entityName = $entity->entityName;
-			$contentVersion = $entity->contentVersion;
-			$content_path = ltrim($content_path, '/');
+			$uploadID = empty($uploadID) ? $this->create_guid() : $uploadID;
+			$headers = $this->set_headers(self::MIME_JSON, $content_type, $uploadID);
 			
-			$url = "$endpoint/publication/$publication/$entityType/$entityName/contents;contentVersion=$contentVersion/$content_path";
+			// ADD IMAGE SIZES
+			$imageSizes = $this->settings->get_image_sizes();
+			if(!empty($imageSizes)){
+				$headers[] = 'X-DPS-Image-Sizes: ' . $imageSizes;
+			}
+			
+			// CONSTRUCT URL: $endpoint/publication/$publication/$entityType/$entityName/contents;contentVersion=$contentVersion/$content_path
+			$url = sprintf("%s/publication/%s/%s/%s/contents;contentVersion=%s/%s",
+				$this->settings->producer_endpoint, // $endpoint
+				!empty($publicationId) ? $publicationId : $this->default_publication(), // $publication
+				$entity->entityType, // $entityType
+				$entity->entityName, // $entityName
+				$entity->contentVersion, // $contentVersion
+				ltrim($content_path, '/') // $content_path
+			);
 			
 			// CONSTRUCT FILE PATH 
 			$file_path = realpath($asset);
@@ -465,33 +569,12 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 		    $curl = new Curl('PUT', $url, $headers, $file_path, TRUE);
 			
 			// VERIFY RESPONSE
-			$this->verify_response($curl, $entity);			
+			$this->verify_response($curl, $entity);
+			
+			// RETURN RESPONSE
+			return $curl->getResponseBody();		
 		}
 
-	    public function upload_thumbail($entity, $image){
-		    $uploadID = $this->create_upload_id();
-		    $this->upload_asset($entity, $image, 'images/thumbnail', null, $uploadID);
-		    $entity->_links['thumbnail']['href'] = 'contents/images/thumbnail';
-		    $entity->update_entity($entity);
-		    $this->seal_entity($entity, $uploadID);
-	    }
-	    
-	    public function upload_background($entity, $image){
-		    $uploadID = $this->create_upload_id();
-		    $this->upload_asset($entity, $image, 'images/background', null, $uploadID);
-		    $entity->_links['background']['href'] = 'contents/images/thumbnail';
-		    $entity->update_entity($entity);
-		    $this->seal_entity($entity, $uploadID);
-	    }
-	    
-	    public function upload_socialShare($entity, $image){
-		    $uploadID = $this->create_upload_id();
-		    $this->upload_asset($entity, $image, 'images/socialSharing', null, $uploadID);
-		    $entity->_links['socialSharing']['href'] = 'contents/images/socialSharing';
-		    $entity->update_entity($entity);
-		    $this->seal_entity($entity, $uploadID);
-	    }
-	    
 	    /**
 		 * This method will get the list of user permissions.
 		 *
@@ -506,15 +589,14 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			
 		    // CONSTRUCT HEADER
 			$headers = array();
-			$headers[] = "X-DPS-Client-Version: ". $this->client_version;
-			$headers[] = "X-DPS-Client-Request-Id: ". $this->request_id;
+			$headers[] = "X-DPS-Client-Version: ". $this->settings->client_version;
+			$headers[] = "X-DPS-Client-Request-Id: ". $this->settings->request_id;
 			$headers[] = "X-DPS-Client-Session-Id: ". $this->create_guid();
-			$headers[] = "X-DPS-Api-Key: ". $this->client_id;
+			$headers[] = "X-DPS-Api-Key: ". $this->settings->key;
 			$headers[] = "Authorization: bearer ". $this->get_access_token();
 			
 			// CONSTRUCT URL
-			$endpoint = $this->authorization_endpoint;
-			$url = "$endpoint/permissions";
+			$url = $this->settings->authorization_endpoint . "/permissions";
 			
 			// EXECUTE
 		    $curl = new Curl('GET', $url, $headers);
@@ -524,36 +606,59 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 				$this->verify_response($curl);
 				
 				// Extract current publications and permissions (if available)
-				$publications = $this->get_publications_from_response($curl->getResponseBody());
-				$permissions = $this->get_permissions_from_response($curl->getResponseBody());
-				
-				$settings = new Settings();
-				$settings->publications = $publications;
-				$settings->permissions = $permissions;
-				$settings->save();
+				$this->settings->publications = $this->get_publications_from_response($curl->getResponseBody());
+				$this->settings->permissions = $this->get_permissions_from_response($curl->getResponseBody());
+				$this->settings->save();
 				
 			}catch(Error $error){
 				// Permissions don't exist or updated / remove them
 		        $error->setTitle('Could not get user\'s permissions from Adobe\'s API');
-				$settings = new Settings();
-				$settings->publications = array();
-				$settings->permissions = array();
-				$settings->save();
+		        
+				$this->settings->publications = array();
+				$this->settings->publications = array();
+				$this->settings->save();
 				throw $error;
 			}
-			
 	    }
-	    	    
-/* HELPERS */
-		private function save_response($body = array(), $entity){
-			if(!empty($body)){
-				
-				foreach ($body as $key => $value){
-					$entity->$key = $value;
+	    
+	    private function collect_data($data = array()){
+		    if(!empty($data)){
+			    // Add content version
+			    $version = $this->get_content_version($data);
+			    if($version){
+				    $data['contentVersion'] = $version;
 				}
 				
-				$entity->contentVersion = $this->get_content_version($entity->_links);
-				$entity->save();
+			    // Add version
+			    $version = $this->get_version($data);
+			    if($version){
+				    $data['version'] = $version;
+				}				
+			}
+			return $data;
+	    }
+	    	    
+		private function save_response($body = array(), $entity){
+			if(!empty($body)){
+				// Save all fields
+				foreach ($body as $key => $value){
+					$entity->$key = $value;
+					$entity->save_field($key);
+				}
+				
+				// Save content version
+				$contentVersion = $this->get_content_version($body);
+				if($contentVersion){
+					$entity->contentVersion = $contentVersion;
+					$entity->save_field('contentVersion');
+				}
+				
+				// Save version
+				$version = $this->get_version($body);
+				if($version){
+					$this->version = $version;
+					$entity->save_field('version');
+				}
 			}
 		}
 
@@ -593,22 +698,34 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			return mktime($hour, $minute, $second, $month, $day, $year) * 1000;
 		}
 		
-		private function get_content_version($_links){
-			if(isset($_links['contentUrl'])){
-				$contentHref = $_links['contentUrl']['href'];
-				$index = strrpos($contentHref, '=');
-				$contentVersion = substr($contentHref, $index + 1, -1);
-				return $contentVersion;
+		private function get_content_version($data){
+			$contentVersion = null;
+			if(isset($data['_links'])){
+				if(isset($data['_links']['contentUrl'])){
+					$contentHref = $data['_links']['contentUrl']['href'];
+					$index = strrpos($contentHref, '=');
+					$contentVersion = substr($contentHref, $index + 1, -1);
+				}
+			}
+			return $contentVersion;
+		}
+		
+		private function get_version($data){
+			if (isset($data['message'])){
+				$index = strrpos($data['message'], 'currentVersion=');
+				return substr($data['message'], $index + strlen('currentVersion='));
+			}else if(isset($data['version'])){
+				return $data['version'];
 			}else{
-				return null;
+				return FALSE;
 			}
 		}
 		
 		private function get_access_token(){
-			if( empty($this->access_token) ){
+			if( empty($this->settings->access_token) ){
 				$this->refresh_access_token();
 			}
-			return $this->access_token;
+			return $this->settings->access_token;
 		}
 		
 		private function get_publications_from_response($response){
@@ -639,19 +756,17 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			return $permissions;
 		}
 		
-		public function create_upload_id(){
-			return $this->create_guid();
+		private function default_publication(){
+			return (!empty($this->settings->defaultPublication)) ? $this->settings->defaultPublication : $this->publications[0]['id'];
 		}
 		
 		// Check response
-		private function verify_response($curl, $entity = null, $retry = TRUE){
-			
+		private function verify_response($curl, $entity = null){
 			// Get error code 
 			$code = $curl->getHTTPCode();			
 			
 			// If response is an error handle it appropriately
 			if($code >= 300){
-				
 				// Throw new error
 				$error = new Error("Error", $code);
 				$error->setRaw(array(
@@ -660,45 +775,55 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 					"url" => $curl->getRequestUrl(),
 					"entity" => $entity
 				));
-				
+								
 				switch ($code) {
 					case 400: // Bad Request - one of the parameters was invalid; more detail in the response body
-						$error->setTitle('Bad Request');
-						$error->setMessage('One of the parameters was invalid.');
+						
+						// 400 Errors can have multiple errors:
+						if(isset($curl->getResponseBody()['error'])){
+							if( $curl->getResponseBody()['error']  == 'ride_AdobeID_acct_terms'){
+								$error->setTitle('Adobe Account has not accepted the new Adobe Terms of Use');
+								$error->setMessage('Go to https://accounts.adobe.com and login with the AdobeID you create the device_id and device_token for and accept the new Adobe Terms of Use.');
+							}
+						}else{
+							$error->setTitle('Bad Request');
+							$error->setMessage('One of the parameters was invalid.');
+						}
 						throw $error;
 						break;
 					case 401: // OAuth token invalid or expired
 						// Refresh auth token and try again
 						$this->refresh_access_token();
 						$error->setTitle('Token Invalid or Expired');
-						$error->setMessage('Your OAuth token is invalid. Please try refresh the page and trying again. If that doesn\'t work please update your API credentials in the plugin settings.');
+						$error->setMessage('Your OAuth token is invalid. Please try refresh the page and trying again. If that does not work please update your API credentials in the plugin settings.');
 						throw $error;
 						break;
 					case 403: // Forbidden - user's quota exceeded.
 						$error->setTitle('Quota Exceeded');
-						$error->setMessage('User\'s quota has been exceeded.');
+						$error->setMessage('User\'s quota has been exceeded. Please wait before trying another request.');
 						throw $error;
 						break;
 					case 404: // Not Found - specified entityName does not exist
 						$error->setTitle('Not Found');
-						$error->setMessage('The specific entityName: ' . $entity->entityName . ' does not exist.');
+						$error->setMessage('The specific entity name: ' . $entity->entityName . ' does not exist.');
 						// TODO: OFFER TO RE-Link or UNLINK
 						throw $error;
 						break;
 					case 409: // Conflict - specified version is not the latest.
-						$version = $curl->getVersionId();
-						$contentVersion = $curl->getContentVersion();
-
-						$entity->version = !empty($version) ? $version : $entity->version;
-						$entity->contentVersion = !empty($contentVersion) ? $contentVersion : $entity->contentVersion;
-						$entity->save();
+						$version = $this->get_version($curl->getResponseBody());
+						$contentVersion = $this->get_content_version($curl->getResponseBody());
+						
+						$entity->version = empty($version) ? $entity->version: $version;
+						$entity->save_field('version');
+						$entity->contentVersion = empty($contentVersion) ? $entity->contentVersion: $contentVersion;
+						$entity->save_field('contentVersion');
 						
 						$error->setTitle('Version Conflict');
 						$error->setMessage('The version trying to update is not the latest version. Please refresh the page and try updating again.');
 						throw $error;
 						break;
 					case 410: // Gone - Specified entity was deleted
-						$error->setTitle('Deleted');
+						$error->setTitle('Entity Deleted');
 						$error->setMessage('The entity was deleted.');
 						throw $error;
 						// TODO: OFFER TO UNLINK the entity
@@ -710,7 +835,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 						break;
 					case 500: // Internal Server Error: a problem within the service prevented the call from succeeding.
 						$error->setTitle('Internal Server Error');
-						$error->setMessage('The specified version to publish is not the latest version.');
+						$error->setMessage('The specified entity version to publish is not the latest version.');
 						throw $error;
 						break;
 					case 503: // Service Unavailable - if any of the third party services are unavailable.
@@ -720,29 +845,30 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 						break;
 					default: // Unknown
 						$error->setTitle('Unknown Error');
-						$error->setMessage('This is embarrassing, something unexpected happened and we don\'t have an answer.');
+						$error->setMessage('This is embarrassing, something unexpected happened and we do not have an answer right now.');
 						throw $error;
 						break;
 				}
 			}
 		}	
-		
-		private function set_headers( $accept_type = "application/json", $content_type = "application/json", $client_upload_id = null){
+			    
+		private function set_headers( $accept_type = self::MIME_JSON, $content_type = self::MIME_JSON, $client_upload_id = null){
 			$headers = array();
-			$headers[] = 'X-DPS-Client-Id: ' . $this->client_app_id;
-			$headers[] = "X-DPS-Client-Version: ". $this->client_version;
-			$headers[] = "X-DPS-Client-Request-Id: ". $this->request_id;
+			$headers[] = 'X-DPS-Client-Id: ' . DPS_API_CLIENT_ID;
+			$headers[] = "X-DPS-Client-Version: ". DPS_API_CLIENT_VERSION;
+			$headers[] = "X-DPS-Client-Request-Id: ". $this->settings->request_id;
 			$headers[] = "X-DPS-Client-Session-Id: ". $this->create_guid();
-			$headers[] = "X-DPS-Api-Key: ". $this->client_id;
+			$headers[] = "X-DPS-Api-Key: ". $this->settings->key;
 			$headers[] = "Authorization: bearer ". $this->get_access_token();
+			$headers[] = "Accept: $accept_type";
+			$headers[] = "Content-Type: $content_type";
+			$headers[] = "Connection: Close";
 			
-			// set the optional reqquest header
-			if ($client_upload_id)
+			// set optional request headers
+			if ($client_upload_id){
 				$headers[] = "X-DPS-Upload-Id: $client_upload_id";
-			if ($accept_type)
-				$headers[] = "Accept: $accept_type";
-			if ($content_type)
-				$headers[] = "Content-Type: $content_type";
+			}
+				
 			return $headers;
 		}
 
@@ -760,19 +886,26 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 			// [+] Accept: application/json
 			// [+] Content-Type: application/x-www-form-urlencoded
 			$headers = array(
-				'Accept: application/json',
-				'Content-Type: Content-Type: application/x-www-form-urlencoded'
+				'Accept: ' . self::MIME_JSON,
+				'Content-Type: Content-Type: ' . self::MIME_URLENCODED
 			);
-
-			// set request URL
-			$url  = $this->authentication_endpoint . "/ims/token/v1?grant_type=device&client_id=".$this->client_id."&client_secret=".$this->client_secret."&scope=openid&device_token=".$this->device_token."&device_id=".$this->device_id;
 			
-			// call helper to initiate the cURL request
+			// CONSTRUCT URL: $endpoint/ims/token/v1?grant_type=device&client_id=$clientID&client_secret=$clientSecret&scope=$scope&device_token=$deviceToken&device_id=$deviceID
+			$url = sprintf("%s/ims/token/v1?grant_type=device&client_id=%s&client_secret=%s&scope=%s&device_token=%s&device_id=%s",
+				$this->settings->authentication_endpoint, // $endpoint
+				$this->settings->key, // $clientID
+				$this->settings->secret, // $clientSecret
+				$scope, // $scope
+				$this->settings->device_token, // $deviceToken
+				$this->settings->device_id // $deviceID
+			);
+						
+			// EXECUTE
 			$curl = new Curl( 'POST', $url, $headers );
 			
-			// Parse out token
+			// PARSE RESPONSE
 			$data = $curl->getResponseBody();
-			
+
 			if(!empty($data['error'])){
 				// Throw new error
 				$error = new Error("Error", 401);
@@ -785,36 +918,23 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 				$error->setTitle('API Credentials Not Valid');
 				$error->setMessage('The API credentials supplied are not valid. The plugin will not allow you to access any of the cloud functions without proper credentials: ' . $data['error']);
 				
-				// Return token
-				$this->access_token = "";
-				$this->refresh_token = "";
-				
-				// Save access token
-				$settings = new Settings();
-				$settings->access_token = "";
-				$settings->refresh_token = "";
-				$settings->publications = array();
-				$settings->permissions = array();
-				$settings->save();
+				// Reset Access Token
+				$this->settings->access_token = "";
+				$this->settings->refresh_token = "";
+				$this->settings->publications = array();
+				$this->settings->permissions = array();
+				$this->settings->save();
 				
 				throw $error;
 			}else{
-				$access_token = (isset($data['access_token'])) ? $data['access_token'] : null;
-				$refresh_token = (isset($data['refresh_token'])) ? $data['refresh_token'] : null;
-	
 				// Save access token
-				$settings = new Settings();
-				$settings->access_token = $access_token;
-				$settings->refresh_token = $refresh_token;
-				$settings->save();
-				
-				// Return token
-				$this->access_token = $access_token;
-				$this->refresh_token = $refresh_token;
+				$this->settings->access_token = (isset($data['access_token'])) ? $data['access_token'] : null;
+				$this->settings->refresh_token = (isset($data['refresh_token'])) ? $data['refresh_token'] : null;
+				$this->settings->save();
 			}
 		}
 		
-		private function create_guid(){
+		public function create_guid(){
 		    if (function_exists('com_create_guid') === true){
 		        $guid = trim(com_create_guid(), '{}');
 		        return strtolower($guid);
@@ -824,15 +944,30 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 		    return strtolower($guid);
 		}
 		
-		private function prepEntity($entity){
-			/* Filter out only attributes allowed by the API */
-			$attributes = array();
+		/* Filter out only attributes allowed by the API */
+		private function prepEntity($entity, $overrides = array()){
+			
+			$entityAttributes = array();
+			
+			if(!empty($entity->entityId)){
+				$entityAttributes = $this->get_entity($entity);
+			}
+			
+			$filterOut = array_merge($entity->readOnly, $entity->internal);
 			foreach(get_object_vars($entity) as $key => $value){
-				if(in_array($key, $entity->apiAllowed()) && !empty($value)){ 
-					$attributes[$key] = $value; 
+				if(!in_array($key, $filterOut) && !empty($value)){ 
+					$entityAttributes[$key] = $value; 
+				}else if(in_array($key, $filterOut) && $key !== "_links"){
+					unset($entityAttributes[$key]);
+				}else if(empty($value)){
+					unset($entityAttributes[$key]);
 				}
 			}
-			return $attributes;
+									
+			$entityAttributes["entityName"] = $entity->entityName;
+			$entityAttributes["entityType"] = $entity->entityType;
+			
+			return array_merge($entityAttributes,$overrides);
 		}
 					        
     } // END class Adobe 

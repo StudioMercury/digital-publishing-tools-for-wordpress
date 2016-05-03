@@ -1,0 +1,15 @@
+<div class="col-sm-8 col-sm-offset-2">
+	<div class="form-group">
+		<label for="articleText">Article Template</label>
+		<p>
+			<i>Select the template for the article from the template list below.</i>
+		</p>
+
+		<select class="form-control" ng-model="article.template">
+			<option disabled value="">== Templates found in Plugin ==</option>
+			<option ng-repeat="template in settings.templates" value="{{template.path}}" ng-if="template.location == 'Plugin'">{{template.name}} ({{template.path}})</option>
+			<option disabled value="">== Templates found in Theme ==</option>
+			<option ng-repeat="template in settings.templates" value="{{template.path}}" ng-if="template.location == 'Theme'">{{template.name}} ({{template.path}})</option>
+		</select>
+	</div>
+</div>

@@ -21,9 +21,9 @@ if(!class_exists('DPSFolioAuthor\CMS_Article')) {
 			add_action( 'init',						array( $this, 'createPostType' ) );
 			
 			// Add metaboxes
-			add_action( 'add_meta_boxes', 			array( $this, 'add_meta_box_template' ) );
-			//add_action( 'add_meta_boxes', 			array( $this, 'add_meta_box_metadata' ) );
+			add_action( 'add_meta_boxes', 			array( $this, 'add_meta_box_template' ) ); // TEMPLATE
 			
+			// Saving metaboxes
 			add_action( 'save_post', 				array( $this, 'meta_box_save' ) );
 		}
 		
@@ -31,14 +31,10 @@ if(!class_exists('DPSFolioAuthor\CMS_Article')) {
 			add_meta_box( 'article-template', 'Article Template', array($this,'meta_box_template'), DPSFA_Article_Slug, 'side', 'high' );
 		}
 		
-		public function add_meta_box_metadata(){
-			add_meta_box( 'article-metadata', 'Article Publish Metadata', array($this,'meta_box_metadata'), DPSFA_Article_Slug, 'normal', 'high' );
-		}
-		
 		public function meta_box_template($post){
 			$articleTemplate = get_post_meta( $post->ID, DPSFA_Article_Slug."_template", true );
 			$TemplateService = new Templates();
-			$templates = $TemplateService->get_templates();
+			$templates = $TemplateService->templates;
 			?>
 		    <p>
 		        <label for="my_meta_box_select">Template</label>
@@ -77,147 +73,11 @@ if(!class_exists('DPSFolioAuthor\CMS_Article')) {
 			}
 		}
 		
-		public function meta_box_metadata(){
-			
-		}
-		
-		public function get_list($filter){
-			$articles = array();
-			
-			$args = array(
-				'posts_per_page' => -1,
-				'post_type' => DPSFA_Article_Slug
-			);
-						
-			// TODO: FIGURE OUT FILTERS
-			$query = new \WP_Query($args);
-			while($query->have_posts()){
-				$query->the_post();
-				array_push($articles, new Article( array('id' => $query->post->ID) ));
-			}
-
-			return $articles;
-		}
-		
-		public function get($id){
-			$article = new Article($this->get_data($id));
-			return $article;
-		}
-		
-		public function get_data($id){
-			$post = get_post($id);
-			$meta = (array)get_post_meta($id);
-			
-			$data = array();
-			foreach($meta as $key => $value){
-				// If serialized
-				if(preg_match( "/^(O:|a:)/", $value[0] )){
-					$data[str_replace(DPSFA_Article_Slug . '_', '', $key)] = unserialize($value[0]);
-				}else{
-					$data[str_replace(DPSFA_Article_Slug . '_', '', $key)] = $value[0];
-				}
-			}
-			
-			$data["id"] = $id;
-			$data["body"] = $post->post_content;
-			$data["local_modified"] = $post->post_modified;
-			$data["cmsPreview"] = get_permalink($id);
-			$data["editUrl"] = get_edit_post_link($id, '');
-			
-			$data = $this->clean_data($data);
-			return $data;
-		}
-		
-		private function clean_data($data){
-			/* Filter out duplicate internal keywords */
-			if(array_key_exists('internalKeywords', $data)){
-				$data['internalKeywords'] = array_intersect_key( 
-					$data['internalKeywords'], 
-					array_unique(array_map('strtolower',$data['internalKeywords']))
-				);
-				$data['internalKeywords'] = array_values($data['internalKeywords']);
-			}
-			
-			/* Filter out duplicate keywords */
-			if(array_key_exists('keywords', $data)){
-				$data['keywords'] = array_intersect_key(
-					$data['keywords'],
-					array_unique(array_map('strtolower',$data['keywords']))
-				);
-				$data['keywords'] = array_values($data['keywords']);
-			}
-			return $data;
-		}
-		
-		public function create($article){
-			$postArgs = array(
-				'post_title' => $article->entityName,
-				'post_type' => DPSFA_Article_Slug,
-				'post_content' => '',
-				'post_excerpt' => '',
-				'post_status' => 'publish'
-			);
-			$post = wp_insert_post($postArgs);
-			if($post){
-				$date = new \DateTime();
-				$article->id = $post;
-				$article->date_created = $date->getTimestamp();
-				$article->save();
-			}else{
-				$error = new Error("Error", 400);
-				$error->setTitle('Could not create Article');
-				$error->setMessage('Wordpress could not create the article');
-				$error->setRaw($post);
-			}
-		}
-		
-		public function save($article){
-			// If article doesn't exist: 
-			if(empty($article->id)){
-				$this->create($article);
-			}else{
-				// Update existing article
-				$data = $this->clean_data(get_object_vars($article));
-				foreach( $data as $key => $value ){
-					if( $value === null || $value == ""){
-						$wpResponse = delete_post_meta($article->id, DPSFA_Article_Slug . '_' . $key);
-					}else{
-						if(preg_match( "/^(O:|a:)/", $value[0] )){
-							$wpResponse = update_post_meta($article->id, DPSFA_Article_Slug . '_' . $key, unserialize($value));
-						}else{
-							$wpResponse = update_post_meta($article->id, DPSFA_Article_Slug . '_' . $key, $value);
-						}
-					}
-				}
-			}
-		}
-		
-		public function save_field($article, $key, $value){
-			if( $value === null || $value == ""){
-				delete_post_meta($article->id, DPSFA_Article_Slug . '_' . $key);
-			}else{
-				update_post_meta($article->id, DPSFA_Article_Slug . '_' . $key, $value);
-			}
-		}
-		
-		public function get_field($article, $key){
-			$value = get_post_meta($article->id, DPSFA_Article_Slug . '_' . $key, true);
-			if((@unserialize($value) !== false)){
-				return unserialize($value);
-			}else{
-				return $value;
-			}
-		}
-		
-		public function delete($article){
-			return wp_delete_post($article->id, true);
-		}
-		
 		public function createPostType(){
 			if( did_action( 'init' ) !== 1 )
 				return;
 			if( !post_type_exists( DPSFA_Article_Slug ) ){
-				if(DPSFA_DEBUGMODE) log_message("CMS_Article: Registering post type: " . DPSFA_Article_Slug); 
+				log_message("CMS_Article: Registering post type: " . DPSFA_Article_Slug); 
 				register_post_type( DPSFA_Article_Slug, $this->getPostTypeParams() );
 			}
 		}
@@ -259,105 +119,10 @@ if(!class_exists('DPSFolioAuthor\CMS_Article')) {
 				'query_var' 			=> true,
 				'has_archive' 			=> false,
 				'taxonomies' 			=> array('post_tag', 'category'),
-				'supports'				=> array( 'title', 'editor', 'author', 'thumbnail', 'revisions', 'excerpt', 'page-attributes' )
+				'supports'				=> array( 'title', 'editor', 'author', 'thumbnail', 'revisions', 'excerpt', 'page-attributes', 'custom-fields', )
 			);
 
 			return apply_filters( DPSFA_PREFIX . 'post-type-params', $postTypeParams );
-		}
-
-		public static function addMetaBoxes($post_type, $post){
-
-			if( did_action( 'add_meta_boxes' ) !== 1 )
-				return;
-
-            if($post_type !== DPSFA_Article_Slug)
-                return;
-                
-            $CMS = DPSFolioAuthor_CMS::getInstance();
-            $article = $CMS->get_article_by_id($post->ID);
-			
-			// Meta box for non-renditions (parents)
-            if(!$article->is_rendition()){
-                add_meta_box(
-    				DPSFA_PREFIX . 'article-meta',
-    				'Article Metadata',
-    				array(__CLASS__, 'markupMetaBoxes'),
-    				DPSFA_Article_Slug,
-    				'side',
-    				'high',
-					array("article" => $article)
-    			);
-            }
-            
-            // Meta box for renditions list
-            if( $article->is_rendition() ){
-                add_meta_box(
-    				DPSFA_PREFIX . 'article-status',
-    				'Renditions',
-    				array(__CLASS__, 'markupMetaBoxes'),
-    				DPSFA_Article_Slug,
-    				'side',
-    				'high',
-					array("article" => $article)
-    			);
-            }
-            
-            // Meta box for Article action		
-			add_meta_box(
-				DPSFA_PREFIX . 'article-action',
-				'Action',
-    			array(__CLASS__, 'markupMetaBoxes'),
-				DPSFA_Article_Slug,
-				'side',
-				'high',
-				array("article" => $article)
-			);
-			
-			// Meta box for template
-			add_meta_box(
-				DPSFA_PREFIX . 'article-template',
-				'Template',
-    			array(__CLASS__, 'markupMetaBoxes'),
-				DPSFA_Article_Slug,
-				'side',
-				'high',
-				array("article" => $article)
-			);
-			
-			// Meta box for Article Settings
-			add_meta_box(
-				DPSFA_PREFIX . 'article-settings',
-				'Article Settings',
-    			array(__CLASS__, 'markupMetaBoxes'),
-				DPSFA_Article_Slug,
-				'side',
-				'high',
-				array("article" => $article)
-			);	
-
-		}
-
-		public static function removeMetaBoxes(){
-            //remove_meta_box( 'postimagediv', DPSFA_Article_Slug, 'side' );
-            remove_meta_box( 'submitdiv', DPSFA_Article_Slug, 'side' ); // remove submit button
-            remove_meta_box( 'slugdiv', DPSFA_Article_Slug, 'normal'); // remove slug
-            remove_meta_box( 'authordiv', DPSFA_Article_Slug, 'normal' ); // remove author
-            if(!DPSFA_DEBUGMODE) remove_meta_box( 'titlediv', DPSFA_Article_Slug, 'normal' ); // remove title
-            if(!DPSFA_DEBUGMODE) remove_post_type_support( DPSFA_Article_Slug, 'title'); // remove title
-		}
-
-		public static function markupMetaBoxes( $post, $args ){
-			$article = $args['args']["article"];
-            $fieldSlug = DPSFA_Article_Slug;
-			$view = DPSFA_DIR . "/views/admin/meta-boxes/" . $args[ 'id' ] . ".php";
-			if( is_file( $view ) )
-				require_once( $view );
-			else
-				throw new Exception( __METHOD__ . " error: ". $view ." doesn't exist." );
-		}
-
-		public static function setFormType(){
-            echo ' enctype="multipart/form-data"';
 		}
 		
 	} // end CMS_Article

@@ -1,11 +1,3 @@
-<!--
-https://www.google.com/fonts#UsePlace:use/Collection:Open+Sans
-https://www.google.com/fonts#UsePlace:use/Collection:Lato
-https://www.google.com/fonts#UsePlace:use/Collection:Source+Sans+Pro
-
-https://www.google.com/fonts/specimen/Old+Standard+TT
--->
-
 <link href='http://fonts.googleapis.com/css?family=Old+Standard+TT:400,400italic,700' rel='stylesheet' type='text/css'>
 <script> jQuery("body").addClass("bootstrap-coral-ui"); </script>
 <style>
@@ -16,7 +8,6 @@ https://www.google.com/fonts/specimen/Old+Standard+TT
 
 <div ng-app="AdobePublishForCMS" class="bootstrap-coral-ui">
 
-	<!-- TODO ADD NGIF SETTINGS IS FULL SCREEN -->
 	<style>
 		html, body, #wpcontent, #wpbody, #wpbody-content { height: auto; padding: 0px; margin: 0px; width: 100%; height: 100%; float: none; position: static; display: block; }
 		.update-nag { display:none !important; }
@@ -30,7 +21,6 @@ https://www.google.com/fonts/specimen/Old+Standard+TT
 		.updated.error { display: none; }
 		
 		iframe{
-			width: 100%;
 			height: 100%;
 			display: block;
 			border: none;
@@ -39,14 +29,14 @@ https://www.google.com/fonts/specimen/Old+Standard+TT
 			padding: 0px;
 		}
 		
+		.single-article{
+			background: rgba(0, 0, 0, .025) !important;
+		}
+		
 		.page-view.white{
 			text-align: center;
 			background: rgba(0,0,0, .05) !important;
 		}	
-		
-		iframe.phone{ max-width: 480px !important; }
-		iframe.tablet{ max-width: 768px !important; }
-		iframe.desktop{ max-width: auto !important; }
 
 	</style>
 
@@ -54,18 +44,17 @@ https://www.google.com/fonts/specimen/Old+Standard+TT
 	<nav class="navbar navbar-default navbar-fixed-top">
 	    
 	    <div class="container-fluid">
-	        <div class="navbar-header">
-		        <a href="{{config.CMSUrl}}" class="navbar-brand"><span class="glyphicon glyphicon-chevron-left"></span> Back to WordPress</a>
-                <!-- <div class="navbar-brand">{{name}}</div> -->
-	        </div>
+			<ol class="breadcrumb">
+			  <li>Digital Publishing Tools</li>
+			  <li>{{ $state.current.data.title }}</li>
+			</ol>		    
 	    </div>
 	    
 		<!-- Alerts -->
 		<div id="alerts" ng-controller="alerts" ng-include="config.viewPath + 'views/alerts.html'"></div>	    
 	</nav>
 				
-	<!-- SIDEBAR (only for full screen app) -->
-	<!-- http://shoppinpal.github.io/ng-mobile-menu/demo/#/skinny -->
+	<!-- SIDEBAR -->
 	<div ng-include="config.viewPath + 'views/side-navigation.html'" ng-controller="sideMenu"></div>
 
     <!-- CONTENT -->
@@ -75,7 +64,7 @@ https://www.google.com/fonts/specimen/Old+Standard+TT
 	
 	<!-- Loading Screen -->
 	<style>
-		#loading{
+		#loading-screen{
 			position:fixed;
 			width: 100%;
 			height: 100%;
@@ -83,12 +72,11 @@ https://www.google.com/fonts/specimen/Old+Standard+TT
 			top: 0px;
 			left: 0px;
 			z-index: 99999999;
-			
 			display: flex;
 			justify-content: center;
 			align-items: center;
 		}
 	</style>
-	<div ng-include="config.viewPath + 'views/loading.html'" ng-controller="loading" id="loading" ng-show="show()"></div>
+	<div ng-include="config.viewPath + 'views/loading.html'" ng-controller="loading" id="loading-screen" ng-show="show()"></div>
         
 </div>

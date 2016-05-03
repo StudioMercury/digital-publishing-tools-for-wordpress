@@ -7,14 +7,15 @@ angular.module('AdobePublishForCMS',
 	'ui.bootstrap', 
 	'ngTagsInput', 
 	'angularFileUpload', 
-	'ngSanitize', 
-	'ngAnimate'])
+	'ngSanitize',
+	'infinite-scroll'])
 
-.run(function($rootScope, name, environment, Loading) {
+.run(function($rootScope, name, environment, Loading, $state) {
 	
 	$rootScope.name = name;
 	$rootScope.showSideMenu = true;
 	$rootScope.config = environment;
+	$rootScope.$state = $state;
 	
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){ 
         Loading.show();
@@ -41,7 +42,8 @@ angular.module('AdobePublishForCMS',
     });
         
 	// if none of the above states are matched, use this as the fallback
-	$urlRouterProvider.otherwise('/settings');
+	$urlRouterProvider.otherwise('/article/list');
+
 
 	$stateProvider
 	
@@ -51,11 +53,11 @@ angular.module('AdobePublishForCMS',
 			controller: 'settingsCtrl',
 			resolve: {
 				settings: function(Settings, Loading){
-					return Settings.update().then(function(settings){
-							Loading.hide();
-						return settings;
-					});
+					return Settings.get();
 				}
+			},
+			data: {
+				title: "Settings"
 			}
 		})
 		
@@ -63,62 +65,9 @@ angular.module('AdobePublishForCMS',
 			url: '/about',
 			templateUrl: config.viewPath + 'views/about/about.html',
 			controller: 'aboutCtrl',
-		})
-		
-		.state('folio', {
-			abstract: true,
-	        url: '/folio',
-	        template: '<ui-view/>'
-		})
-		
-		.state('folio.list', {
-			url: '/list',
-			templateUrl: config.viewPath + 'views/folio/list.html',
-			controller: 'folioCtrl',
-			resolve: {
-				folios: function(CMS){
-					return CMS.getEntityList('folio').then(function(data){
-						return data.data;
-					});
-				}
+			data: {
+				title: "About"
 			}
-		})
-		
-		.state('folio.single', {
-			url: '/:id',
-			templateUrl: config.viewPath + 'views/folio/single.html',
-			controller: 'folioSingleCtrl',
-		})
-		
-		.state('collection', {
-			abstract: true,
-	        url: '/collection',
-	        template: '<ui-view/>'
-		})
-		
-		.state('collection.list', {
-			url: '/list',
-			templateUrl: config.viewPath + 'views/collection/list.html',
-			controller: 'collectionListCtrl',
-		})
-		
-		.state('collection.view', {
-			url: '/:id',
-			templateUrl: config.viewPath + 'views/collection/single.html',
-			controller: 'collectionSingleCtrl',
-			resolve: {
-				collections: function(CMS){
-					return CMS.getEntityList('collection').then(function(data){
-						return data.data;
-					});
-				}
-			}
-		})
-		
-		.state('collection.single', {
-			url: '/:id/edit',
-			templateUrl: config.viewPath + 'views/collection/single.html',
-			controller: 'collectionSingleCtrl',
 		})
 		
 		.state('article', {
@@ -136,6 +85,9 @@ angular.module('AdobePublishForCMS',
 					$article = new Article();
 					return $article.all();
 				}
+			},
+			data: {
+				title: "Articles"
 			}
 		})
 			
@@ -148,7 +100,11 @@ angular.module('AdobePublishForCMS',
 					$article = new Article();
 					return $article.get($stateParams.id);
 				}
+			},
+			data: {
+				title: "Article"
 			}
+
 		})
 		
 		.state('article.edit', {
@@ -161,33 +117,6 @@ angular.module('AdobePublishForCMS',
 					return $article.get($stateParams.id);
 				}
 			}
-		})
-		
-		.state('banner', {
-			abstract: true,
-	        url: '/banner',
-	        template: '<ui-view/>'
-		})
-		
-		.state('banner.list', {
-			url: '/list',
-			templateUrl: config.viewPath + 'views/banner/list.html',
-			controller: 'bannerCtrl',
-/*
-			resolve: {
-				folios: function(CMS){
-					return CMS.getEntityList('banner').then(function(data){
-						return data.data;
-					});
-				}
-			}
-*/
-		})
-		
-		.state('banner.single', {
-			url: '/:id',
-			templateUrl: config.viewPath + 'views/banner/single.html',
-			controller: 'bannerSingleCtrl',
 		});
 	
 	$urlRouterProvider.when('/article', '/article/list');

@@ -10,19 +10,23 @@
 
 <!-- Modal Body -->
 <div class="modal-body">
-	<p>
-		You can not undo this action and the {{ entity.entityType }} will be deleted forever.
-	</p>
 	
-	<!-- If entity exists in the cloud too -->
-	<p ng-if="(entity.entityId.length > 0) && settings.canAccessCloud()">
-		There is also a linked {{ entity.entityType }} in the cloud. Would you like to delete this one as well? This action can not be undone.
-		<BR/><BR/>
-		<input type="checkbox" ng-model="action.fromCloud" name="fromCloud"/><b> Delete the linked {{ entity.entityType }} from the cloud</b>
-	</p>
-  	
-	<br />
+	<div ng-if="!startingAction">
+		<p>
+			You can not undo this action and the {{ entity.entityType }} will be deleted forever.
+		</p>
+		
+		<!-- If entity exists in the cloud too -->
+		<p ng-if="(entity.entityId.length > 0) && settings.canAccessCloud()">
+			There is also a linked {{ entity.entityType }} in the cloud. Would you like to delete this one as well? This action can not be undone.
+			<BR/><BR/>
+			<input type="checkbox" ng-model="action.fromCloud" name="fromCloud"/><b> Delete the linked {{ entity.entityType }} from the cloud</b>
+		</p>
 	  	
+		<br />
+	</div>
+	
+	<div ng-if="startingAction" ng-include="config.viewPath + 'views/modals/modal-group-action.html'"></div>
 </div>
 
 <!-- Modal Footer -->

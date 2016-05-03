@@ -1,5 +1,5 @@
 <!-- Article Navigation -->
-<nav class="navbar navbar-inverse navbar-secondary">
+<nav class="navbar navbar-inverse navbar-secondary fixed">
     <div class="container-fluid">
     
         <ul class="nav navbar-nav navbar-right">
@@ -18,7 +18,7 @@
 		        	popover="{{getCloudError()}}" 
 			        popover-placement="bottom"
 			        popover-trigger="mouseenter">
-		        		<span class="glyphicon glyphicon-cloud"></span> Cloud
+		        		<span class="glyphicon glyphicon-cloud"></span> AEM Mobile
 		        </a>
 	        </li>
 	        
@@ -26,12 +26,12 @@
 	        <li dropdown is-open="cloudwithID.isOpen" ng-if="!settings.canAccessCloud() && (article.entityId.length > 0) ">
 	        	
 	        	<a class="clickable" dropdown-toggle>
-					<span class="glyphicon glyphicon-cloud"></span> Cloud
+					<span class="glyphicon glyphicon-cloud"></span> AEM Mobile
 				</a>
 				
 				<ul class="dropdown-menu" role="menu">
 					<li class="clickable" ng-if="article.entityId.length > 0">
-						<a ng-click="unlink()"><span class="glyphicon glyphicon-link"></span> Unlink from Cloud</a>
+						<a ng-click="unlink()"><span class="glyphicon glyphicon-scissors"></span> Unlink from Cloud</a>
 					</li>
 				</ul>
 				
@@ -41,53 +41,81 @@
 	        <li dropdown is-open="push.isOpen" ng-if="settings.canAccessCloud()">
 	        		        	
 				<a class="clickable" dropdown-toggle>
-					<span class="glyphicon glyphicon-cloud"></span> Cloud
+					<span class="glyphicon glyphicon-cloud"></span> AEM Mobile
 				</a>
 				
-				<ul class="dropdown-menu" role="menu">
+				<!-- IF MISSING FROM THE CLOUD -->
+				<ul ng-if="(article.entityId.length > 0) && article.isMissing" class="dropdown-menu" role="menu">
 					
-					<li class="clickable disabled" ng-if="!(article.entityId.length > 0)">
-						<a ng-click="link()"><span class="glyphicon glyphicon-link"></span> Link to Existing Article in Cloud (coming soon)</a>
+					<div class="alert alert-warning" role="alert">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						Article is missing in AEM Mobile
+					</div>					
+					
+					<br />
+					
+					<li class="clickable">
+						<a ng-click="link()"><span class="glyphicon glyphicon-link"></span> Link to Existing Article in the Cloud</a>
 					</li>
-										
-					<li class="clickable" ng-if="(article.entityId.length > 0)">
-						<a ng-click="push_all()"><span class="glyphicon glyphicon-cloud-upload"></span> Update ALL</a>
-					</li>
-					
-					<li class="divider" ng-if="(article.entityId.length > 0)"></li>
-					
-					<li class="clickable" ng-if="(article.entityId.length > 0)">
-						<a ng-click="push_metadata()"><span class="glyphicon glyphicon-tags"></span> Update Metadata</a>
-					</li>
-					
-					<li class="clickable" ng-if="(article.entityId.length > 0)">
-						<a ng-click="push_content()"><span class="glyphicon glyphicon-picture"></span> Update Content (thumbnails)</a>
-					</li>
-					
-					<li class="clickable" ng-if="(article.entityId.length > 0)">
-						<a ng-click="push_article_folio()"><span class="glyphicon glyphicon-open"></span> Update Article Folio</a>
-					</li>
-					
-					<li class="divider" ng-if="(article.entityId.length > 0)"></li>
-					
-					<li class="clickable" ng-if="(article.entityId.length > 0)">
-						<a ng-click="delete_cloud()"><span class="glyphicon glyphicon-trash"></span> Delete from the Cloud</a>
-					</li>									
-					
-					<li class="divider" ng-if="(article.entityId.length > 0)"></li>
-					
-					<li class="clickable" ng-if="(article.entityId.length > 0)">
-						<a ng-click="unlink()"><span class="glyphicon glyphicon-link"></span> Unlink from Cloud</a>
-					</li>	
 					
 					<li class="divider"></li>
 					
-					<li class="clickable" ng-if="!(article.entityId.length > 0)">
+					<li class="clickable">
+						<a ng-click="unlink()"><span class="glyphicon glyphicon-scissors"></span> Unlink from the Cloud</a>
+					</li>
+					
+				</ul>
+				
+				<!-- IF NOT IN THE CLOUD -->
+				<ul ng-if="!(article.entityId.length > 0)" class="dropdown-menu" role="menu">
+					<li class="clickable" >
 						<a ng-click="create(true)"><span class="glyphicon glyphicon-cloud-upload"></span> Create in the Cloud</a>
 					</li>
 					
-					<li class="clickable" ng-if="(article.entityId.length > 0)">
-						<a ng-click="publish()"><span class="glyphicon glyphicon-send"></span> Publish</a>
+					<li class="clickable" >
+						<a ng-click="link()"><span class="glyphicon glyphicon-link"></span> Link to Article in the Cloud</a>
+					</li>
+				</ul>
+				
+				<!-- IF IN THE CLOUD AND NOT MISSING -->
+				<ul ng-if="(article.entityId.length > 0) && !article.isMissing" class="dropdown-menu" role="menu">
+					<li class="clickable">
+						<a ng-click="push_all()"><span class="glyphicon glyphicon-cloud-upload"></span> Update ALL</a>
+					</li>
+					
+					<li class="divider"></li>
+					
+					<li class="clickable">
+						<a ng-click="push_metadata()"><span class="glyphicon glyphicon-tags"></span> Update Metadata</a>
+					</li>
+					
+					<li class="clickable">
+						<a ng-click="push_content()"><span class="glyphicon glyphicon-picture"></span> Update Images (thumbnails)</a>
+					</li>
+					
+					<li class="clickable">
+						<a ng-click="push_article_folio()"><span class="glyphicon glyphicon-open"></span> Content File (.article)</a>
+					</li>
+					
+					<li class="divider"></li>
+					
+					<li class="clickable">
+						<a ng-click="delete_cloud()"><span class="glyphicon glyphicon-trash"></span> Delete from the Cloud</a>
+					</li>									
+					
+					<li class="divider"></li>
+
+					<li class="clickable">
+						<a ng-click="unlink()"><span class="glyphicon glyphicon-scissors"></span> Unlink from the Cloud</a>
+					</li>
+					
+					<li class="divider"></li>
+					
+					<li>
+						<a class="disabled" ng-if="!article.isPublishable" popover="The article is missing a thumnail or article content. Click Update ALL to add them before publishing." popover-placement="bottom" popover-trigger="mouseenter">
+							<span class="glyphicon glyphicon-send"></span> Publish
+						</a>
+						<a class="clickable" ng-click="publish()" ng-if="article.isPublishable"><span class="glyphicon glyphicon-send"></span> Publish</a>
 					</li>
 				
 				</ul>
@@ -96,17 +124,18 @@
 			<!-- PREVIEW SIZE -->
 	        <li dropdown is-open="preview.isOpen">
 				<a class="clickable" dropdown-toggle>
-					<span class="glyphicon glyphicon-phone"></span> Preview
+					<span class="glyphicon glyphicon-phone"></span> Preview 
 				</a>
 				<ul class="dropdown-menu" role="menu">
-					<li class="clickable"><a ng-click="preview.device = 'phone' ">
-						<span class="glyphicon glyphicon-ok" ng-style="{ visibility: preview.device == 'phone' ? 'visible' : 'hidden' }"></span> Phone</a>
+					<li class="clickable" ng-repeat="device in settings.dps_devices">
+						<a ng-click="previewDevice(device)">
+							<span class="glyphicon glyphicon-ok" ng-style="{ 'visibility': (selectedDevice.title == device.title) ? 'visible' : 'hidden' }"></span> {{device.title}}
+						</a>
 					</li>
-					<li class="clickable"><a ng-click="preview.device = 'tablet' ">
-						<span class="glyphicon glyphicon-ok" ng-style="{ visibility: preview.device == 'tablet' ? 'visible' : 'hidden' }"></span> Tablet</a>
-					</li>
-					<li class="clickable"><a ng-click="preview.device = 'desktop' ">
-						<span class="glyphicon glyphicon-ok" ng-style="{ visibility: (preview.device == 'desktop' || preview.device === undefined) ? 'visible' : 'hidden' }"></span> Desktop</a>
+					<li class="clickable">
+						<a ng-click="previewDevice({ title: 'Desktop', width: '100%'})">
+							<span class="glyphicon glyphicon-ok" ng-style="{ 'visibility': (selectedDevice.title == 'Desktop' || !selectedDevice) ? 'visible' : 'hidden' }"></span> Desktop
+						</a>
 					</li>
 				</ul>
 			</li>
@@ -118,13 +147,8 @@
 	        </li>
             
             <!-- EDIT -->
-            <li dropdown is-open="edit.isOpen">
-				<a class="clickable" dropdown-toggle><span class="glyphicon glyphicon-pencil"></span> Edit</a>
-				<ul class="dropdown-menu" role="menu">
-					<li class="disabled"><a>Inline (coming soon)</a></li>
-<!-- 					<li class="clickable"><a ui-sref="article.edit({id: article.id})">Inline (coming soon)</a></li> -->
-					<li class="clickable"><a href="{{article.editUrl}}">WordPress</a></li>
-				</ul>
+            <li>
+				<a class="clickable" href="{{article.editUrl}}" target="_blank"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
 			</li>
                         	        
 			<!-- DELETE -->
@@ -147,5 +171,5 @@
 <!-- Article Content / Body -->
 <div class="single-article">
 <!-- 	<article ng-bind-html="article.body"></article> -->
-	<iframe class="{{preview.device}}" src="{{article.cmsPreview}}">
+	<iframe width="{{selectedDevice.width}}" src="{{article.cmsPreview}}">
 </div>

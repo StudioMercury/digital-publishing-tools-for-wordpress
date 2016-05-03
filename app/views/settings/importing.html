@@ -2,402 +2,57 @@
 <div class="row">
 	<div class="col-xs-12">
         <h1>Import Presets</h1>
-        <p>Change the default mapping of fields when importing posts into the plugin. You can define multiple import presets that can be chosen at the time of import.</p>
+        <p>
+	        Change the default mapping of fields when importing posts into the plugin. You can define multiple import presets that can be chosen at the time of import.
+	        <a class="btn" ng-click="showTags = showTags ? false : true">
+				<span class="btn btn-default" ng-if="!showTags"><i class="glyphicon glyphicon-tag"></i>&nbsp;See a list of tags</span>
+				<span class="btn btn-default" ng-if="showTags"><i class="glyphicon glyphicon-tag"></i>&nbsp;Hide list of tags</span>
+			</a>
+		</p>
     </div>
 </div>
 
-<BR/>
+<!-- MAPPING KEY -->
+<table class="import-fields table" ng-show="showTags">
+	<thead>
+		<td>Tag</td>
+		<td>Description</td>
+	</thead>
+	<tbody>
+		<tr ng-repeat="(key, value) in settings.importTags">
+			<td class="code">{{key}}</td>
+			<td>{{value}}</td>
+		</tr>
+	</tbody>
+</table>
 
-<!-- IMPORT PRESETS -->
-<table ng-if="settings.publications.length > 0" class="table">
+<table class="table">
+	<BR/>
+	
 	<thead>
 		<tr class="table-head">
 			<td><b>Preset Name</b></td>
+			<td><b>Entity Type</b></td>
 			<td></td>
-			<td></td>
-			<td style="text-align:center;" width="10%"><b>Default</b></td>
 		</tr>
 	</thead>
+	
 	<tbody>
-		<tr ng-repeat="publication in settings.publications">
-			<td>Preset Name</td>
-			<td><a class="glyphicon glyphicon-pencil"></a></td>
-			<td><a class="glyphicon glyphicon-trash"></a></td>
-			<td style="text-align:center;">
-				<input type="radio" name="defaultPublication" ng-model="settings.defaultPublication" value="{{publication.id}}"/>
+		<tr ng-repeat="preset in settings.importPresets">
+			<td>{{preset.name}}</td>
+			<td>{{preset.entityType}}</td>
+			<td class="text-right">
+				<a class="btn btn-default" ng-click="edit_import_preset(preset)"><i class="glyphicon glyphicon-pencil"></i></a>
+				&nbsp;
+				<a class="btn btn-default" ng-click="delete_import_preset(preset)"><i class="glyphicon glyphicon-trash"></i></a>
+				&nbsp;
 			</td>
 		</tr>
-	</tbody>	
+	</tbody>
+		
 </table> 
 
-<BR/>
-
-<!-- FIELDMAPPING -->
-<div class="fields">
-	
-	<hr />
-	
-	<!-- MAPPING KEY -->
-	<h2>Editing Preset: <B>Default preset</B></h2>
-	<p>
-		Here is a list of the possible import fields
-		<a class="btn" ng-click="alert('true')" ng-if="true">
-			<span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;See a list of tags
-		</a>
-	</p>
-	
-	<br/>
-	
-	<table class="import-fields table" ng-show="true">
-		<thead>
-			<td>Code</td>
-			<td>Description</td>
-		</thead>
-		<tbody>
-			<td class="code">%featuredImage%</td>
-			<td>Post's Featured Image</td>
-		</tbody>
-	</table>
-	
-	<BR/>
-	
-	<div class="form-group">
-		<label for="name">Preset Name</label>
-		<input 	type="text" 
-				class="form-control" 
-				name="name" 
-				placeholder="Name" 
-				ng-model="preset.name" 
-				ng-disabled="preset.name"/>
-	</div>	
-	
-	<br/>
-
-	<div class="form-group">
-		<label for="entityName">Article Name</label>
-		<p>
-			<i>The collection name is used internally only and must be unique for collections within an application.</i>
-		</p>
-		<input 	type="text" 
-				pattern="[0-9a-zA-Z]{1}[0-9a-zA-Z.-]{0,62}[0-9a-zA-Z]{1}" 
-				class="form-control" 
-				name="entityName" 
-				placeholder="Preset Name" 
-				ng-model="preset.entityName" 
-				ng-disabled="preset.entityId"/>
-	</div>	
-	
-	<br />
-	
-	<div class="form-group">
-		<label for="title">Article title</label>
-		<p>
-			<i>The user-facing title of the article that is displayed throughout the application.</i>
-		</p>
-		<input  type="text" 
-				class="form-control" 
-				ngMaxlength="250"
-				name="title" 
-				placeholder="Title" 
-				ng-model="preset.title" />
-	</div>
-	
-	<br />
-	
-	<div class="form-group">
-		<label for="shortTitle">Article Short Title</label>
-		<p>
-			<i>A short article title for display on smaller device screens.</i>
-		</p>
-		<input  type="text" 
-				class="form-control" 
-				ngMaxlength="140"
-				name="shortTitle" 
-				placeholder="Short Title" 
-				ng-model="preset.shortTitle" />
-	</div>			
-	
-	<br />		
-	
-	<div class="form-group">
-		<label for="abstract">Abstract</label>
-		<p>
-			<i>A description or summary of the preset.</i>
-		</p>
-		<input 	class="form-control" 
-				placeholder="Abstract"
-				name="abstract"  
-				type="text"
-				ngMaxlength="400"
-				ng-model="preset.abstract"
-				rows="3" />
-	</div>			
-	
-	<br />
-	
-	<div class="form-group">
-		<label for="shortAbstract">Short Abstract</label>
-		<p>
-			<i>A short description or summary of the article that can be used on smaller device screens.</i>
-		</p>
-		<input  type="text" 
-				class="form-control" 
-				ngMaxlength="250"
-				name="shortAbstract" 
-				placeholder="Short Abstract" 
-				ng-model="preset.shortAbstract" />
-	</div>
-	
-	<div class="form-group">
-		<label for="author">Author</label>
-		<p>
-			<i>Author byline associated with the preset.</i>
-		</p>
-		<input  type="text" 
-				class="form-control" 
-				ngMaxlength="100"
-				name="author" 
-				placeholder="Author" 
-				ng-model="preset.author" />
-	</div>	
-	
-	<br />
-	
-	<div class="form-group">
-		<label for="authorUrl">Author URL</label>
-		<p>
-			<i>Link to more information about the author.</i>
-		</p>
-		<input  type="text" 
-				class="form-control" 
-				ngMaxlength="150"
-				name="authorUrl" 
-				placeholder="Author URL" 
-				ng-model="preset.authorUrl" />
-	</div>
-	
-	<br />
-	
-	<div class="checkbox">
-		<label for="hideFromBrowsePage">
-		    <input  type="checkbox" 
-					name="hideFromBrowsePage" 
-					ng-model="preset.hideFromBrowsePage" />
-		    &nbsp; Hide from browse page				
-	    </label>				
-	</div>	
-	
-	<br />
-	
-	<div class="form-group">
-		<label for="department">Department</label>
-		<p>
-			<i>Department is used to categorize articles within the context of your application (sports, politics, style etc.).</i>
-		</p>
-		<input  type="text" 
-				class="form-control" 
-				name="department" 
-				placeholder="Department" 
-				ng-model="preset.department" />
-	</div>	
-	
-	<div class="form-group">
-		<label for="category">Category</label>
-		<p>
-			<i>Category is more specific than department, but more general than keywords. There is only one specified category for the content.</i>
-		</p>
-		<input  type="text" 
-				class="form-control" 
-				ngMaxlength="140"
-				name="category" 
-				placeholder="Category" 
-				ng-model="preset.category" />
-	</div>			
-	
-	<br />	
-	
-	<div class="form-group">
-		<label for="keywords">Keywords</label>
-		<p>
-			<i>A list of separated keywords associated with the preset. These keywords could be user-facing.</i>
-		</p>
-		<tags-input name="keywords" placeholder="Keywords" ng-model="preset.keywords" replace-spaces-with-dashes="false"></tags-input>
-	</div>			
-	
-	<br />
-	
-	<div class="form-group">
-		<label for="internalKeywords">Internal Keywords</label>
-		<p>
-			<i>A list of separated, internally used keywords.</i>
-		</p>
-		<tags-input name="internalKeywords" placeholder="Internal Keywords" ng-model="preset.internalKeywords" replace-spaces-with-dashes="false"></tags-input>
-	</div>							
-	
-	
-	<div class="form-group">
-		<label for="accessState">Article Access</label>
-		<p>
-			<i>Article Access determines which articles users can view without purchasing.</i>
-		</p>
-		
-		<select class="form-control" ng-options="state for state in ['free','metered','protected']" ng-model="preset.accessState"></select>
-	</div>	
-	
-	<br />
-	
-	<div class="form-group">
-		<label for="importance">Article Importance</label>
-		<p>
-			<i>Specify the importance of this article in the context of your application</i>
-		</p>
-		<select class="form-control" ng-options="importance for importance in ['low', 'normal', 'high']" ng-model="preset.importance"></select>
-	</div>
-	
-	<br />
-	
-	<div class="checkbox">
-	    <label for="isTrustedContent">
-		    <input  type="checkbox" 
-					name="isTrustedContent" 
-					ng-model="preset.isTrustedContent" />
-		    &nbsp; Trusted Content	
-	    </label>					
-	</div>
-	<p>
-		<i>Flag that allows Article to access entitlement info / reading APIs.</i>
-	</p>
-	
-	<br />
-	
-	<div class="checkbox">
-		<label for="isAd">
-		    <input  type="checkbox" 
-					name="isAd" 
-					ng-model="preset.isAd" />
-		    &nbsp; Advertisement	
-	    </label>							
-	</div>
-	<p><i>Metrics for content tagged as advertisements are collected separately from content.</i></p>
-	
-	<br />
-	
-	<div class="form-group">
-		<label for="adType">Ad Type</label>
-		<p>
-			<i>Specify if an ad is static or enhanced for tablets (EFT).</i>
-		</p>
-		
-		<select class="form-control" ng-options="adType for adType in ['Static','EFT']" ng-model="preset.adType"></select>					
-	</div>
-	
-	<br/>
-	
-	<div class="form-group">
-		<label for="adCategory">Ad Category</label>
-		<p>
-			<i>Customers can define categories to group and measure all adds within a specific category.</i>
-		</p>
-		<input  type="text" 
-				class="form-control" 
-				ngMaxlength="40"
-				name="adCategory" 
-				placeholder="Ad Category" 
-				ng-model="preset.adCategory" />
-	</div>
-	
-	<div class="form-group">
-		<label for="advertiser">Advertiser</label>
-		<p>
-			<i>The name of the advertiser that owns the ad. Ad name is used for metrics.</i>
-		</p>
-		<input  type="text" 
-				class="form-control" 
-				ngMaxlength="40"
-				name="advertiser" 
-				placeholder="Advertiser" 
-				ng-model="preset.advertiser" />
-	</div>
-	
-	<BR/>
-	
-	<div class="form-group">
-		<label>Article Image</label>
-		<br />
-		<p>
-			<i>Upload a high resolution, .jpg or .png image. The image will be automatically scaled, centered and cropped when it is viewed in the application.</i>
-		</p>
-		<input  type="text" 
-				class="form-control" 
-				name="articleThumb" 
-				placeholder="articleThumb" 
-				ng-model="preset.articleThumb" />
-	</div>	
-	
-	<BR/>
-	
-	<div class="form-group">
-		<label>Social Media Image</label>
-		<br />
-		<p>
-			<i>Social Media Image will be used when sharing an article via email or a social media network. If no Social Media Image is uploaded the article image will be used.</i>
-		</p>
-		<input  type="text" 
-				class="form-control" 
-				name="socialMediaThumb" 
-				placeholder="socialMediaThumb" 
-				ng-model="preset.socialMediaThumb" />
-	</div>	
-	
-	<br/>
-	
-	<div class="form-group">
-		<label for="articleText">Article Text for Social Sharing</label>
-		<p>
-			<i>Text from the first couple paragraphs from the article content to be displayed on the social sharing landing page. If not used, we use the article abstract metadata.</i>
-		</p>
-		<input 	class="form-control" 
-				type="text"
-				placeholder="Article text for Social Sharing"
-				name="articleText"  
-				ngMaxlength="2000"
-				ng-model="preset.articleText"
-				rows="5"/>
-	</div>
-	
-	<br/>
-	
-	<div class="form-group">
-		<label for="socialShareUrl">Social Share URL</label>
-		<p>
-			<i>The social share URL is created by Adobe when the article is published. The social share URL will be displayed to enable customers to use the social share URL for linking purposes.</i>
-		</p>
-		<input 	type="text" 
-				class="form-control" 
-				name="socialShareUrl" 
-				placeholder="Social Share URL" 
-				ng-model="preset.socialShareUrl" />
-	</div>
-	
-	<div class="form-group">
-		<label for="articleUrl">Article URL</label>
-		<p>
-			<i>Provide an Article URL if you have an equivalent article on your web site. The Article URL will be included in the Social Share page providing users with a link to read the article on your web site if they do not have the mobile app or an app is unavailable.</i>
-		</p>
-		<input 	type="text" 
-				class="form-control" 
-				name="articleUrl" 
-				placeholder="Article URL" 
-				ng-model="preset.articleUrl" />
-	</div>	
-
-</div>
-
-<!-- ACTIONS -->
-<button class="btn" ng-click="" ng-if="true">
-	<span class="glyphicon glyphicon-plus"></span> NEW Preset
-</button>
-
-<button class="btn" ng-click="" ng-show="import.edit">
-	<span class="glyphicon glyphicon-ok"></span> SAVE Preset
-</button>
+<!-- IMPORT PRESETS -->
+<p class="text-center ng-scope">
+    <a ng-click="add_import_preset();"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Import Rule</a>
+</p>

@@ -1,35 +1,16 @@
-<!-- MODAL: GROUP ACTION -->
+<p>{{header}} the following entities:</p>
 
-<!-- Modal Header -->
-<div class="modal-header">
-    <button type="button" class="close" ng-click="close()" aria-label="Close" ng-if="complete">
-    	<span aria-hidden="true">&times;</span>
-    </button>
-    <h2 class="modal-title" id="myModalLabel">{{header}} - {{completeCount}}/{{selectedEntities.length}}</h2>
-</div>
+<BR/>
 
-<!-- Modal Body -->
-<div class="modal-body">
-	<p>{{header}} the following entities:</p>
-	
-	<BR/>
-	
-	<!-- Table of status -->
-	<div class="action-status">
-		<div class="action" ng-repeat="entity in selectedEntities">
-			<div class="actionStatus">
-				<span ng-if="entity.action.response" class="glyphicon glyphicon-ok-circle"></span>
-				<span ng-if="!entity.action.response" class="glyphicon glyphicon-remove-circle"></span>
-			</div>
-			<div class="entityName">{{ entity.entityName }}</div>
-			<div class="actionNotes" ng-if="!entity.action.response"> {{entity.message}} </div>
-		</div>
+<!-- Table of status -->
+<div class="action-status">
+	<div class="action" ng-repeat="entity in selectedEntities">
+		<div class="actionStatus">
+			<span ng-if="entity.action.response" class="glyphicon glyphicon-ok-circle"></span>
+			<span ng-if="!entity.action.response" class="glyphicon glyphicon-remove-circle"></span>
+		 {{ entity.entityName }}
+		<div class="actionNotes" ng-if="!entity.action.response"> {{entity.message}} </div>
 	</div>
-  	
-	<br />
 </div>
-
-<!-- Modal Footer -->
-<div class="modal-footer">
-    <button type="button" ng-if="complete" class="btn btn-primary warning" ng-click="close()">OK</button>
-</div>
+	
+<br />

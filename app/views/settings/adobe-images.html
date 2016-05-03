@@ -1,0 +1,25 @@
+<h1>Image Sizes</h1>
+
+<p>For images (content assets) attached to an entity, Adobe will create renditions for cards and layouts using the sizes below.</p>
+<BR/>
+
+<table class="table">
+	<thead>
+		<tr class="table-head">
+			<td></td>
+			<td><b>Image Description</b></td>
+			<td><b>Max width</b></td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="" ng-repeat="image in settings.dps_images">
+			<td class="text-center"><span class="glyphicon glyphicon-remove" aria-hidden="true" ng-click="removeImage(image)"></span></td>
+			<td><input type="text" class="form-control" ng-model="image.description" placeholder="Description"></td> 
+			<td><input type="number" class="form-control" ng-model="image.width" placeholder="Max Width"></td> 
+		</tr>	
+	</tbody>	
+</table>           
+
+<p class="text-center">
+    <a ng-click="addImage()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add a New Image Size</a>
+</p>

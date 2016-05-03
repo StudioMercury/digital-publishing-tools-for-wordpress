@@ -1,13 +1,7 @@
 <div class="list-group coral-sidebar open" ng-controller="sideMenu">
 	<a ui-sref="article.list" class="list-group-item" ng-class="{active: $state.includes('article')}">Articles</a>
-<!--
-	<a beta-ui-sref="banner.list" class="list-group-item disabled" ng-class="{active: $state.includes('banner')}">Banners</a>
-	<a beta-ui-sref="collection.list" class="list-group-item disabled" ng-class="{active: $state.includes('collection')}">Collections</a>
-	<a beta-ui-sref="folio.list" class="list-group-item disabled" ng-class="{active: $state.includes('folio')}">Folios</a>
-	<a beta-ui-sref="publication.list" class="list-group-item disabled" ng-class="{active: $state.includes('publication')}">Publications</a>
-	<a beta-ui-sref="product.list" class="list-group-item disabled" ng-class="{active: $state.includes('product')}">Products</a>
--->
 	<a ui-sref="settings" class="list-group-item" ui-sref-active="active">Settings</a>
 	<a ui-sref="about" class="list-group-item" ui-sref-active="active">About</a>
-	<a ng-href="{{settings.portal_url}}" target="_blank" class="list-group-item">DPS Portal</a>
+	<a ng-href="{{settings.portal_url}}" target="_blank" class="list-group-item"><span class="glyphicon glyphicon-new-window"></span> AEM Mobile Portal</a>
+	<a href="{{config.CMSUrl}}" class="list-group-item"><span class="glyphicon glyphicon-chevron-left"></span> Back to WordPress</a>
 </div>

@@ -1,0 +1,34 @@
+<!-- PUBLICATION TABLE -->
+<h1>Authorized Publications</h1>
+<br />
+
+<table ng-if="settings.publications.length > 0" class="table">
+	<thead>
+		<tr class="table-head">
+			<td><b>Publication Name</b></td>
+			<td><b>Namespace</b></td>
+			<td style="text-align:center;"><b>Default</b></td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="publication in settings.publications">
+			<td>{{publication.title}}</td>
+			<td>{{publication.name}}</td>
+			<td style="text-align:center;"><input type="radio" name="defaultPublication" ng-model="settings.defaultPublication" value="{{publication.id}}"/></td>
+		</tr>
+	</tbody>	
+</table> 
+
+<div class="alert alert-danger text-center" role="alert" ng-if="settings.publications.length < 1">
+	No publications are available. 
+	<div ng-if="settings.canAccessCloud()">Please log into the <a href="{{settings.portal_url}}" target="_blank"><b>DPS Portal</b></a> and create at least one.</div>
+	<div ng-if="!settings.canAccessCloud()">Please enter the Adobe API credentials to see a list of publications.</div>
+</div>
+
+<p class="text-center" ng-if="settings.canAccessCloud()">
+    <br />
+    <a ng-click="" class="clickable"><span ng-click="refresh()"><span class="glyphicon glyphicon-refresh"></span> Refresh List</span></a>
+    <BR/>
+    <span> This list can only be changed in the <a href="{{settings.portal_url}}" target="_blank"><b>AEM Mobile Portal</b></a></span>
+</p>
+

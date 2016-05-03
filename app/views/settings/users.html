@@ -1,0 +1,55 @@
+<h1>Roles & Permissions</h1>
+<p>Create a series of roles to assign to users.</p>
+
+<br />
+
+<table class="table">
+	<thead>
+		<tr class="table-head">
+			<td><b>Name</b></td>
+			<td><b>Permissions</b></td>
+			<td></td>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- ng-repeat="template in settings.roles" -->
+		<tr>
+			<td>Administrator</td>
+			<td>Read / Write / Edit</td>
+			<td>Edit / Trash</td>
+		</tr>		
+	</tbody>
+</table>    
+
+<p class="text-center ng-scope">
+    <a ng-click="addRole()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add a New Role</a>
+</p>                
+
+<br />
+
+<h1>Users</h1>
+<p>Assign users to specified roles and permissions.</p>
+
+<BR/>
+
+<table class="table">
+	<thead>
+		<tr class="table-head">
+			<td><b>User</b></td>
+			<td><b>Role</b></td>
+			<td></td>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- ng-repeat="template in settings.roles" -->
+		<tr>
+			<td>User</td>
+			<td>Administrator</td>
+			<td>Edit / Trash</td>
+		</tr>		
+	</tbody>
+</table> 
+
+<p class="text-center ng-scope">
+    <a ng-click="addRole()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Assign User to Role</a>
+</p>     

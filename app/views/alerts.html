@@ -1,15 +1,28 @@
 <alert ng-repeat="alert in alerts.alerts" class="animate-repeat" type="{{alert.type}}" close="alerts.delete(alert)">
-	{{alert.msg}} 
-	<span ng-if="alert.options.raw" ng-click="alert.showRaw = alert.showRaw ? false : true"> <B class="clickable">[ Show Raw Response ]</B></span>
+	
+	<span class="simple-message"><b>{{alert.msg}}</b></span>
+	<br/>
+	<span class="more-detail" ng-if="alert.options.moreDetail">{{alert.options.moreDetail}}</span>	
+	
+	
+	<span ng-if="alert.options.raw" ng-click="alert.showRaw = alert.showRaw ? false : true">
+		<br/><B class="clickable">[ {{alert.showRaw ? "Hide" : "Show" }} Technical Response ]</B>
+	</span>
+	
 	<div ng-show="alert.showRaw">
-		<BR/>
-		<label>Headers</label>
-		<p>{{alert.options.raw.headers}}</p>
 		
-		<label>Body</label>
-		<p>{{alert.options.raw.body}}</p>
+		<label ng-if="alert.options.responseText">Technical Response</label>
+		<p ng-if="alert.options.responseText">{{alert.options.responseText}}</p>
 		
-		<label>URL</label>
-		<p>{{alert.options.raw.url}}</p>
+		<label ng-if="alert.options.raw.url">URL</label>
+		<p ng-if="alert.options.raw.url">{{alert.options.raw.url}}</p>
+		
+		<label ng-if="alert.options.raw.headers">Headers</label>
+		<p ng-if="alert.options.raw.headers">{{alert.options.raw.headers}}</p>
+		
+		<label ng-if="alert.options.raw.body">Body</label>
+		<p ng-if="alert.options.raw.body">{{alert.options.raw.body}}</p>	
+			
 	</div>
+	
 </alert>

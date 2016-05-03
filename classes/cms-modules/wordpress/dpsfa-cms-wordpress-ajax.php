@@ -5,7 +5,7 @@
  * Class : CMS_Ajax
  * Description: This class contains ajax specific parameters and functions for WordPress.
  */
- 
+
 namespace DPSFolioAuthor;
 
 if( $_SERVER[ 'SCRIPT_FILENAME' ] == __FILE__ )
@@ -17,7 +17,6 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		public function __construct(){ }
 		
 		public function registerHookCallbacks(){
-		// BACKEND	
 			// register entity calls
 			add_action( 'wp_ajax_get_entity', 						array( $this, 'get_entity' ) );
 			add_action( 'wp_ajax_create_entity', 					array( $this, 'create_entity' ) );
@@ -34,43 +33,16 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 			add_action( 'wp_ajax_push_article_folio', 				array( $this, 'push_article_folio' ) );
 			add_action( 'wp_ajax_download_article', 				array( $this, 'download_article' ) );
 			add_action( 'wp_ajax_add_entity_content', 				array( $this, 'add_entity_content' ) );
-			add_action( 'wp_ajax_search_entities', 					array( $this, 'search_entities' ) );
-			add_action( 'wp_ajax_filter_entities', 					array( $this, 'filter_entities' ) );
-			add_action( 'wp_ajax_sync_article', 					array( $this, 'sync_article' ) );
-
+			add_action( 'wp_ajax_sync_entity', 						array( $this, 'sync_entity' ) );
 			// register settings calls
 			add_action( 'wp_ajax_get_settings', 					array( $this, 'get_settings' ) );
 			add_action( 'wp_ajax_save_settings', 					array( $this, 'save_settings' ) );
 			add_action( 'wp_ajax_refresh_settings', 				array( $this, 'refresh_settings' ) );
-
-		// NON BACKEND
-			// register entity calls
-			add_action( 'wp_ajax_nopriv_get_entity', 				array( $this, 'get_entity' ) );
-			add_action( 'wp_ajax_nopriv_create_entity', 			array( $this, 'create_entity' ) );
-			add_action( 'wp_ajax_nopriv_link_entity', 				array( $this, 'link_entity' ) );
-			add_action( 'wp_ajax_nopriv_unlink_entity', 			array( $this, 'unlink_entity' ) );
-			add_action( 'wp_ajax_nopriv_update_entity', 			array( $this, 'update_entity' ) );
-			add_action( 'wp_ajax_nopriv_save_entity', 				array( $this, 'save_entity' ) );
-			add_action( 'wp_ajax_nopriv_delete_entity', 			array( $this, 'delete_entity' ) );
-			add_action( 'wp_ajax_nopriv_entity_list', 				array( $this, 'entity_list' ) );
-			add_action( 'wp_ajax_nopriv_publish_entity', 			array( $this, 'publish_entity' ) );
-			add_action( 'wp_ajax_nopriv_push_entity', 				array( $this, 'push_entity' ) );
-			add_action( 'wp_ajax_nopriv_push_entity_metadata', 		array( $this, 'push_entity_metadata' ) );
-			add_action( 'wp_ajax_nopriv_push_entity_contents', 		array( $this, 'push_entity_contents' ) );
-			add_action( 'wp_ajax_nopriv_push_article_folio', 		array( $this, 'push_article_folio' ) );
-			add_action( 'wp_ajax_nopriv_download_article', 			array( $this, 'download_article' ) );
-			add_action( 'wp_ajax_nopriv_add_entity_content', 		array( $this, 'add_entity_content' ) );
-			add_action( 'wp_ajax_nopriv_search_entities', 			array( $this, 'search_entities' ) );
-			add_action( 'wp_ajax_nopriv_filter_entities', 			array( $this, 'filter_entities' ) );
-			add_action( 'wp_ajax_nopriv_sync_article', 				array( $this, 'sync_article' ) );
-			
-			// register settings calls
-			add_action( 'wp_ajax_nopriv_get_settings', 				array( $this, 'get_settings' ) );
-			add_action( 'wp_ajax_nopriv_save_settings', 			array( $this, 'save_settings' ) );
-			add_action( 'wp_ajax_nopriv_refresh_settings', 			array( $this, 'refresh_settings' ) );
 		}
 		
 		public function create_entity(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
@@ -83,31 +55,32 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$entity->create($cloud);
 				$response["code"] = 200;
 				$response["message"] = "Created " . $entity->entityType;
-				$response['entity'] = $entity;
+				$response['entity'] = $entity->to_array();
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
 				$response["message"] = $error->getMessage();
 				$response["options"] = $error->getOptions();
 				$response["raw"] = $error->getRaw();
 			}
-			$response['phpErrors'] = $errorLogging->getErrors(); 
+			$response['phpErrors'] = $errorLogging->getErrors();
 			$this->return_json($response['code'], $response);
 		}
 		
 		public function link_entity(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
-			
+
 			$entity = $this->construct_entity($data['entity']);
-			$cloudEntity = $this->construct_entity($data['link']);
 			
 			$response = array();
 			try{
-				$entity->link($cloudEntity);
+				$entity->link($data['link']);
 				$response["code"] = 200;
 				$response["message"] = "Linked " . $entity->entityType;
-				$response['entity'] = $entity;
+				$response['entity'] = $entity->to_array();
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
 				$response["message"] = $error->getMessage();
@@ -119,6 +92,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function unlink_entity(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
@@ -130,7 +105,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$entity->unlink();
 				$response["code"] = 200;
 				$response["message"] = "Unlinked " . $entity->entityType;
-				$response['entity'] = $entity;
+				$response['entity'] = $entity->to_array();
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
 				$response["message"] = $error->getMessage();
@@ -142,6 +117,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function publish_entity(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
@@ -153,7 +130,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$entity->publish();
 				$response["code"] = 200;
 				$response["message"] = "Published " . $entity->entityType;
-				$response['entity'] = $entity;
+				$response['entity'] = $entity->to_array();
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
 				$response["message"] = $error->getMessage();
@@ -165,18 +142,24 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function get_entity(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 			
-			$cloud = isset($data['cloud']) ? $data['cloud'] : null;			
+			$cloud = isset($data['cloud']) ? filter_var($data['cloud']) : null;
+			$entity = $this->construct_entity($data, TRUE);
+			if(!empty($entity->entityId)){
+				// update cloud entity if entityId exists
+				$entity->update(true);
+			}
+
 			$response = array();
 			try{
-				$entity = $this->construct_entity($data);
-				if($cloud){ $entity->get($cloud); }
+				$response['entity'] = $cloud ? $entity->get() : $entity->to_array();
 				$response["code"] = 200;
 				$response["message"] = "Here is the " . $entity->entityType;
-				$response['entity'] = $entity;
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
 				$response["message"] = $error->getMessage();
@@ -188,6 +171,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function update_entity(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
@@ -200,7 +185,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$entity->update($cloud);
 				$response["code"] = 200;
 				$response["message"] = "Updated " . $entity->entityType;
-				$response['entity'] = $entity;
+				$response['entity'] = $entity->to_array();
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
 				$response["message"] = $error->getMessage();
@@ -212,6 +197,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function save_entity(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
@@ -224,7 +211,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$entity->save($cloud);
 				$response["code"] = 200;
 				$response["message"] = "Saved " . $entity->entityType;
-				$response['entity'] = $entity;
+				$response['entity'] = $entity->to_array();
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
 				$response["message"] = $error->getMessage();
@@ -236,6 +223,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function delete_entity(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
@@ -259,21 +248,25 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function entity_list(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 			
-			$filter = isset($data['filter']) ? $data['filter'] : null;
+			$filters = isset($data['filters']) ? $data['filters'] : null;
 			$cloud = isset($data['cloud']) ? $data['cloud'] : null;
-			
 			$entity = $this->construct_entity($data);
 			
 			$response = array();
 			try{
-				$entities = $entity->get_list($filter, $cloud);
+				$entities = $entity->get_list($filters, $cloud);
+				$response['entities'] = array();
+				foreach($entities as $entity){
+					array_push($response['entities'], $entity->to_array());
+				}
 				$response["code"] = 200;
-				$response["message"] = "List of " . $entity->entityType . "s";
-				$response['entities'] = $entities;
+				$response["message"] = "List of " . $entity->entityType . " entities";
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
 				$response["message"] = $error->getMessage();
@@ -285,12 +278,14 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function add_entity_content(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			
 			// Check for files
 			if(empty($_FILES)){ $this->return_json(415, array('code' => 415, 'message' => 'Trying to add content but missing the file.')); }
-
+						
 			// Get the entity
 			$entity = $this->construct_entity(json_decode(stripcslashes($_REQUEST['entity']),true));
 			
@@ -299,7 +294,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$entity->add_content($_REQUEST['contentType'], $_FILES);
 				$response["code"] = 200;
 				$response["message"] = "Added contents for " . $entity->entityType;
-				$response['entity'] = $entity;
+				$response['entity'] = $entity->to_array();
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
 				$response["message"] = $error->getMessage();
@@ -311,6 +306,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function push_entity(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
@@ -320,16 +317,14 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 			
 			$response = array();
 			try{
-				$entity->push();
-				$entity->push_content();
-				if($entity->entityType == "article"){
-					$entity->push_article();
+				if(empty($entity->entityId)){
+					$entity->create(true);
 				}
-				
-
+				$entity->push();
+				$entity->push_contents();
 				$response["code"] = 200;
 				$response["message"] = "Pushed " . $entity->entityType;
-				$response['entity'] = $entity;
+				$response['entity'] = $entity->to_array();
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
 				$response["message"] = $error->getMessage();
@@ -341,6 +336,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function push_entity_metadata(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
@@ -352,7 +349,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$entity->push();
 				$response["code"] = 200;
 				$response["message"] = "Pushed " . $entity->entityType;
-				$response['entity'] = $entity;
+				$response['entity'] = $entity->to_array();
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
 				$response["message"] = $error->getMessage();
@@ -364,6 +361,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function push_article_folio(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
@@ -375,7 +374,7 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 				$entity->push_article();
 				$response["code"] = 200;
 				$response["message"] = "Pushed " . $entity->entityType;
-				$response['entity'] = $entity;
+				$response['entity'] = $entity->to_array();
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
 				$response["message"] = $error->getMessage();
@@ -387,6 +386,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function push_entity_contents(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
@@ -396,10 +397,14 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 			
 			$response = array();
 			try{
-				$entity->push_content($content);
+				if(!empty($content)){
+					$entity->push_content($content);
+				}else{
+					$entity->push_contents();
+				}
 				$response["code"] = 200;
-				$response["message"] = "Contents of " . $entity->entityType . "pushed";
-				$response['entity'] = $entity;
+				$response["message"] = "Contents of " . $entity->entityType . " pushed";
+				$response['entity'] = $entity->to_array();
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
 				$response["message"] = $error->getMessage();
@@ -416,36 +421,31 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 			}
 			$entity = $this->construct_entity(array('id' => $_REQUEST['id'], 'entityType' => 'article' ));
 			$bundlr = new Bundlr();
-			$bundlr->download_zip($entity, true);
 			
+			try{
+				$bundlr->download_zip($entity, true);
+			}catch(Error $error){
+				echo "<h1>".$error->getTitle()."</h1>";
+				echo "<p>".$error->getMessage()."</p>";
+				die();
+			}
 		}
 		
-		public function search_entities(){
+		public function sync_entity(){
+			$this->capture_messages('start');
 			
-		}
-		
-		public function filter_entities(){
-			
-		}
-		
-		public function sync_article(){
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			$data = $this->get_response_data();
 			
-			$entity = $this->construct_entity(
-				array(
-					'id' => $data['id'], 
-					'entityType' => 'article'
-				)
-			);
+			$entity = $this->construct_entity($data['entity']);
 			
 			$response = array();
 			try{
-				$entity->sync();
+				$entity->sync($data['presetName']);
 				$entity->refresh();
 				$response["code"] = 200;
-				$response["message"] = "Synced article";
+				$response["message"] = "Entity Synced";
 				$response["entity"] = $entity;
 			}catch(Error $error){
 				$response["code"] = $error->getCode();
@@ -458,6 +458,8 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 		}
 		
 		public function refresh_settings(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			
@@ -466,8 +468,6 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 			$response = array();
 			try{
 				$settings->update_api();
-				$settings->refresh();
-				
 				$response["message"] = "Settings Saved";
 				$response['settings'] = $settings;
 				$response["code"] = 200;
@@ -480,37 +480,49 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 			}
 			$response['phpErrors'] = $errorLogging->getErrors(); 
 			$this->return_json($response["code"], $response);
-			
 		}
 		
 		public function get_settings(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
+			
 			$settings = new Settings();
 			
-			$response = array(
-				"settings" => $settings, 
-				"phpErrors" => $errorLogging->getErrors()
-			);
+			$response = array();
+			try{
+				$settings->update_api();
+				$response["code"] = 200;
+				$response['settings'] = $settings;
+			}catch(Error $error){
+				$response["code"] = 300;
+				$response["message"] = $error->getMessage();
+				$response["options"] = $error->getOptions();
+				$response["raw"] = $error->getRaw();
+				$response['settings'] = $settings;
+			}
 			
-			$this->return_json(200, $response);
+			$response['phpErrors'] = $errorLogging->getErrors(); 
+			$this->return_json($response["code"], $response);
 		}
 		
 		public function save_settings(){
+			$this->capture_messages('start');
+			
 			$errorLogging = new ErrorLogging(); // Capture PHP errors
 			$this->verify_nonce(); // Verify NONCE
 			
 			$data = $this->get_response_data();
 			$settingsData = $data["settings"];
 
-			$settings = new Settings();
-			foreach ( $settingsData as $key => $val) { $settings->$key = $val; }
-			$settings->save();
-			
+			$settings = new Settings($settingsData);
+
 			$response = array();
 			try{
-				$settings->update_api();
+				$settings->save();
 				$settings->refresh();
+				$settings->update_api();
 				$response["message"] = "Settings Saved";
 				$response['settings'] = $settings;
 				$response["code"] = 200;
@@ -525,27 +537,27 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 			$this->return_json($response["code"], $response);
 		}
 		
-		private function construct_entity($data = array()){
-			if(is_array($data)){
-				if($data['entityType'] == "article"){
-					$entity = new Article($data);
-				}else if($data['entityType'] == "collection"){
-					$entity = new Collection($data);
-				}else if($data['entityType'] == "folio"){
-					$entity = new Folio($data);
-				} 
+		private function construct_entity($data = array(), $update = FALSE){
+			if(is_array($data) && !empty($data['entityType'])){
+				$className = 'DPSFolioAuthor\\' .  ucwords($data['entityType']);
+				return new $className($data, $update);
+			}else{
+				$response = array(
+					'code' => 400,
+					'message' => 'Could not get the entity: Invalid data to create entity (' . $data['entityType'] . ').',
+				);
+				$this->return_json($response['code'], $response);
 			}			
-			return $entity;
-		}
-		
-		public function generate_nonce(){
-			return wp_create_nonce( DPSFA_NONCE_KEY );
 		}
 		
 		private function get_response_data(){
 			return json_decode(file_get_contents('php://input'),true);
 		}
 		
+		public function generate_nonce(){
+			return wp_create_nonce( DPSFA_NONCE_KEY );
+		}
+
 		private function verify_nonce(){
 			$headers = array();
 			foreach ($_SERVER as $name => $value){
@@ -566,9 +578,20 @@ if(!class_exists('DPSFolioAuthor\CMS_Ajax')) {
 			}
 		}
 		
+		// Stop PHP from printing errors / messages before sending JSON
+		private function capture_messages($action = "start"){
+			if($action == "start"){
+				ob_start();
+			}else{
+				return ob_get_clean();
+			}
+		}
+		
 		private function return_json($code = 200, $data = array()){
+			$data["serverErrors"] = $this->capture_messages('stop');
+			
 			http_response_code($code);
-			header("Content-Type: application/json; charset=UTF-8");
+			header( 'Content-Type: application/json; charset=UTF-8' );
 			if(!empty($_REQUEST['callback'])){
 				echo $_REQUEST['callback'] . "(" . json_encode($data) . ")";
 			}else{

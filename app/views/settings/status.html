@@ -1,0 +1,49 @@
+
+<h1>System Status</h1>
+
+<br />
+
+<table class="table">
+	<thead>
+		<tr class="table-head">
+			<td colspan="2"><b>Required Libraries</b></td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>ZipArchive</td>
+			<td>
+				<span ng-if="settings.hasZipArchive == true" class="text-success"><i class="glyphicon glyphicon-ok" style="color:green;"></i> Installed</span>
+				<span ng-if="settings.hasZipArchive == false" class="text-danger"><i class="glyphicon glyphicon-remove" style="color:red;"></i> Not Installed</span>
+			</td>
+		</tr>
+		<tr>
+			<td>SimpleXMLElement</td>
+			<td>
+				<span ng-if="settings.hasSimpleXMLElement == true" class="text-success"><i class="glyphicon glyphicon-ok" style="color:green;"></i> Installed</span>
+				<span ng-if="settings.hasSimpleXMLElement == false" class="text-danger"><i class="glyphicon glyphicon-remove" style="color:red;"></i> Not Installed</span>
+			</td>
+		</tr>
+		<tr>
+			<td>DateTime</td>
+			<td>
+				<span ng-if="settings.hasDateTime == true" class="text-success"><i class="glyphicon glyphicon-ok" style="color:green;"></i> Installed</span>
+				<span ng-if="settings.hasDateTime == false" class="text-danger"><i class="glyphicon glyphicon-remove" style="color:red;"></i> Not Installed</span>
+			</td>
+		</tr>	
+		<tr>
+			<td>Exception</td>
+			<td>
+				<span ng-if="settings.hasException == true" class="text-success"><i class="glyphicon glyphicon-ok" style="color:green;"></i> Installed</span>
+				<span ng-if="settings.hasException == false" class="text-danger"><i class="glyphicon glyphicon-remove" style="color:red;"></i> Not Installed</span>
+			</td>
+		</tr>								
+	</tbody>
+</table> 
+
+
+<br />
+
+<p class="text-center">
+	<hr />
+</p>

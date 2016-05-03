@@ -13,6 +13,7 @@
     "angular-bootstrap": "~0.13.0",
     "ng-tags-input": "2.3.0",
     "angular-file-upload": "~1.1.5",
-    "message-center": "~1.1.4"
+    "message-center": "~1.1.4",
+    "ngInfiniteScroll": "~1.2.1"
   }
 }

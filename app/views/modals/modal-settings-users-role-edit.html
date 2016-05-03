@@ -1,0 +1,50 @@
+<!-- NAME -->
+<h2>Edit Role</h2>
+
+<div class="form-group">
+	<label for="name">Role Name</label>
+	<input 	type="text" 
+			class="form-control" 
+			name="name" 
+			placeholder="Name" 
+			ng-model="role.name" />
+</div>	
+
+<!-- PERMISSIONS -->
+
+<!-- SETTINGS -->
+<div class="checkbox">
+	<label for="hideFromBrowsePage">
+	    <input  type="checkbox" 
+				name="settings_edit" 
+				ng-model="role.settings_edit" />
+	    &nbsp; Allow editing of Settings				
+    </label>				
+</div>
+
+<!-- PUBLICATIONS -->
+Access to the following publications
+<div class="checkbox" ng-repeat="">
+	<label for="hideFromBrowsePage">
+	    <input  type="checkbox" 
+				name="hideFromBrowsePage" 
+				ng-model="role.settings_edit" />
+	    &nbsp; PUBLICATION NAME				
+    </label>				
+</div>
+
+<!-- ENTITIES -->
+<div class="form-group">
+	<label for="name">Preset Entity Type</label>
+	<BR/>
+	<select ng-model="preset.entity" name="entity" ng-change="preset = {name: preset.name, entity: preset.entity}">
+		<option value="">Select an Entity Type</option>
+		<option value="article">Articles</option>
+	</select>
+</div>
+
+<!-- ACTIONS -->
+<div class="text-right">
+	<button class="btn btn-secondary" ng-click="cancel()"><span class="glyphicon glyphicon-close"></span> Cancel</button>
+    <button class="btn btn-primary" ng-click="save()"><span class="glyphicon glyphicon-save"></span> Save</button>
+</div>

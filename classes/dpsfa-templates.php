@@ -16,18 +16,19 @@ if(!class_exists('DPSFolioAuthor\Templates')) {
     class Templates {
 	    
 	    private $templateFolder = "publish-templates";
+	    public $templates = array();
 		
-	    public function __construct() { }
+	    public function __construct() { 
+		    $this->get_templates();
+	    }
 		
 		public function get_templates(){
-			$customTemplates = $this->get_custom_templates();
-			return !empty($customTemplates) ? $customTemplates : $this->get_plugin_templates();
+			$this->templates = array_merge($this->get_custom_templates(), $this->get_plugin_templates());
 		}
 		
 		public function get_default(){
 			$Settings = new Settings();
-			$templates = $this->get_templates();
-			foreach($templates as $template){
+			foreach($this->templates as $template){
 				if($template['path'] == $Settings->defaultTemplate){
 					return $template;
 				}
@@ -36,8 +37,7 @@ if(!class_exists('DPSFolioAuthor\Templates')) {
 		}
 		
 		public function get_template($name){
-			$template = $this->get_templates();
-			foreach($template as $template){
+			foreach($this->templates as $template){
 				if($template['name'] == $name){
 					return $template;
 				}
@@ -45,18 +45,27 @@ if(!class_exists('DPSFolioAuthor\Templates')) {
 			return false;
 		}
 		
+		public function template_exists($templatePath){
+			$exists = false;
+		    foreach($this->templates as $template){
+			    if($template["path"] == $templatePath){
+				    $exists = true;
+				}
+		    }
+		    return $exists;
+		}
+		
 		// Look for templates in the CMS 
 		public function get_custom_templates(){
 			$CMS = new CMS();
-			$templates = $CMS->get_custom_templates($this->templateFolder);
-			return $templates;
+			return $CMS->get_custom_templates($this->templateFolder);
 		}
 		
 		// Look for templates in the plugin folder
 		public function get_plugin_templates(){
-			$directory = DPSFA_DIR . "/" . $this->templateFolder;
-			$files = scandir($directory);
 			$templates = array();
+			$directory = DPSFA_DIR . "/" . $this->templateFolder;
+			$files = file_exists($directory) ? @scandir($directory) : array();
 			foreach($files as $file){
 				if(strlen($file) > 4){
 					$fileParts = pathinfo($file);
@@ -64,11 +73,13 @@ if(!class_exists('DPSFolioAuthor\Templates')) {
 						array_push($templates, array(
 							"name" => $file, 
 							"path" => $directory . "/" . $file, 
-							"modified" => date("F d Y H:i:s", filemtime($directory . "/" . $file))
+							"modified" => date("F d Y H:i:s", filemtime($directory . "/" . $file)),
+							"location" => "Plugin"
 						));
 					}
 				}
 			}
+			
 			return $templates;
 		}
 					        

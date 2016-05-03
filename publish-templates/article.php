@@ -1,21 +1,21 @@
 <?php
 /*
-Template Name: Adobe DPS - Sample Article
+Template Name: AEM Mobile - Sample Article
 */
 ?>
 
 <?php
-	/* ================== */
-	/* Adobe DPS Required */
-	/* ================== */
+	/* =================== */
+	/* AEM Mobile Required */
+	/* =================== */
 	
 	
-	
-	/* FILE PATH FOR BUNDLE (publish templates in the plugin folder vs theme folder) */ 
+	/* FILE PATH FOR THE BUNDLER */
+	/* Sets the file path based on the plugin or theme folder */ 
 	$isInPlugin = (strpos(__FILE__, DPSFA_DIR_NAME . "/publish-templates") !== FALSE); 
 	if($isInPlugin){
 		// Create file path based on plugin folder
-    	$filePath = ($_SERVER['SERVER_NAME'] == 'localhost') ? plugins_url(). '/' . DPSFA_DIR_NAME . '/publish-templates/' : plugin_dir_url( (__FILE__) . "/publish-templates/");
+    	$filePath = ($_SERVER['SERVER_NAME'] == 'localhost') ? plugins_url(). '/' . DPSFA_DIR_NAME . '/publish-templates/' : plugin_dir_url( (__DIR__) . "/publish-templates/");
 	}else{
 		// Create file path based on template folder
     	$filePath = get_template_directory_uri(). "/publish-templates/";
@@ -25,15 +25,11 @@ Template Name: Adobe DPS - Sample Article
 
 
 <?php	 
-	/* Additional options during the bundle */
-    if( isset($_GET["bundlr"]) ) {
-	    // This could be used for changing links to navto:// links
-        $urlPath = 'navto://';
-    }
-    
+
+	/* =========================================== */
+	/* == WP Filter to include additional files == */
+	/* =========================================== */
 	/*
-		===========================================
-	    == WP Filter to include additional files ==
 	    You can add additional files to the article using the filter below. You can add file two ways:
 	    	    
 	    1. Automatic: Specify full url to file (array of images)

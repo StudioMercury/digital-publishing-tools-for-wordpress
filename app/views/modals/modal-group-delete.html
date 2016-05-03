@@ -1,8 +1,7 @@
-<!-- MODAL: DELETE ENTITY -->
-
+<!-- MODAL: DELETE GROUP -->
 <!-- Modal Header -->
 <div class="modal-header">
-    <button type="button" class="close" ng-click="close()" aria-label="Close">
+    <button type="button" class="close" ng-click="cancel()" aria-label="Close">
     	<span aria-hidden="true">&times;</span>
     </button>
     <h2 class="modal-title" id="myModalLabel">Are you sure you want to delete?</h2>
@@ -10,24 +9,22 @@
 
 <!-- Modal Body -->
 <div class="modal-body">
-	<p>
-		You can not undo this action and the {{ entity.entityType }} will be deleted forever.
-	</p>
 	
-	<!-- If entity exists in the cloud too -->
-	<p ng-if="(entity.entityId.length > 0) && settings.canAccessCloud()">
-		There is also a linked {{ entity.entityType }} in the cloud. Would you like to delete this one as well? This action can not be undone.
-		<BR/><BR/>
-		<input type="checkbox" ng-model="action.fromCloud" name="fromCloud"/><b> Delete the linked {{ entity.entityType }} from the cloud</b>
-	</p>
-  	
-	<br />
-	  	
+	<div ng-if="!startingAction">
+		<p>
+			This will only delete the {{ selectedEntities[0].entityType }}s from the CMS. If you want to delete them from the AEM cloud, select "AEM Mobile" and click "Delete from the cloud". 
+		<BR/>
+		<BR/>
+			<i>You can not undo this action and the {{ selectedEntities[0].entityType }}s will be deleted forever.</i>
+		</p>
+	</div>
+
+	<div ng-if="startingAction" ng-include="config.viewPath + 'views/modals/modal-group-action.html'"></div>
 </div>
 
 <!-- Modal Footer -->
 <div class="modal-footer">
     <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
-    <button type="button" ng-if="!action.fromCloud" class="btn btn-primary warning" ng-click="doAction(entity.delete(), 'delete')">Delete</button>
-    <button type="button" ng-if="action.fromCloud" class="btn btn-primary warning" ng-click="doAction([entity.delete(),entity.delete(fromCloud)], 'delete')">Delete from Both</button>
+    <button type="button" ng-if="!startingAction" class="btn btn-primary warning" ng-click="startAction()">Delete</button>
+    <button type="button" ng-if="startingAction" class="btn btn-primary warning" ng-click="close()">OK</button>
 </div>

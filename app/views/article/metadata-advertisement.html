@@ -18,7 +18,7 @@
 			<i>Specify if an ad is static or enhanced for tablets (EFT).</i>
 		</p>
 		
-		<select class="form-control" ng-options="adType for adType in ['Static','EFT']" ng-model="article.adType"></select>					
+		<select class="form-control" ng-options="adType for adType in ['static','eft']" ng-model="article.adType"></select>					
 	</div>
 								    
 </div>			
@@ -33,7 +33,7 @@
 		</p>
 		<input  type="text" 
 				class="form-control" 
-				ngMaxlength="40"
+				ng-maxlength="40"
 				name="adCategory" 
 				placeholder="Ad Category" 
 				ng-model="article.adCategory" />
@@ -46,7 +46,7 @@
 		</p>
 		<input  type="text" 
 				class="form-control" 
-				ngMaxlength="40"
+				ng-maxlength="40"
 				name="advertiser" 
 				placeholder="Advertiser" 
 				ng-model="article.advertiser" />

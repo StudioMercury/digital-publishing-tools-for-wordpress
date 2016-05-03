@@ -1,0 +1,40 @@
+<h1>Device Preview Sizes</h1>
+
+<br />
+
+<table class="table">
+	<thead>
+		<tr class="table-head">
+			<td></td>
+			<td><b>Title</b></td>
+			<td><b>Target OS*</b></td>
+			<td><b>Width</b></td>
+			<td><b>Height</b></td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="" ng-repeat="device in settings.dps_devices">
+			
+			<td class="text-center"><span class="glyphicon glyphicon-remove" aria-hidden="true" ng-click="removeDevice(device)"></span></td>
+			<td><input type="text" class="form-control" ng-model="device.title" placeholder="Device" /></td> 
+			<td>
+				<select ng-model="device.os">
+					<option value="">Select an OS</option>
+					<option value="ios">iOS</option>
+					<option value="android">Android</option>
+					<option value="windows">Windows</option>
+				</select>
+			</td>
+			<td><input type="number" class="form-control" ng-model="device.width" placeholder="Width" /></td>
+			<td><input type="number" class="form-control" ng-model="device.height"  placeholder="Height" /></td>
+		</tr>	
+	</tbody>	
+</table>  
+
+<small>*Target OS is for metadata purposes. The plugin does not currently distribute content based on OS.</small>         
+<BR/>
+<BR/>
+
+<p class="text-center">
+    <a ng-click="addDevice()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add a New Target Device</a>
+</p>

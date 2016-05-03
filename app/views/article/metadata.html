@@ -1,10 +1,15 @@
 <div id="article-metadata">
     <br /><br />
+	<form name="metadata">
 	<tabset class="nav">
-		
 		<!-- Article Metadata: Article Metadata --> 
-		<tab heading="Article Metadata" role="presentation">
+		<tab heading="Metadata" role="presentation">
 			<div ng-include="config.viewPath + 'views/article/metadata-general.html'"></div>
+		</tab>
+		
+		<!-- Article Metadata: Template --> 
+		<tab heading="Template" role="presentation">
+			<div ng-include="config.viewPath + 'views/article/metadata-template.html'"></div>
 		</tab>
 		
 		<!-- Article Metadata: Images --> 
@@ -26,6 +31,6 @@
 		<tab heading="Advanced" role="presentation">
             <div ng-include="config.viewPath + 'views/article/metadata-advanced.html'"></div>
 		</tab>
-		
 	</tabset>
+	</form>
 </div>

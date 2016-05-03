@@ -17,6 +17,21 @@
 	<br />
 	
 	<div class="form-group">
+		<label for="id">Entity ID</label>
+		<p>
+			<i>Each article has an entity ID that uniquely identifies it in the cloud</i>
+		</p>
+		<input 	type="text" 
+				class="form-control" 
+				name="id" 
+				placeholder="Entity ID" 
+				ng-model="article.entityId" 
+				disabled />
+	</div>	
+	
+	<br />
+	
+	<div class="form-group">
 		<label for="version">Article Version</label>
 		<p>
 			<i>Each time the entity changes a new version of the entity is created</i>

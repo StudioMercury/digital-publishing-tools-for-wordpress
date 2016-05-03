@@ -1,20 +1,20 @@
 === Digital Publishing Tools for WordPress ===
 Contributors: StudioMercury
-Tags: digital publishing, publishing, Adobe, DPS, Digital Publishing Solution
+Tags: digital publishing, publishing, Adobe, AEM Mobile, Adobe Experience Manager Mobile, DPS, Digital Publishing Solution   
 Requires at least: 3.5
 Tested up to: 4.3.1
-Stable tag: 2.0.7
+Stable tag: 2.1
 License: GPLv2 or later
 
-Digital Publishing Tools for WordPress allows anyone to create HTML articles for Adobe's Digital Publishing Solution directly from WordPress.
+Digital Publishing Tools for WordPress allows anyone to create HTML articles for Adobe Experience Manager Mobile (AEM Mobile) directly from WordPress.
 
 == Description ==
 
-Digital Publishing Tools for WordPress is a plugin that allows anyone to create HTML articles for Adobe's Digital Publishing Solution directly from WordPress.
+Digital Publishing Tools for WordPress is a plugin that allows anyone to create HTML articles for Adobe Experience Manager Mobile (AEM Mobile) directly from WordPress.
 
 = Prerequisite Knowledge =
 
-Experience with WordPress (Content Management System) and knowledge of the Adobe Digital Publishing Solution is required. This plugin also assumes you have access to a web server and have basic HTML/CSS knowledge.
+Experience with WordPress (Content Management System) and knowledge of Adobe Experience Manager Mobile (AEM Mobile) is required. This plugin also assumes you have access to a web server and have basic HTML/CSS knowledge.
 
 = Requirements =
 
@@ -25,7 +25,7 @@ WordPress 3.5 +
 * FTP access to the server to install the plugin  
 
 = Optional But Recommended =
-<a href="http://www.adobe.com/products/digital-publishing-solution.html">Adobe Digital Publishing Solution</a> API access
+<a href="http://www.adobe.com/marketing-cloud/enterprise-content-management/mobile-app-development.html">Adobe Experience Manager Mobile (AEM Mobile)</a> API access
 
 == Installation ==
 
@@ -64,10 +64,29 @@ We haven't tested or explicitly built the plugin to work with Wordpress MU. That
 
 1. Keep track of all of your articles. You can easily create new or import existing articles directly from WordPress.
 2. Easily edit Article metadata.
-3. Preview articles before you export them or upload them into the Adobe Digital Publishing Solution platform.
-4. The plugin works with Adobe's Digital Publishing Solution. Entering API credentials for DPS will allow you to upload and manipulate articles in Adobe's platform.
+3. Preview articles before you export them or upload them into Adobe Experience Manager Mobile (AEM Mobile).
+4. The plugin works with Adobe Experience Manager Mobile (AEM Mobile). Entering API credentials for AEM Mobile will allow you to upload and manipulate articles in Adobe's platform.
 
 == Changelog ==
+
+= 2.1 =
+** New Features ** 
+* Import Presets: You can now customize how post data is imported as an AEM Mobile Article
+* Added the ability to create new device preview sizes for use when editing articles. 
+* Added Image Sizes for use in AEM Mobile's cards/layout view.
+* Sync allows you to pull changes from the original article if you've made updates to the original post. 
+* System Status shows you all required libraries and if they are installed on your server.
+
+** Enhancements **
+* Article List View now lazy loads to prevent memory errors
+* UI Enhancements
+* New tooltips in the Article List View to expand on what the cloud icons mean
+
+
+** General **
+* New plugin web site with better documentation and new support options
+* Metadata validation to prevent errors when pushing content to AEM Mobile
+* Changed references to DPS to AEM Mobile
 
 = 2.0.10 =
 * TEMPLATE CHANGES
@@ -81,11 +100,11 @@ We haven't tested or explicitly built the plugin to work with Wordpress MU. That
 -- There's a new way to add files to the .article using the `dpsfa_bundle_article` filter:
 
 Automatic: Specify full url to file (array of images)
-Specifying the full url will create the necessary folder scructure in the article and download the external file
+Specifying the full url will create the necessary folder structure in the article and download the external file
 Folder structure for external resources: ARTICLE > sanitized hostname > path > file
 Example: array('http://www.domain.com/wp-content/themes/theme/file.jpg') will put that file in the article as: domaincom/wp-content/themes/theme/file.jpg
     
-Manual: Specify the full paths array( "file path relative in article" => "filepath relative to server (or url)" )
+Manual: Specify the full paths array( "file path relative in article" => "file path relative to server (or url)" )
 You can have control over where the file is placed in the article and where to pull it from the server
 Example: array( array('slideshow/image/file.jpg' => 'www/wp-content/themes/theme/file.jpg') ) will put that file in the article as: domaincom/wp-content/themes/theme/file.jpg
 

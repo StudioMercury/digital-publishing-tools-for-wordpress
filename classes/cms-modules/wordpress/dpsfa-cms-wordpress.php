@@ -15,7 +15,6 @@ namespace DPSFolioAuthor;
 if( $_SERVER[ 'SCRIPT_FILENAME' ] == __FILE__ )
     die( 'Access denied.' );
 
-
 // Load all wordpress classes:
 require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-cpt-article.php' ); // Class for WP Article Post Type
 require_once(  DPSFA_DIR . '/classes/cms-modules/wordpress/dpsfa-cms-wordpress-ajax.php' );	// Class for WP Ajax Calls	
@@ -26,10 +25,9 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
                 
         public function __construct() { }
         
-        
 // ===== CMS INIT functions ===== //
 		public function init(){
-	    	if(DPSFA_DEBUGMODE) log_message("CMS: Initializing WordPress CMS Module.");
+	    	log_message("CMS: Initializing WordPress CMS Module.");
 			
 			// Register CMS callbacks
             $this->registerHookCallbacks();
@@ -52,10 +50,6 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
     		$Article = new CMS_Article();
     		$Article->registerHookCallbacks();
     		
-    		// Register Issue (folio) Posttype
-    		//$Issue = new CMS_Issue();
-    		//$Issue->registerHookCallbacks();
-    		
     		// Register Collection Posttype
     		//$Collection = new CMS_Collection();
     		//$Collection->registerHookCallbacks();  
@@ -77,8 +71,7 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
         }
         
         public function initcms(){
-	        //$this->setImageSizes();
-	        //$this->loadResources();
+	        
         }
 		
 		static function activate(){}
@@ -103,11 +96,10 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 					return $article->template;
 				}else{
 					$Template = new Templates();
-					$templates = $Template->get_templates();
-					if(empty($templates) || !file_exists($templates[0]['path'])){
+					if(empty($Template->templates) || !file_exists($Template->templates[0]['path'])){
 						die("There are no valid templates available.");
 					}else{
-						return $templates[0]['path'];
+						return $Template->templates[0]['path'];
 					}
 				}
 			}
@@ -121,6 +113,7 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 		
 		public function plugin_page(){
 			// TODO: Compress these into two files: one script one css
+			
 			// APP SCRIPTS
 			wp_enqueue_script( 'DPSFolioAuthor-angular', plugins_url( DPSFA_DIR_NAME . '/app/bower_components/angular/angular.min.js' ));
 			wp_enqueue_script( 'DPSFolioAuthor-angular-animate', plugins_url( DPSFA_DIR_NAME . '/app/bower_components/angular-animate/angular-animate.min.js') );
@@ -130,6 +123,7 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 			wp_enqueue_script( 'DPSFolioAuthor-angular-bootstrap', plugins_url( DPSFA_DIR_NAME . '/app/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js') );
 			wp_enqueue_script( 'DPSFolioAuthor-ng-tags-input', plugins_url( DPSFA_DIR_NAME . '/app/bower_components/ng-tags-input/ng-tags-input.min.js') );
 			wp_enqueue_script( 'DPSFolioAuthor-angular-file-upload', plugins_url( DPSFA_DIR_NAME . '/app/bower_components/angular-file-upload/angular-file-upload.min.js') );
+			wp_enqueue_script( 'DPSFolioAuthor-angular-infinite-scroll', plugins_url( DPSFA_DIR_NAME . '/app/bower_components/ngInfiniteScroll/build/ng-infinite-scroll.min.js') );
 
 			wp_enqueue_script( 'DPSFolioAuthor-app', plugins_url( DPSFA_DIR_NAME . '/app/scripts/app.js') );
 			wp_enqueue_script( 'DPSFolioAuthor-controllers', plugins_url( DPSFA_DIR_NAME . '/app/scripts/controllers.js') );
@@ -142,7 +136,6 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 			wp_enqueue_style( 'DPSFolioAuthor-theme', plugins_url( DPSFA_DIR_NAME . '/app/bower_components/adobe-coral-bootstrap-theme/css/theme.css') );
 			wp_enqueue_style( 'DPSFolioAuthor-ui-bootstrap-csp', plugins_url( DPSFA_DIR_NAME . '/app/bower_components/angular-bootstrap/ui-bootstrap-csp.css') );
 			wp_enqueue_style( 'DPSFolioAuthor-ng-tags', plugins_url( DPSFA_DIR_NAME . '/app/bower_components/ng-tags-input/ng-tags-input.bootstrap.min.css') );
-
 			
 			// LOCALIZE SCRIPT
 			$WPAjax = new CMS_Ajax();
@@ -158,99 +151,251 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 		
 	
 // ===== ENTITY functions ===== //
-		public function get_cms_entity($entityType){
-			if($entityType == 'article'){
-				return new CMS_Article();
-			}else if($entityType == 'collection'){
-				return new CMS_Collection();
-			}else if($entityType == 'folio'){
-				return new CMS_Folio();
-			}else{
-				die("CAN'T FIND ENTITY TYPE: $entityType");
+		public function create_entity($entityType = "article", $data = array()){
+			$id = $this->create_cms_entity($entityType);
+			
+			// Populate entity with data
+			if(!empty($data)){ 
+				$this->save_entity($id, $entityType, $data); 
+			}
+			
+			return $id;
+		}
+		
+		public function get_entity_data($id){
+			// Get the post
+			$post = get_post($id);
+			
+			// Get the post Metadata (custom fields)
+			$meta = get_post_meta($id);
+			
+			// Get the entity type from the post
+			$entityType = $this->get_entity_type($post->post_type);
+			
+			// Assemble data (custom fields)
+			$data = array();
+			foreach($meta as $rawKey => $value){
+				$key = str_replace($post->post_type . '_', '', $rawKey);
+				if(is_array($value) && !empty($value)){
+					$data[$key] = maybe_unserialize(reset($value));
+				}
+			}
+			
+			// Upgrade entity (if not current version)
+			if(empty($data['entityVersion']) || $data['entityVersion'] < DPSFA_Entity_Version){
+				$data = $this->upgrade_entity($id, $entityType, $data);
+			}
+			
+			// If entityName is blank, make sure it has one
+			if(empty($data['entityName'])){
+				$this->save_field($id, $entityType, 'entityName', $post->post_name);
+				$data['entityName'] = $this->get_field($id, $entityType, 'entityName');
+			}			
+			
+			// Add other post data
+			$data["id"] = $id;
+			$data["body"] = $post->post_content;
+			$data["local_modified"] = $post->post_modified;
+			$data["cmsPreview"] = get_permalink($id);
+			$data["editUrl"] = get_edit_post_link($id, '');
+						
+			// Return entity data
+			return $data;
+		}
+		
+		public function upgrade_entity($id, $entityType, $data){
+			// If no entity Version || version <= 2.1
+			if(empty($version) || $version < 2.2){
+				// As of 2.1, contents are handled differently:
+				foreach($data['contents'] as $key => $value){
+					if(is_array($value) && array_key_exists('id',$value)){
+						$this->save_field($id, $entityType, $key, $value['id']);
+						$data[$key] = $value['id'];
+					}
+				}
+				$this->save_field($id, $entityType, 'entityVersion', DPSFA_Entity_Version);
+			}
+			return $data;
+		}
+		
+		/*  FILTERS 
+			limit: 30 - the number of entities to return
+			page: 1 - the page based on the limit
+			metadata: array() - an array of metadata to filter by
+		*/
+		public function get_entity_list($entityType, $filters = array()){
+			$entities = array();
+			
+			$args = array(
+				'posts_per_page' => isset($filters['limit']) ? $filters['limit'] : 30,
+				'paged' => isset($filters['page']) ? $filters['page'] : 1,
+				'post_type' => $this->get_entity_slug($entityType),
+			);
+
+			if( isset($filters['orderby']) ){
+				$args['orderby']  = 'meta_value';
+				$args['order']  = isset($filters['order']) ? $filters['order'] : "ASC";
+				$args['meta_key'] = $this->get_entity_slug($entityType) . '_' . $filters['orderby'];
+			}
+
+			$query = new \WP_Query($args);
+			if($query->have_posts()){
+				while($query->have_posts()){
+					$query->the_post();
+					array_push($entities, $query->post->ID);
+				}
+			}
+			return $entities;
+		}
+		
+		public function save_entity($id, $entityType, $data){
+			foreach( $data as $key => $value ){
+				$this->save_field($id, $entityType, $key, $value);
 			}
 		}
-		
-		public function get_entity($entity){
-			$cmsEntity = $this->get_cms_entity($entity->entityType);
-			return $cmsEntity->get($entity->id);
-		}
-		
-		public function get_entity_data($entity){
-			$cmsEntity = $this->get_cms_entity($entity->entityType);
-			$data = $cmsEntity->get_data($entity->id);
-			return is_array($data) ? $data : array();
-		}
-		
-		public function entity_list($entityType, $filter){
-			$cmsEntity = $this->get_cms_entity($entityType);
-			return $cmsEntity->get_list($filter);
-		}
-		
-		public function create_entity($entity){
-			$cmsEntity = $this->get_cms_entity($entity->entityType);
-			$cmsEntity->create($entity);
-		}
-		
-		public function save_entity($entity){
-			$cmsEntity = $this->get_cms_entity($entity->entityType);
-			$cmsEntity->save($entity);
-		}
-		
-		public function save_field($entity, $field){
-			$cmsEntity = $this->get_cms_entity($entity->entityType);
-			$cmsEntity->save_field($entity, $field, $entity->$field);
-		}
-		
-		public function delete_entity($entity){
-			$cmsEntity = $this->get_cms_entity($entity->entityType);
-			$cmsEntity->delete($entity);
-		}
-		
-		public function update_entity($entity){
-			$cmsEntity = $this->get_cms_entity($entity->entityType);
-			$cmsEntity->update($entity);
-		}
-		
-		public function handle_file_upload($entity, $FILE){
-			return media_handle_upload(key($FILE), $entity->id, array(), array( 'test_form' => false ));
-		}
-		
-		public function add_entity_content($entity, $type, $attachment_id){
-			if(!is_wp_error($attachment_id)){
-				$attachmentThumb = wp_get_attachment_image_src($attachment_id, array(500,500));
-				$entity->contents[$type] = array(
-					'id' => $attachment_id,
-					'thumbnail' => $attachmentThumb[0],
-					'original' => wp_get_attachment_url($attachment_id),
-					'path' => get_attached_file($attachment_id)
-				);
-				$entity->$type = $entity->contents[$type]['original'];
-				$typeId = $type . "Id";
-				$entity->$typeId = $attachment_id;
-				$entity->save();
-				return $attachment_id;
+
+		public function save_field($id, $entityType, $field, $value){
+			$slug = $this->get_entity_slug($entityType);
+
+			// Exception for EntityName, push this to the title to make it easier to read
+			if($field == 'entityName'){
+				// If value is empty, use the post slug
+				if(empty($value)){
+					$post = get_post($id);
+					$value = $post->post_name;
+				}
+				// Verify entity name doesn't exist, if it does, make it unique
+				$exists = $this->entity_name_exists($entityType, $value);
+				if($exists !== FALSE && $exists != $id){
+					$value = $value . "-1";
+					while($this->entity_name_exists($entityType, $value)){
+						$value++;
+					}
+				}
+			}
+			
+			if( $value === null || $value == "" ){
+				return delete_post_meta($id, $slug . '_' . $field);
 			}else{
-				return FALSE;
+				return update_post_meta($id, $slug . '_' . $field, $value);
 			}
 		}
-        
+				
+		public function delete_field($id, $entityType, $field){
+			$slug = $this->get_entity_slug($entityType);
+			return delete_post_meta($id, $slug . '_' . $field);
+		}
+		
+		public function get_field($id, $entityType, $field){
+			$slug = $this->get_entity_slug($entityType);
+			return get_post_meta($id, $slug . '_' . $field);
+		}
+		
+		public function delete_entity($id){
+			return wp_delete_post($id, true);
+		}
+				
+		public function duplicate_entity($id, $entityType = "article"){
+			// Create entity
+			$entityId = $this->create_entity($entityType);
+			
+			// Sync from origin
+			$this->sync_from_origin($id, $entityId);
+			
+			// Return new entity id
+			return $entityId;
+		}
+		
+		public function handle_file_upload($id, $FILE){
+			return media_handle_upload(key($FILE), $id, array(), array( 'test_form' => false ));
+		}
+				
+		public function get_entity_content($contentId){
+			$content = array(
+				'id' => $contentId,
+				'path' => get_attached_file($contentId),
+				'url' => wp_get_attachment_url($contentId),
+			);
+			
+			if(wp_attachment_is_image($contentId)){
+				$sizes = get_intermediate_image_sizes();
+				$uploads = wp_upload_dir();
+				$content["sizes"] = array();
+				foreach($sizes as $size){
+					$image = image_get_intermediate_size($contentId, $size);
+					$url = wp_get_attachment_image_src($contentId, $size);
+					$path = $uploads['basedir'] . "/" . $image['path'];
+					$content["sizes"][$size] = array(
+						'path' => $path,
+						'url' => $url[0],
+					);
+				}
+			}
+			
+			return $content;
+		}
+		
+		public function origin_exists($id){
+			$origin = get_post($id);
+			return empty($origin) ? false : true;
+		}
+				
+		private function get_entity_slug($entityType){
+			return DPSFA_PREFIX . $entityType;
+		}
+		
+		private function get_entity_type($postType){
+			return str_replace(DPSFA_PREFIX, '', $postType);
+		}
+		
+		private function create_cms_entity($entityType = null, $entityName = null){			
+			$args = array(
+				'post_title' => "$entityType created at " . time(),
+				'post_type' => $this->get_entity_slug($entityType),
+				'post_content' => '',
+				'post_excerpt' => '',
+				'post_status' => 'publish'
+			);
+			
+			$postID = wp_insert_post($args);
+			
+			if(!is_wp_error($postID)){
+				return $postID;
+			}else{
+				$error = new Error("Error", 400);
+				$error->setTitle('Could not create entity');
+				$error->setMessage('Wordpress could not create the entity');
+				$error->setRaw($post);
+				throw $error;
+			}
+			return $id;
+		}
+		
+		private function entity_name_exists($entityType, $name){
+			$postType = $this->get_entity_slug($entityType);
+			$entityExistsArgs = array(
+				'numberposts'	=> 1,
+				'post_type'		=> $postType,
+				'meta_key'		=> $postType . '_entityName',
+				'meta_value'	=> $name
+			);
+			$postsExist = new \WP_Query( $entityExistsArgs );
+			wp_reset_postdata();
+			return ($postsExist->found_posts > 0) ? $postsExist->posts[0]->ID : FALSE;
+		}
+
+
+       
 // ===== SETTINGS functions ===== //
 		private function registerSettings(){
 			# only adds an empty option if one does not exist yet
             # helps to fix double validation when inserting new option
-            
+
             // Register Settings options
             $settings_fields = $this->get_settings_fields();
             foreach($settings_fields as $key => $value){
 	            add_option(DPSFA_PREFIX . $key, $value);
 	        }
-                        
-            // Register Devices options
-            add_option(DPSFA_PREFIX . 'devices', array());
-            
-            // Register Publications options
-            add_option(DPSFA_PREFIX . 'publications', array());
-
 		}
 		
 		static function register_wp_settings_page(){
@@ -275,8 +420,12 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 		
 		public function save_settings($settings){
 			foreach($settings as $key => $value){
-				update_option( DPSFA_PREFIX . $key, $value );
+				$this->save_setting($key, $value);
 			}
+		}
+		
+		public function save_setting( $key, $value ){
+			update_option( DPSFA_PREFIX . $key, $value );
 		}
 		
 		private function decrypt($string) {
@@ -338,12 +487,12 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 			$templates = array();
 			foreach($files as $file){
 				$fileParts = pathinfo($file);
-				if($fileParts['extension'] == "php"){
+				if(isset($fileParts['extension']) && $fileParts['extension'] == "php"){
 					array_push($templates, array(
 						"name" => $file, 
 						"path" => $directory . "/" . $file, 
 						"modified" => date("F d Y H:i:s", filemtime($directory . "/" . $file)),
-						"type" => "Custom"));
+						"location" => "Theme"));
 				}
 			}
 			return $templates;
@@ -359,138 +508,16 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 		}
 		
 // ===== CUSTOM WORDPRES FUNCIONALITY functions ===== //
-		public function sync_from_origin($entity){
-			
-			// Get Post to Import
-			if(!empty($entity->origin)){
-				$id = $entity->origin;
-
-				$post = get_post( $id );
+		public function sync_from_origin($originId, $entityId){
+			$post = get_post( $originId );
 				
-				$toUpdate = array(
-					'ID'           	 => $entity->id,
-					'comment_status' => $post->comment_status,
-					'ping_status'    => $post->ping_status,
-					'post_author'    => $post->post_author,
-					'post_content'   => $post->post_content,
-					'post_excerpt'   => $post->post_excerpt,
-					'post_password'  => $post->post_password,
-					'post_status'    => 'publish',
-					'post_title'     => $post->post_title,
-					'to_ping'        => $post->to_ping,
-					'menu_order'     => $post->menu_order
-				);
-				// Update the post into the database
-				wp_update_post( $toUpdate );
-				
-				$customFields = get_post_meta( $id );
-				foreach( $customFields as $key => $value ){
-					foreach($value as $data){
-						add_post_meta($entity->id, $key, $data);
-					}
-				}
-				
-				// Bring over all taxonomies as internal keywords
-				$postType = get_post_type_object( $post->post_type );
-				$internalKeywords = array(
-					$post->post_type,
-					$postType->labels->singular_name,
-					$postType->labels->name
-				);
-								
-				$taxonomy_names = get_object_taxonomies( $post->post_type );
-				foreach($taxonomy_names as $taxonomy){
-					$terms = get_the_terms( $post->ID, $taxonomy );
-					if($terms){
-						foreach($terms as $term){
-							array_push($internalKeywords, $term->name);
-							array_push($internalKeywords, $term->slug);
-						}
-					}
-				}
-				
-				// Remove any duplicates with the same string just different cases
-				$internalKeywords = array_intersect_key(
-			        $internalKeywords,
-			        array_unique(array_map("StrToLower",$internalKeywords))
-			    );
-				
-				$entity->title = $post->post_title;
-				$entity->abstract = $post->post_excerpt;
-				$entity->socialShareUrl = get_permalink($id);
-				$entity->url = get_permalink($id);
-				$entity->articleText = $post->post_excerpt;
-				$entity->internalKeywords = array_values($internalKeywords);
-
-				$entity->save();
-
-				// Duplciate taxonomies
-				$taxonomies = get_object_taxonomies($post->post_type); // returns array of taxonomy names for post type, ex array("category", "post_tag");
-				foreach ($taxonomies as $taxonomy) {
-					$post_terms = wp_get_object_terms($id, $taxonomy, array('fields' => 'slugs'));
-					wp_set_object_terms($entity->id, $post_terms, $taxonomy, false);
-				}
-				
-				$postThumbID = get_post_thumbnail_id($id);
-				$this->add_entity_content($entity, 'thumbnail', $postThumbID);
-			}
-		}
-				
-		public function import($id, $entity = ""){
-
-			// Get Post to Import
-			$post = get_post( $id );
-			
-			// Create New Entity
-			if(is_object($entity)){
-				$entityType = $entity->entityType;
-			}else{
-				$entityType = $entity;
-				$class = "DPSFolioAuthor\\".ucwords($entityType);
-				$entity = new $class();
-				$entity->entityName = sanitize_title($post->post_title, "untitled");
-				$entity->origin = $id;
-			}
-
-			// Bring over all taxonomies as internal keywords
-			$postType = get_post_type_object( $post->post_type );
-			$internalKeywords = array(
-				$post->post_type,
-				$postType->labels->singular_name,
-				$postType->labels->name
-			);
-		    
-			$taxonomy_names = get_object_taxonomies( $post->post_type );
-			foreach($taxonomy_names as $taxonomy){
-				$terms = get_the_terms( $id, $taxonomy );
-				if($terms) {
-					foreach($terms as $term){
-						array_push($internalKeywords, $term->name);
-					}
-				}
-			}
-			
-			// Remove any duplicates with the same string just different cases
-			$internalKeywords = array_intersect_key(
-		        $internalKeywords,
-		        array_unique(array_map("StrToLower",$internalKeywords))
-		    );
-			
-			$entity->title = $post->post_title;
-			$entity->abstract = $post->post_excerpt;
-			$entity->socialShareUrl = get_permalink($id);
-			$entity->url = get_permalink($id);
-			$entity->articleText = $post->post_excerpt;
-			$entity->internalKeywords = $internalKeywords;
-			
-			$entity->save();
-			
 			$toUpdate = array(
-				'ID'           	 => $entity->id,
+				'ID'           	 => $entityId,
 				'comment_status' => $post->comment_status,
 				'ping_status'    => $post->ping_status,
 				'post_author'    => $post->post_author,
 				'post_content'   => $post->post_content,
+				'post_date'   	 => $post->post_date,
 				'post_excerpt'   => $post->post_excerpt,
 				'post_password'  => $post->post_password,
 				'post_status'    => 'publish',
@@ -501,76 +528,256 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 			
 			// Update the post into the database
 			wp_update_post( $toUpdate );
-						
-			$customFields = get_post_meta( $id );
+			
+			// Save all custom fields
+			$customFields = get_post_meta( $originId );
 			foreach( $customFields as $key => $value ){
 				foreach($value as $data){
-					add_post_meta($entity->id, $key, $data);
+					add_post_meta($entityId, $key, $data);
+				}
+			}				
+			
+			// Duplciate all taxonomies
+			$taxonomies = get_object_taxonomies($post->post_type); // returns array of taxonomy names for post type, ex array("category", "post_tag");
+			foreach ($taxonomies as $taxonomy) {
+				$post_terms = wp_get_object_terms($originId, $taxonomy, array('fields' => 'slugs'));
+				wp_set_object_terms($entityId, $post_terms, $taxonomy, false);
+			}
+		}
+				
+				
+// ===== IMPORTING functions ===== //
+		public function import( $id, $presetName = "" ){
+			
+			// Get current settings
+			$settings = new Settings();
+			
+			// Get Preset
+			$preset = $settings->importPresets[0]; // Default to the first one if nothing is selected
+			foreach($settings->importPresets as $singlePreset){
+				if($singlePreset["name"] == $presetName){
+					$preset = $singlePreset;
 				}
 			}
 			
-			// Duplciate taxonomies
-			$taxonomies = get_object_taxonomies($post->post_type); // returns array of taxonomy names for post type, ex array("category", "post_tag");
-			foreach ($taxonomies as $taxonomy) {
-				$post_terms = wp_get_object_terms($id, $taxonomy, array('fields' => 'slugs'));
-				wp_set_object_terms($entity->id, $post_terms, $taxonomy, false);
-			}
-						
-			// If Article, set featured image as thumbnail
-			if($entityType == "article"){
-				$postThumbID = get_post_thumbnail_id($id);
-				$this->add_entity_content($entity, 'thumbnail', $postThumbID);
-			}
+			// Verify we have an entity type
+			$entityType = isset($preset["entityType"]) ? $preset["entityType"] : FALSE;
 			
-			// TODO:
-/*
-			$attachmentThumb = wp_get_attachment_image_src($postThumbID, array(500,500));
-			$contents = array();
+			// Get original post to Import
+			$post = get_post( $id );
 			
-			$upload_dir = wp_upload_dir();
-			$filename = basename( get_attached_file( $postThumbID ) ); // Just the file name
-			$metadata = wp_get_attachment_metadata( $postThumbID );
-			$uploadDatePath =  str_replace($filename, "", $metadata["file"]);
-			$renditionName = $metadata["sizes"]["publish-thumb-recipe"]["file"];
-			// TODO REPLACE PUBLISH THUMB WITH ONE FROM SETTINGS
+			// Duplicate the original post
+			$entityId = $this->duplicate_entity($id, $entityType);
 			
-			$contents["thumbnail"] = array(
-				'id' => $postThumbID,
-				'thumbnail' => $attachmentThumb[0],
-				'original' => wp_get_attachment_url($postThumbID),
-				'path' => $upload_dir["basedir"] . "/" . $uploadDatePath . $renditionName
-			);
-*/
+			// Get post data from preset
+			$data = $this->generate_preset_data($id, $preset['presets']);
 			
+			// set origin of post
+			$data['origin'] = $id; 
+			$data['time_synced'] = time(); 
+			
+			// save entity data
+			$this->save_entity($entityId, $entityType, $data); 		
+			
+			// return entity Id
+			return $entityId;
 		}
 		
+		public function sync($id, $origin, $presetName = ""){			
+			if(!empty($presetName)){
+				// Get Preset
+				$settings = new Settings();
+				$preset = $settings->importPresets[0]; // Default to the first one if nothing is selected
+				foreach($settings->importPresets as $singlePreset){
+					if($singlePreset["name"] == $presetName){
+						$preset = $singlePreset;
+					}
+				}
+				
+				// Get the post
+				$post = get_post($id);
+			
+				// Get the entity type from the post
+				$entityType = $this->get_entity_type($post->post_type);
+
+				// Get data to sync from origin
+				$data = $this->generate_preset_data($origin, $preset['presets']);
+				$data['time_synced'] = time(); 
+
+				// save entity data
+				$this->save_entity($id, $entityType, $data); 
+			}
+		}
+
+		public static function import_tags() {
+			return array(
+				"%ID%" 							=> "Post's ID",
+				"%post_title%" 					=> "Post's Title",
+				"%post_excerpt%" 				=> "Post's Excerpt",
+				"%post_author%" 				=> "Post's Author's ID",
+				"%post_author_first_name%" 		=> "Post's Author's First Name",
+				"%post_author_last_name%" 		=> "Post's Author's Last Name",
+				"%post_date%" 					=> "Post's Date",
+				"%post_name%" 					=> "Post's Name (slug)",
+				"%post_type%" 					=> "Post's Type",
+				"%featured_image_id%" 			=> "Post's Featured Image ID (only works on thumbnail and social media image fields)",
+				"%content%" 					=> "Post's Content",
+				"%tags%" 						=> "Post's Tags",
+				"%categories%" 					=> "Post's Categories",
+				"%permalink%" 					=> "Post's Permalink",
+				"%custom_FIELDNAME%"			=> "Custom field name. Replace FIELDNAME with the custom field's slug"
+			);
+		}
 		
-// ===== CUSTOM WORDPRES FUNCIONALITY functions ===== //
+		public function get_import_tags_from_entity($id){
+			// IMPORT TAGS
+			$tags = array();
+			
+			// BASIC POST DATA
+			$post = get_post($id, ARRAY_A);
+			foreach($post as $key => $value){
+				$tags["%".$key."%"] = $value;
+			}
+			
+			// POST META
+			$post_meta = get_post_meta($id);
+			foreach($post_meta as $key => $value){
+				$tags["%custom_" . $key . "%"] = reset($value);
+			}
+			
+			// POST AUTHOR
+			$tags['%post_author_first_name%'] = get_user_meta($tags['%post_author%'], 'first_name', true);
+			$tags['%post_author_last_name%'] = get_user_meta($tags['%post_author%'], 'last_name', true);
+			
+			// FEATURED IMAGE
+			$tags['%featured_image_id%'] = get_post_thumbnail_id($id);
+			
+			// CONTENT
+			$tags['%content%'] = $post["post_content"];
+			
+			// TAGS
+			$tags['%tags%'] = wp_get_post_tags( $id, array('fields' => 'names') );
+			
+			// CATEGORIES
+			$tags['%categories%'] = wp_get_post_categories( $id, array('fields' => 'names') );
+			
+			// PERMALINK
+			$tags['%permalink%'] = get_permalink($id);
+
+			return $tags;
+		}
+		
+		public function generate_preset_data($id, $presets){
+			// Start with new data array
+			$data = array();
+			
+			// Grab import tags from an entity
+			$tags = $this->get_import_tags_from_entity($id);
+			
+			// Add presets to data array
+	        $find = array_keys($tags);
+	        $replace = array_values($tags);
+			
+			$arrayFind = array();
+			$arrayReplace = array();
+	        foreach($replace as $key=>$value){
+		        if(is_array($value)){
+			        array_push($arrayFind, $find[$key]);
+			        array_push($arrayReplace, $replace[$key]);
+			        unset($find[$key]);
+			        unset($replace[$key]);
+		        }
+	        }
+	        
+	        foreach($presets as $key => $template){
+		        if(!empty($template)){
+			        if(!is_string($template)){
+						$data[$key] = $template;
+			        }else if(array_key_exists($template, $tags)){
+						// If it's an array or 
+						$data[$key] = $tags[$template];
+			        }else{
+						
+						$data[$key] = str_replace($find, $replace, $template);
+				        
+				        // Find array values
+				        foreach($arrayFind as $index => $tofind){
+					        if(strpos($template, $tofind) !== FALSE){
+						        if(!isset($data[$key]) || !is_array($data[$key])){
+							        $data[$key] = array();
+						        }
+						        if(is_array($arrayReplace[$index])){
+							        foreach($arrayReplace[$index] as $toEnter){
+								        array_push($data[$key], $toEnter);
+							        }
+						        }
+					        }
+				        }
+				        
+			        }
+		        }
+	        }
+	        	        
+	        // return data array
+	        return $data;
+		}
+			
+// ===== CUSTOM WORDPRES FUNCIONALITY functions ===== //		
 		public function add_bulk_import(){
 			global $post_type;
-			if($post_type != DPSFA_Article_Slug && $post_type != DPSFA_Folio_Slug && $post_type != DPSFA_Collection_Slug) { ?>
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery('<option>').val('importArticle').text('Import as DPS Article').appendTo("select[name='action']");
-				});
-			</script><?php
+			if($post_type != DPSFA_Article_Slug) { 
+				$Settings = new Settings();
+				?>
+				
+				<script type="text/javascript">
+					jQuery(document).ready(function() {
+						var bulkSelector = "select[name='action']";
+						var presetSelector = "[name='entity_preset_name']"
+						
+						jQuery('<option>').val('importEntity').text('Import into Digital Publishing Tools').appendTo(bulkSelector);
+						jQuery('<input type="hidden" name="entity_import_preset" value="default">').insertAfter("select[name='action']");
+						jQuery('<select name="entity_preset_name"></select>').insertAfter(bulkSelector).hide();
+						
+						<?php foreach($Settings->importPresets as $preset):?>
+							jQuery('<option>').val('<?php echo $preset["name"]; ?>').text('<?php echo $preset["name"]; ?>').appendTo(presetSelector);
+						<?php endforeach; ?>
+						
+						jQuery(bulkSelector).change(function(event){
+							var value = jQuery(this).find(":selected").val();
+							if(value == "importEntity"){
+								jQuery(presetSelector).show();
+								jQuery("[name='entity_import_preset']").val(jQuery(this).find(":selected").val());
+							}else{
+								jQuery(presetSelector).hide();
+							}
+						});
+						
+						jQuery(presetSelector).change(function(event){
+							var value = jQuery(this).find(":selected").val();
+							jQuery("[name='entity_import_preset']").val(jQuery(this).find(":selected").val());
+						});
+					});
+				</script>
+				
+				<?php
 			}
 		}
 		
 		public function bulk_import(){
-
 			$wp_list_table = _get_list_table('WP_Posts_List_Table');
 			$action = $wp_list_table->current_action();
 
 			switch($action) {
-				case 'importArticle':
+				case 'importEntity':
 					check_admin_referer('bulk-posts');
 
 					$imported = 0;
-					$post_ids = $_REQUEST["post"];
+					$ids = array();
+					$post_ids = isset($_REQUEST["post"]) ? $_REQUEST["post"] : array();
 					foreach( $post_ids as $post_id ) {
 						try{
-							$this->import( $post_id, 'article');
+							$id = $this->import( $post_id, $_REQUEST['entity_preset_name']);
+							if(!empty($id)){ array_push($ids, $id); }
 						}catch(Error $error){
 							//wp_die( __('Error importing as Article.') );
 						}
@@ -578,23 +785,20 @@ if(!class_exists('DPSFolioAuthor\CMS')) {
 					}
 					
 					// build the redirect url
-					$sendback = add_query_arg( array('imported' => $imported, 'ids' => join(',', $post_ids) ), "" );
+					$sendback = add_query_arg( array('imported' => $imported, 'ids' => join(',', $ids)), "" );
 				
 					break;
 				default: return;
 			}
 			
-			// 4. Redirect client
 			wp_redirect($sendback);
-			
 			exit();
 		}
 		 
 		public function bulk_import_notice() {
 			global $post_type, $pagenow;
-			if($pagenow == 'edit.php' && $post_type != DPSFA_Article_Slug && $post_type != DPSFA_Folio_Slug && $post_type != DPSFA_Collection_Slug &&
-				isset($_REQUEST['imported']) && (int) $_REQUEST['imported']) {
-				$message = number_format_i18n( $_REQUEST['imported'] ) . " $post_type(s) imported as DPS Article.";
+			if($pagenow == 'edit.php' && $post_type != DPSFA_Article_Slug && isset($_REQUEST['imported'])) {
+				$message = number_format_i18n( $_REQUEST['imported'] ) . " $post_type(s) imported into Digital Publishing Tools.";
 				echo "<div class=\"updated\"><p>{$message}</p></div>";
 			}
 		}

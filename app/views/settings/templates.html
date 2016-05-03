@@ -21,21 +21,36 @@ These templates were found within the "publish-templates" folder of your theme o
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat="template in settings.templates">
+		
+		<tr><td colspan="4" class="text-center"><b>Templates in Plugin folder</b></td></tr>
+		<tr ng-repeat="template in settings.templates" ng-if="template.location == 'Plugin'">
 			<td>{{template.name}}</td>
 			<td>{{template.path}}</td>
 			<td>{{template.modified}}</td>
 			<td class="text-center">
-				<input type="radio" style="display: block;" value="{{template.path}}" ng-model="settings.defaultTemplate">
-				</td>
-		</tr>		
+				<input type="radio" style="display: block;" value="{{template.path}}" ng-model="settings.defaultTemplate" />
+			</td>
+		</tr>
+		
+		<tr><td colspan="4" class="text-center"><b>Templates in Theme folder</b></td></tr>
+		<tr ng-repeat="template in settings.templates" ng-if="template.location == 'Theme'">
+			<td>{{template.name}}</td>
+			<td>{{template.path}}</td>
+			<td>{{template.modified}}</td>
+			<td class="text-center">
+				<input type="radio" style="display: block;" value="{{template.path}}" ng-model="settings.defaultTemplate" />
+			</td>
+		</tr>
+		
 	</tbody>
-</table>                    
+</table>  
+
+            
 
 <br />
 
 <p class="text-center">
-	<a class="clickable" ng-click="refresh_settings" style="margin-right: 15px;">
+	<a class="clickable" ng-click="refresh()" style="margin-right: 15px;">
 		<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Refresh List
 	</a>
 </p>

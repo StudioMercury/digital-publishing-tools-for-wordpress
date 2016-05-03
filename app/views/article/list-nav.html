@@ -1,4 +1,4 @@
-<nav class="navbar navbar-inverse navbar-secondary">
+<nav class="navbar navbar-inverse navbar-secondary fixed">
     <div class="container-fluid">
 
         <ul class="nav navbar-nav">
@@ -44,7 +44,7 @@
 	        <li dropdown is-open="push.isOpen">
 	        		        	
 				<a class="clickable" dropdown-toggle>
-					<span class="glyphicon glyphicon-cloud"></span> Cloud
+					<span class="glyphicon glyphicon-cloud"></span> AEM Mobile
 				</a>
 				
 				<ul class="dropdown-menu" role="menu">
@@ -53,17 +53,21 @@
 						<a ng-click="unlink()"><span class="glyphicon glyphicon-link"></span> Unlink from Cloud</a>
 					</li>
 										
+<!--
 					<li class="clickable">
 						<a ng-click="push_all()"><span class="glyphicon glyphicon-cloud-upload"></span> Update in Cloud</a>
 					</li>
+-->
 										
 					<li class="clickable">
 						<a ng-click="delete_cloud()"><span class="glyphicon glyphicon-trash"></span> Delete from the Cloud</a>
 					</li>
 										
+<!--
 					<li class="clickable">
 						<a ng-click="publish()"><span class="glyphicon glyphicon-send"></span> Publish</a>
 					</li>
+-->
 				
 				</ul>
 			</li>
@@ -84,7 +88,7 @@
 		    
 		    <!-- DELETE -->
             <li><a class="clickable" ng-click="delete()">
-	            <span class="glyphicon glyphicon-trash"></span> Delete
+	            <span class="glyphicon glyphicon-trash"></span> Delete Locally
 	        </a></li>
 	        
         </ul>

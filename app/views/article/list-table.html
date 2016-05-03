@@ -1,50 +1,74 @@
 <table class="table tablesorter">
-	
+
 	<!-- TABLE HEAD -->
 	<thead id="fixed-table-head" data-spy="affix" data-offset-top="60">
 		<tr class="table-head">
 			<th class="text-center select-all" data-sorter="false">
 				<input id="selectAll" type="checkbox" name="selectAll" ng-model="toggleAll.checked" ng-change="toggleAll()"><label for="selectAll"></label>
 			</th>
+			<th class="text-center"><b>Status</b></th>
 			<th></th>
-			<th></th>
-			<th><b>Name</b></th>
-			<th><b>Title</b></th>
-			<th><b>Date Published</b></th>
-			<th><b>Last Modified</b></th>
-			<th><b>Status</b></th>
+			
+			<th><a ng-click="filterBy('entityName')">
+				<b>Name</b> 
+				<span ng-if="filters.orderby == 'entityName' && filters.order =='ASC'" class="glyphicon glyphicon-sort-by-alphabet"></span>
+				<span ng-if="filters.orderby == 'entityName' && filters.order =='DESC'" class="glyphicon glyphicon-sort-by-alphabet-alt"></span>
+			</a></th>
+			
+			<th><a ng-click="filterBy('title')">
+				<b>Title</b> 
+				<span ng-if="filters.orderby == 'title' && filters.order =='ASC'" class="glyphicon glyphicon-sort-by-alphabet"></span>
+				<span ng-if="filters.orderby == 'title' && filters.order =='DESC'" class="glyphicon glyphicon-sort-by-alphabet-alt"></span>
+			</a></th>
+			
+			<th><b>Modified</b></th>
 			<th></th>
 		</tr>
 	</thead>
 	
 	<!-- TABLE BODY -->
-	<tbody>
-		<form>
+	<tbody infinite-scroll="nextPage()" infinite-scroll-distance="3" infinite-scroll-disabled="listBusy">
 		<tr ng-repeat="article in entities" class="clickable">
 			
 			<td class="text-center">
 				<input type="checkbox" name="checked" ng-model="article.checked"><label for="checked"></label>
 			</td>
 			
-			<td>
-				<span ng-if="article.created" class="glyphicon glyphicon-cloud"></span>
+			<td class="text-center">
+				
+				<!-- LOCAL ONLY-->
+				<span ng-if="settings.canAccessCloud() && !article.entityId && !article.isMissing" class="glyphicon glyphicon-cloud" style="opacity: .1" popover="Article is only in WordPress (local)" popover-placement="bottom" popover-trigger="mouseenter"></span>
+				
+				<!-- In Cloud: CURRENT -->
+				<span ng-if="!article.isMissing && article.entityId" class="glyphicon glyphicon-cloud" style="color: black" popover="Article in AEM" popover-placement="bottom" popover-trigger="mouseenter"></span>
+				
+				<!-- In Cloud: OUT OF SYNC -->
+<!-- 				<span ng-if="!article.isMissing && article.entityId && ( article.modified )" class="glyphicon glyphicon-cloud" style="color: orange" popover="WordPress (local) article is newer than the one in the cloud" popover-placement="bottom" popover-trigger="mouseenter"></span> -->
+				
+				<!-- Published -->
+				<span ng-if="article.entityId && article.published" class="glyphicon glyphicon-send" popover="Published in AEM (and current)" popover-placement="bottom" popover-trigger="mouseenter"></span>
+				
+				<!-- IS MISSING -->
+				<span ng-if="article.isMissing" style="color: #c9302c" class="glyphicon glyphicon-alert" popover="Article is missing in AEM Mobile" popover-placement="bottom" popover-trigger="mouseenter"></span>
+								
 			</td>
 			
-			<td ui-sref="article.view({id: article.id})">
-				<img ng-src="{{article.contents.thumbnail.thumbnail}}" width="40" height="40" />
+			<td ui-sref="article.view({id: article.id})" class="text-center">
+				<img ng-src="{{article._thumbnail.sizes.thumbnail.url}}" width="40" height="40" />
 			</td>
 			
 			<td ui-sref="article.view({id: article.id})">{{article.entityName}}</td>
 			<td ui-sref="article.view({id: article.id})">{{article.title}}</td>
-			<td ui-sref="article.view({id: article.id})">{{article.published}}</td>
-			<td ui-sref="article.view({id: article.id})">{{article.modified}}</td>
-			<td ui-sref="article.view({id: article.id})">{{article.status}}</td>
+			<td ui-sref="article.view({id: article.id})">{{article.local_modified}}</td>
 			
 			<td ui-sref="article.view({id: article.id})" class="text-center">
 				<span class="glyphicon glyphicon-paperclip" ng-if="article.articleFolio"></span>
 			</td>
 			
-		</tr>		
-		</form>
-	</tbody>	
+		</tr>
+		
+		<!-- Loading Message -->
+		<tr ng-if="listBusy && !listFinished"><td colspan="9" class="text-center">Loading Articles...</td></tr>	
+		
+	</tbody>
 </table>

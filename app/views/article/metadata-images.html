@@ -3,7 +3,7 @@
 	<div class="form-group">
 		<label>Article Image</label>
 		<br />
-		<img src="http://placehold.it/300&text=Article.Image" ng-src="{{article.contents.thumbnail.thumbnail}}" with="200px" height="200px" class="img-responsive" />
+		<img src="https://placeholdit.imgix.net/~text?txtsize=28&txt=Article%20Image&w=300&h=300" ng-src="{{article._thumbnail.sizes.medium.url}}" with="200px" height="200px" class="img-responsive" />
 		<ul>
 		    <li ng-repeat="item in articleThumb.queue">
 		        <div ng-show="articleThumb.isHTML5" ng-thumb="{ file: item._file, height: 100 }"></div>
@@ -24,7 +24,7 @@
 	<div class="form-group">
 		<label>Social Media Image</label>
 		<br />
-		<img src="http://placehold.it/300&text=Social.Media.Image" ng-src="{{article.contents.socialSharing.thumbnail}}" with="200px" height="200px" class="img-responsive" />
+		<img src="https://placeholdit.imgix.net/~text?txtsize=28&txt=Social%20Media%20Image&w=300&h=300" ng-src="{{article._socialSharing.sizes.medium.url}}" with="200px" height="200px" class="img-responsive" />
 		<ul>
 			<li ng-repeat="thumb in socialMediaThumb.queue">
 		        <div ng-show="socialMediaThumb.isHTML5" ng-thumb="{ file: thumb._file, height: 100 }"></div>

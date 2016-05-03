@@ -1,0 +1,72 @@
+
+<div class="modal-header">
+	
+	<!-- NAME -->
+	<button type="button" class="close" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
+	<h2 class="modal-title">Edit Import Preset</h2>
+	
+</div>
+
+
+
+<div class="modal-body">
+
+	<a class="btn btn-default" ng-click="showTags = showTags ? false : true">
+		<span ng-if="!showTags"><i class="glyphicon glyphicon-tag"></i>&nbsp;See a list of tags</span>
+		<span ng-if="showTags"><i class="glyphicon glyphicon-tag"></i>&nbsp;Hide list of tags</span>
+	</a>
+	
+	<br />
+	
+	<!-- MAPPING KEY -->
+	<table class="import-fields table" ng-show="showTags">
+		<thead>
+			<td>Tag</td>
+			<td>Description</td>
+		</thead>
+		<tbody>
+			<tr ng-repeat="(key, value) in settings.importTags">
+				<td class="code">{{key}}</td>
+				<td>{{value}}</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<BR/>
+	
+	<div class="form-group">
+		<label for="name">Preset Name</label>
+		<input 	type="text" 
+				class="form-control" 
+				name="name" 
+				placeholder="Name" 
+				ng-model="editPreset.name" />
+	</div>	
+	
+	<!-- ENTITY TYPE -->
+	<div class="form-group">
+		<label for="name">Preset Entity Type</label>
+		<BR/>
+		<select ng-model="editPreset.entityType" name="entity">
+			<option value="">Select an Entity Type</option>
+			<option value="article">Article</option>
+		</select>
+	</div>
+	
+	
+	<!-- ARTICLES -->
+	<div ng-if="editPreset.entityType == 'article'" ng-include="config.viewPath + 'views/modals/modal-settings-importing-edit-article.html'"></div>
+	
+	<!-- COLLECTIONS -->
+	<div ng-if="editPreset.entityType == 'collection'" ng-include=""></div>
+
+</div>
+
+
+<div class="modal-footer">
+	<!-- ACTIONS -->
+	<div class="text-right">
+		<button class="btn btn-secondary" ng-click="cancel()"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+	    <button class="btn btn-primary" ng-click="close()"><span class="glyphicon glyphicon-ok"></span> OK</button>
+	</div>
+</div>

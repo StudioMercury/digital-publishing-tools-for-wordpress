@@ -2,7 +2,7 @@
 
 <!-- Modal Header -->
 <div class="modal-header">
-    <button type="button" class="close" ng-click="close()" aria-label="Close">
+    <button type="button" class="close" ng-click="cancel()" aria-label="Close">
     	<span aria-hidden="true">&times;</span>
     </button>
     <h2 class="modal-title" id="myModalLabel">Sync Article</h2>
@@ -10,36 +10,32 @@
 
 <!-- Modal Body -->
 <div class="modal-body">
-  	<p>This article was imported from another post. You can re-sync the content from the original post and override the content of the article.</p>
-  	
-  	<BR/>
-  	
-  	<span class="glyphicon glyphicon-cloud"></span> <label>Status</label>
-  	<p>The original content has been modified since import</p>
-  	
+	<p>This article was imported from another post. You can re-sync the content from the original post and override the content of the article.</p>
+	
+	<BR/>
+	
 <!--
-  	<BR/>	
-  	
-  	<label>What to sync</label>
-  	<BR/>
-  	<input type="checkbox" /> Title
-  	<BR/>
-  	<input type="checkbox" /> Article Body
-  	<BR/>
-  	<input type="checkbox" /> Metadata
-  	<BR/>
-  	<input type="checkbox" /> Title
-  	<BR/>
+	<span class="glyphicon glyphicon-cloud"></span> <label>Status</label>
+	<p>The original content has been modified since import</p>
+	
+	<BR/>
 -->
-  	
-  	<BR/>
-  	<p>Warning, clicking the sync button below will override the contents of the article with the original post's contents. This can not be undone.</p>
+	
+	<span class="glyphicon glyphicon-duplicate"></span> <label>Template</label>
+	<p>Select an sync / import template from the list below:</p>
 
-		  	
+	<select ng-model="selectedPreset" ng-init="selectedPreset = settings.importPresets[0].name">
+		<option ng-repeat="preset in settings.importPresets" ng-if="preset.entityType == entity.entityType" value="{{preset.name}}">{{preset.name}}</option>
+	</select>
+
+	<BR/>
+	<BR/>
+	<i>Warning, clicking the sync button below will override the contents of the article with the original post's contents. This can not be undone.</i>
+	  	
 </div>
 
 <!-- Modal Footer -->
 <div class="modal-footer">
     <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
-    <button type="button" class="btn btn-primary" ng-click="sync()">Sync</button>
+    <button type="button" class="btn btn-primary" ng-click="close(selectedPreset)">Sync</button>
 </div>

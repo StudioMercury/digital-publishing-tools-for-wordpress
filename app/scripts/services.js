@@ -1,19 +1,5 @@
 angular.module('AdobePublishForCMS.services', [])
 
-// Adobe API Service
-// TODO: direct contact with Adobe's API
-.factory('Adobe', function(_, $http){
-	/*
-	options.beforeSend = function(xhr) {
-		xhr.setRequestHeader('X-DPS-Nonce', AdobePublishForCMS.nonce);
-	
-		if (beforeSend) {
-			return beforeSend.apply(this, arguments);
-		}
-	};
-	*/
-})
-
 /* LOADING */
 .factory('Loading', function(_){
 	
@@ -36,22 +22,22 @@ angular.module('AdobePublishForCMS.services', [])
 	return Loading;
 })
 
+/* ALERTS */
 .factory('Alerts', function(_, $timeout){
 	
 	function Alert(type, msg, options) {
 		this.type = type;
 		this.msg = msg;
 		this.options = {
-			responseText: (_.has(options,"responseText") && !_.isUndefined(options.responseText)) ? options.responseText : null ,
-			time: (_.has(options,"time") && !_.isUndefined(options.time)) ? options.time : 3000 ,
-			group: (_.has(options,"group") && !_.isUndefined(options.group)) ? options.group : false ,
-			clearGroup: (_.has(options,"clearGroup") && !_.isUndefined(options.clearGroup)) ? options.clearGroup : false, 
+			moreDetail: (_.has(options,"message") && !_.isUndefined(options.message)) ? options.message : null,
+			responseText: (_.has(options,"responseText") && !_.isUndefined(options.responseText)) ? options.responseText : null,
+			time: (_.has(options,"time") && !_.isUndefined(options.time)) ? options.time : 3000,
+			group: (_.has(options,"group") && !_.isUndefined(options.group)) ? options.group : false,
+			clearGroup: (_.has(options,"clearGroup") && !_.isUndefined(options.clearGroup)) ? options.clearGroup : true, 
 			raw: (_.has(options,"raw") && !_.isUndefined(options.raw)) ? options.raw : null, 
 		};
 		
-		if(this.type === "danger" || this.options.time < 0){
-			// no timer
-		}else{
+		if(this.type !== "danger" && this.options.time > 0){
 			this.startTimer();
 		}
 	};
@@ -65,6 +51,7 @@ angular.module('AdobePublishForCMS.services', [])
 	
 	var Alerts = {};
 		Alerts.alerts = [];
+		Alerts.isDisabled = false;
 		
 		Alerts.add = function(type, msg, options){
 			alert = new Alert(type, msg, options);
@@ -89,6 +76,14 @@ angular.module('AdobePublishForCMS.services', [])
 		
 		Alerts.clear = function(){
 			Alerts.alerts = [];
+		}
+		
+		Alerts.disable = function(){
+			Alerts.isDisabled = true;
+		}
+		
+		Alerts.disable = function(){
+			Alerts.isDisabled = false;
 		}
 		
 	return Alerts;
@@ -116,8 +111,8 @@ angular.module('AdobePublishForCMS.services', [])
 			return request('delete_entity', { entity: entity, cloud: inCloud });
 		};
 		
-		CMS.getEntityList = function(entityType, inCloud){
-			return request('entity_list', { entityType: entityType, cloud: inCloud });
+		CMS.getEntityList = function(entityType, filters, inCloud){
+			return request('entity_list', { entityType: entityType, filters: filters, cloud: inCloud });
 		};
 		
 		CMS.linkEntity = function(entity, cloudnEntity){
@@ -149,6 +144,10 @@ angular.module('AdobePublishForCMS.services', [])
 			return request('publish_entity', { entity: entity });
 		};
 		
+		CMS.syncEntity = function(entity, preset){
+			return request('sync_entity', { entity: entity, presetName: preset });
+		};
+		
 	// LOCAL ONLY
 		CMS.downloadEntity = function(entity){
 			window.open(environment.endpoint + "?action=download_article&id="+entity.id, '_blank');
@@ -160,16 +159,33 @@ angular.module('AdobePublishForCMS.services', [])
 		};
 		
 		CMS.saveSettings = function(settings){
-			return request('save_settings', {settings: settings});
-		};
-		
-		CMS.syncArticle = function(entity){
-			return request('sync_article', { id: entity.id });
+			return request('save_settings', { settings: settings });
 		};
 
 /* HELPERS: Interacting with the CMS */
+		formatTags = function(rawTags){
+			var tags = [];
+			_.each(rawTags, function(tag) {
+				tags.push(tag.text);
+			})
+			return tags;	
+		}
+		
 		request = function(action, reqData){
-			Alerts.removeGroup('request')
+			Alerts.removeGroup('request');
+			
+			// Cleanup any tags
+			if(_.has(reqData, 'entity')){
+				// Keywords
+				if(_.has(reqData.entity, 'keywords')){
+					reqData.entity.keywords = formatTags(reqData.entity.keywords);
+				}
+				// InternalKeywords
+				if(_.has(reqData.entity, 'internalKeywords')){
+					reqData.entity.internalKeywords = formatTags(reqData.entity.internalKeywords);
+				}
+			}
+			
 			var deferred = $q.defer();
 			
 			var req = {
@@ -188,25 +204,27 @@ angular.module('AdobePublishForCMS.services', [])
 			
 			$http(req)
 			.success(function(data, status, headers, config){
+				console.log("SUCCESS", data);
 				if(!_.isObject(data)){
-					Alerts.add("danger", "Failed. The server's response wasn't recognized.", {clearGroup: true, group: 'request'});
-					deferred.reject(config);
+					var options = {
+						moreDetail: "There is an error with the ajax reponse from the server. Check the server response for more information.",
+						group: 'request' ,
+						clearGroup: true, 
+						responseText: data, 
+					};
+					Alerts.add("danger", "Failed. The server's response wasn't recognized.", options);
+					deferred.reject(data);
 				}else{
-					console.log("SUCCESS", data, status, headers, config);
 					deferred.resolve(data);
 				}
 			})
 			.error(function(data, status, headers, config){
-				console.log("FAIL", data, status, headers, config);
-				deferred.reject(data);
-				
 				var options = {};
+					options.moreDetail = _.has(data, "message") ? data.message : "";
 					options.responseText = (_.has(data,"responseText") && !_.isUndefined(data.responseText)) ? data.responseText : null ;
 					options.raw = (_.has(data,"raw") && !_.isUndefined(data.raw)) ? data.raw : null;
-					options.clearGroup = true;
-					options.group = 'request';
-				var message = _.has(data, "message") ? data.message : "";
-				Alerts.add("danger", "Failed. Could not perform action (" + config.params.action + "). " + message, options);
+					options.message = _.has(data, "message") ? data.message : "";
+				deferred.reject(data);
 			});
 			return deferred.promise;
 		};
@@ -229,7 +247,6 @@ angular.module('AdobePublishForCMS.services', [])
 	    	
 	    	$http(req)
 			.success(function(data, status, headers, config){
-				console.log("SUCCESS", data, status, headers, config);
 				deferred.resolve(data);
 			})
 			.error(deferred.reject);
@@ -241,65 +258,50 @@ angular.module('AdobePublishForCMS.services', [])
 
 
 /* SETTINGS Service */
-.factory('Settings', function(CMS, _){
+.factory('Settings', function(CMS, _, Alerts){
 		
 	function Settings(args) {
-/*
-	// API
-		this.company = '';
-		this.key = '';
-		this.secret = '';
-		this.refresh_token = '';
-		
-	// Endpoints
-	    this.authentication_endpoint = '';
-	    this.authorization_endpoint = '';
-	    this.ingestion_endpoint = '';
-	    this.producer_endpoint = '';
-	    this.product_endpoint = '';
-	    this.version = '';
-	    
-	// Classic Settings
-	    this.tooltips = true;
-		this.auto_preview_toc = true;
-		this.preset_template = ''; 
-		this.htmlresources = '';
-		this.login = '';
-		this.password = '';
-		
-	// plugin 2.0 Settings
-		this.appMode = 'app';
-		this.apiVersion = 2.0;	
-		this.publications = [];	
-		this.permissions = [];
-		this.devices = [];
-		this.templates = [];
-*/
-		angular.extend(this, args);	
+		this.refresh(args);
 	};
+	
+	Settings.prototype.get = function(){
+		var settings = this;
+		return CMS.getSettings(this).then(function(data){
+			if(_.has(data, 'settings')){ settings.refresh(data.settings); }
+		},function(data){
+			if(_.has(data, 'settings')){ settings.refresh(data.settings); }
+			Alerts.add("danger", "Could not get settings.", ( _.has(data, "options") ? _.extend(options, data.options) : options) );
+		});
+	}
 	
 	Settings.prototype.update = function(){
 		var settings = this;
-		return CMS.getSettings().then(function(data){
-			if(!_.isEmpty(data)){
-				angular.extend(settings, new Settings(data.settings));	
-			}
+		var options = { group: 'refreshSettings' };
+		Alerts.add("warning", "Refreshing settings", options);
+		return CMS.getSettings(this).then(function(data){
+			Alerts.add("success", "Settings refreshed successfully.", options);
+			if(_.has(data, 'settings')){ settings.refresh(data.settings); }
+		},function(data){
+			if(_.has(data, 'settings')){ settings.refresh(data.settings); }
+			Alerts.add("danger", "Settings could not be refreshed.", ( _.has(data, "options") ? _.extend(options, data.options) : options) );
 		});
 	}
 	
 	Settings.prototype.save = function(){
 		var settings = this;
+		var options = { group: 'saveSettings' };
+		Alerts.add("warning", "Saving settings", options);
 		return CMS.saveSettings(this).then(function(data){
-			angular.extend(settings, new Settings(data.settings));	
+			Alerts.add("success", "Settings saved successfully.", options);
+			if(_.has(data, 'settings')){ settings.refresh(data.settings); }
+		},function(data){
+			if(_.has(data, 'settings')){ settings.refresh(data.settings); }
+			Alerts.add("danger", "Settings could not be saved.", ( _.has(data, "options") ? _.extend(options, data.options) : options) );
 		});
 	};
 	
-	Settings.prototype.reset = function(){
-		// TODO
-	};
-	
 	Settings.prototype.refresh = function(data){
-		angular.extend(this, new Settings(data) );	
+		angular.extend(this, data);	
 	}
 	
 	Settings.prototype.hasAPIAccess = function(){
@@ -315,70 +317,93 @@ angular.module('AdobePublishForCMS.services', [])
 	}
 	
 	var PluginSettings = new Settings();
-		PluginSettings.update();
+		PluginSettings.get();
 
 	return PluginSettings;
 })
 
 /* ENTITY Service */
-.factory('Entity', function(CMS, Alerts){
+.factory('Entity', function(CMS, Alerts, _){
 	
 	function Entity(args) {
-		this.id = '';
-		this.entityType = '';
-		this.entityName = '';
-		this.version = '';
-		this.entityId = '';
-		this.url = '';
-		this.date_modified = '';
-		this.contentUrl = '';
-		this.modified = '';
-		this.created = '';
-		this.published = '';
-		this.userData = {};
-		
-		angular.extend(this, args);	
+		this.refresh(args);
 	};
 	
+	Entity.prototype.refresh = function(data){
+		angular.extend(this, data);
+	};
+
 	Entity.prototype.save = function(inCloud){
-		this.cleanup();
 		var entity = this;
+		var options = { group: 'save' };
+		Alerts.add("warning", "Saving the " + entity.constructor.name + ".", options);
 		return CMS.saveEntity(this, inCloud).then(function(data){
-			return new entity.constructor(data.entity);
+			if(_.has(data, 'entity')){ entity.refresh(data.entity); }
+			Alerts.add("success", entity.constructor.name + " saved successfully.", options);
+		},function(data){
+			if(_.has(data.raw, 'entity')){ entity.refresh(data.raw.entity); }
+			Alerts.add("danger", "The " + entity.constructor.name + " could not be saved.", _.extend(options, data));
 		});
 	};
 	
 	Entity.prototype.delete = function(inCloud){
-		return CMS.deleteEntity(this, inCloud);
+		var entity = this;
+		var options = { group: 'delete' };
+		Alerts.add("warning", "Deleting the " + entity.constructor.name + ".", options);
+		return CMS.deleteEntity(this, inCloud).then(function(data){
+			Alerts.add("success", entity.constructor.name + " deleted successfully.", options);
+		},function(data){
+			Alerts.add("danger", "The " + entity.constructor.name + " could not be deleted.", _.extend(options, data));
+		});
+	};
+	
+	Entity.prototype.cloud_delete = function(){
+		var entity = this;
+		var options = { group: 'delete' };
+		Alerts.add("warning", "Deleting the " + entity.constructor.name + ".", options);
+		return CMS.deleteEntity(this, true).then(function(data){
+			Alerts.add("success", entity.constructor.name + " deleted successfully.", options);
+		},function(data){
+			Alerts.add("danger", "The " + entity.constructor.name + " could not be deleted.", _.extend(options, data));
+		});
 	};
 	
 	Entity.prototype.create = function(inCloud){
-		this.cleanup();
 		var entity = this;
+		var options = { group: 'create' };
+		Alerts.add("warning", "Creating the new " + entity.constructor.name + ".", options);
 		return CMS.createEntity(this, inCloud).then(function(data){
-			return new entity.constructor(data.entity);
+			Alerts.add("success", entity.constructor.name + " created successfully.", options);
+			if(_.has(data, 'entity')){ entity.refresh(data.entity); }
+		},function(data){
+			if(_.has(data.raw, 'entity')){ entity.refresh(data.raw.entity); }
+			Alerts.add("danger", "The " + entity.constructor.name + " could not be created.", _.extend(options, data));
 		});
 	};
 	
 	Entity.prototype.uploadAsset = function(){
-		this.cleanup();
 		var entity = this;
+		var options = { group: 'upload' };
+		Alerts.add("warning", "Uploading " + entity.constructor.name + " asset.", options);
 		return CMS.uploadEntityAsset(this).then(function(data){
-			return new entity.constructor(data.entity);
+			Alerts.add("success", entity.constructor.name + " asset successfully uploaded.", options);
+			if(_.has(data, 'entity')){ entity.refresh(data.entity); }
+		},function(data){
+			if(_.has(data.raw, 'entity')){ entity.refresh(data.raw.entity); }
+			Alerts.add("danger", "The " + entity.constructor.name + " asset could not be uploaded.", _.extend(options, data));
 		});
 	};
 	
 	Entity.prototype.get = function(id, inCloud){
-		this.cleanup();
 		var entity = this;
 		return CMS.getEntity(this.entityType, id).then(function(data){
-			return new entity.constructor(data.entity)
+			if(_.has(data, 'entity')){ return new entity.constructor(data.entity); }
 		});
 	};
 	
-	Entity.prototype.all = function(inCloud){
+	Entity.prototype.all = function(filters, inCloud){
 		var entity = this;
-		return CMS.getEntityList(this.entityType).then(function(data){
+		return CMS.getEntityList(this.entityType, filters, inCloud).then(function(data){
 			entities = [];
 			_.each(data.entities, function(single){
 				entities.push( new entity.constructor(single) );
@@ -392,63 +417,109 @@ angular.module('AdobePublishForCMS.services', [])
 	};
 	
 	Entity.prototype.push = function(){
-		this.cleanup();
 		var entity = this;
+		var options = { group: 'push' };
+		Alerts.add("warning", "Pushing " + entity.constructor.name + " to the cloud.", options);
 		return CMS.pushEntity(this).then(function(data){
-			return new entity.constructor(data.entity)
+			Alerts.add("success", entity.constructor.name + " successfully pushed to the cloud.", options);
+			if(_.has(data, 'entity')){ entity.refresh(data.entity); }
+		},function(data){
+			if(_.has(data.raw, 'entity')){ entity.refresh(data.raw.entity); }
+			Alerts.add("danger", "The " + entity.constructor.name + " could not be pushed to the cloud.", _.extend(options, data));
 		});
 	};
 	
 	Entity.prototype.pushMetadata = function(){
-		this.cleanup();
 		var entity = this;
+		var options = { group: 'pushEntityMetadata' };
+		Alerts.add("warning", "Pushing " + entity.constructor.name + "'s metadata to the cloud", options);
 		return CMS.pushEntityMetadata(this).then(function(data){
-			return new entity.constructor(data.entity)
-		});
+			Alerts.add("success", entity.constructor.name + "'s metadata successfully pushed the cloud.", options);
+			if(_.has(data, 'entity')){ entity.refresh(data.entity); }
+		},function(data){
+			if(_.has(data.raw, 'entity')){ entity.refresh(data.raw.entity); }
+			Alerts.add("danger", entity.constructor.name + "'s metadata could not be pushed to the cloud.", _.extend(options, data));
+		});		
 	};
 	
 	Entity.prototype.publish = function(){
-		this.cleanup();
 		var entity = this;
+		var options = { group: 'publish' };
+		Alerts.add("warning", "Publishing " + entity.constructor.name + " in the cloud.", options);
 		return CMS.publishEntity(this).then(function(data){
-			return new entity.constructor(data.entity)
+			Alerts.add("success", entity.constructor.name + " has been successfully published in the cloud.", options);
+			if(_.has(data, 'entity')){ entity.refresh(data.entity); }
+		},function(data){
+			if(_.has(data.raw, 'entity')){ entity.refresh(data.raw.entity); }
+			Alerts.add("danger", "The " + entity.constructor.name + " could not be published in the cloud.", _.extend(options, data));
 		});
 	};
 	
 	Entity.prototype.pushContents = function(){
-		this.cleanup();
 		var entity = this;
+		var options = { group: 'pushContents' };
+		Alerts.add("warning", "Pushing " + entity.constructor.name + "'s contents in the cloud.", options);
 		return CMS.pushEntityContents(this).then(function(data){
-			return new entity.constructor(data.entity)
+			Alerts.add("success", entity.constructor.name + "'s contents have been successfully pushed in the cloud.", options);
+			if(_.has(data, 'entity')){ entity.refresh(data.entity); }
+		},function(data){
+			if(_.has(data.raw, 'entity')){ entity.refresh(data.raw.entity); }
+			Alerts.add("danger", "The " + entity.constructor.name + "'s contents could not be pushed in the cloud.", _.extend(options, data));
 		});
 	};
 	
 	Entity.prototype.link = function(linkTo){
-		this.cleanup();
 		var entity = this;
+		var options = { group: 'link' };
+		Alerts.add("warning", "Linking this" + entity.constructor.name + " to an " + entity.constructor.name + " in the cloud.", options);
 		return CMS.linkEntity(this, linkTo).then(function(data){
-			return new entity.constructor(data.entity)
+			Alerts.add("success", entity.constructor.name + " has been linked to an " + entity.constructor.name + " in the cloud.", options);
+			if(_.has(data, 'entity')){ entity.refresh(data.entity); }
+		},function(data){
+			if(_.has(data.raw, 'entity')){ entity.refresh(data.raw.entity); }
+			Alerts.add("danger", "The " + entity.constructor.name + " could not be linked in the cloud.", _.extend(options, data));
 		});
 	};
 	
 	Entity.prototype.unlink = function(){
-		this.cleanup();
 		var entity = this;
+		var options = { group: 'unlink' };
+		Alerts.add("warning", "Unlinking the" + entity.constructor.name + " from the cloud.", options);
 		return CMS.unlinkEntity(this).then(function(data){
-			return new entity.constructor(data.entity)
+			Alerts.add("success", entity.constructor.name + " has been unlinked in the cloud.", options);
+			if(_.has(data, 'entity')){ entity.refresh(data.entity); }
+		},function(data){
+			if(_.has(data.raw, 'entity')){ entity.refresh(data.raw.entity); }
+			Alerts.add("danger", "The " + entity.constructor.name + " could not be unlinked from the cloud.", _.extend(options, data));
 		});
 	};
 	
 	Entity.prototype.pushArticleFolio = function(){
-		this.cleanup();
 		var entity = this;
+		var options = { group: 'pushArticle' };
+		Alerts.add("warning", "Pushing the content of the " + entity.constructor.name + " to the cloud.", options);		
 		return CMS.pushArticleFolio(this).then(function(data){
-			return new entity.constructor(data.entity);
+			Alerts.add("success", entity.constructor.name + " content has been successfully pushed to the cloud.", options);
+			if(_.has(data, 'entity')){ entity.refresh(data.entity); }
+		},function(data){
+			if(_.has(data.raw, 'entity')){ entity.refresh(data.raw.entity); }
+			Alerts.add("danger", "The " + entity.constructor.name + " content could not be pushed to the cloud.", _.extend(options, data));
 		});
 	};
 	
-	Entity.prototype.cleanup = function(){ }
-		
+	Entity.prototype.sync = function(preset){
+		var entity = this;
+		var options = { group: 'sync' };
+		Alerts.add("warning", "Syncing " + entity.constructor.name + ".", options);		
+		return CMS.syncEntity(this, preset).then(function(data){
+			Alerts.add("success", entity.constructor.name + " was successfully synced with the origin.", options);
+			if(_.has(data, 'entity')){ entity.refresh(data.entity); }
+		},function(data){
+			if(_.has(data.raw, 'entity')){ entity.refresh(data.raw.entity); }
+			Alerts.add("danger", "The " + entity.constructor.name + " could not be synced.", _.extend(options, data));
+		});
+	}
+			
 	return Entity;
 })
 
@@ -456,47 +527,11 @@ angular.module('AdobePublishForCMS.services', [])
 .factory('Content', function(Entity, _){
 	
 	function Content(args){		
-	    Entity.call(this);
-		this.title = '';
-		this.shortTitle = '';
-		this.description = '';
-		this.shortDescription = '';
-		this.keywords = [];
-		this.internalKeywords = [];
-		this.thumbnail = '';
-		this.socialSharing = '';
-		this.productIds = [];
-		this.department = '';
-		this.importance = 'normal';
-		this.collections = [];
-		this.socialShareUrl = '';
-		this.availabilityDate = '';
-	// CMS
-	    this.publication = '';
-	    this.device = '';	 
-	    
-	    angular.extend(this, args);	   
+	    Entity.call(this, args);
 	};
 	
 	Content.prototype = new Entity();
 	Content.prototype.constructor = Content;
-	
-	Content.prototype.cleanup = function(){	
-		
-		keywordCleanup = [];
-		_.each(this.keywords, function(value, key){
-			keywordCleanup.push(value.text);
-		});
-		this.keywords = keywordCleanup;
-		
-		keywordCleanup = [];
-		_.each(this.internalKeywords, function(value, key){
-			keywordCleanup.push(value.text);
-		});
-		this.internalKeywords = keywordCleanup;
-		
-		Entity.prototype.cleanup.call(this)
-	}
 		
 	return Content;
 })
@@ -505,102 +540,16 @@ angular.module('AdobePublishForCMS.services', [])
 .factory('Article', function(Content, CMS){
 	
 	function Article(args){		
-	    Content.call(this);
-	    
-	    this.article = ''; // Article Content
-		this.author = ''; // Author name
-		this.authorUrl = ''; // Author URL
-		this.articleText = ''; 
-		this.isAd = false;
-		this.adType = 'static';
-		this.adCategory = '';
-		this.advertiser = '';
-		this.accessState = 'metered';
-		this.hideFromBrowsePage = false;
-		this.articleFolio = '';
-		this.isTrustedContent = false;
-		
-	// Adobe v1 Properties
-		
-	// CMS Properties
-		this.body = "";
-		this.template = "";
-		this.cmsPreview = "";
-		
-		angular.extend(this, args);	    	    
+	    Content.call(this, args);
 		this.entityType = 'article';
 	}
 	
 	Article.prototype = new Content();
 	Article.prototype.constructor = Article;
-	
-	Article.prototype.cleanup = function(){
-		Content.prototype.cleanup.call(this)
-	}
-	
-	Article.prototype.sync = function(){
-		var entity = this;
-		return CMS.syncArticle(this).then(function(data){
-			return new entity.constructor(data.entity);
-		});
-	}
-	
+		
 	return Article;
 })
 
-/* COLLECTION Service */
-.factory('Collection', function(Content){
-	
-	var Collection = function(args){
-		this.isIssue = true;
-		this.allowDownload = false;
-		this.openTo = 'browsePage';
-		this.readingPosition = 'retain';
-		this.maxSize = -1;
-		this.lateralNavigation = true;
-		this.background = '';
-		this.contentElements = [];
-		this.view = '';
-		this.coverDate = '';
-		
-		angular.extend(this, args);
-			    
-	    Content.call(this);
-		this.entityType = 'collection';
-	};
-	
-	Collection.prototype = new Content();
-	Collection.prototype.constructor = Collection;
-		
-	return Collection;
-})
-
-/* FOLIO Service */
-.factory('Folio', function(Entity){
-	
-	var Folio = function(args){
-		this.isIssue = true;
-		this.allowDownload = false;
-		this.openTo = 'browsePage';
-		this.readingPosition = 'retain';
-		this.maxSize = -1;
-		this.lateralNavigation = true;
-		this.background = '';
-		this.contentElements = [];
-		this.view = '';
-		this.coverDate = '';
-		
-		angular.extend(this, args);
-	    
-	    Entity.call(this);
-		this.entityType = 'folio';
-	};
-	
-	Folio.prototype = new Entity();
-	Folio.prototype.constructor = Folio;
-			
-	return Folio;
-})
 
 // UNDESRSCORE
 .factory('_', function() {

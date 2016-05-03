@@ -136,6 +136,15 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
     	private function create_article_manifest($files, $options = array()){
 	    	
 	    	// generate the manifest XML
+	    	
+	    	// Check for SimpleXMLElement
+	    	if(!class_exists('SimpleXMLElement')){
+	            $error = new Error("Error", 400);
+	            $error->setTitle('Can\'t create the article manifest file.');
+				$error->setMessage('The plugin requires SimpleXMLElement to compile the article manifest (XML file): <a href="http://php.net/manual/en/book.simplexml.php">See the PHP SimpleXML Manual for Installation help</a>');
+				throw $error;
+            }
+	        
 	        $manifest = new \SimpleXMLElement('<manifest/>');
 	        $manifest->addAttribute('dateModified', date('Y-m-d\TH:i:s\Z'));
 	        $manifest->addAttribute('targetViewer', '33.0.0');
@@ -3218,12 +3227,20 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
 	    	rename($bundle, $bundle .= $extension );
 	    	
             if($existingZip){
-           		copy($existingZip, $bundle);
+				copy($existingZip, $bundle);
             }
             
             // Create new Zip archive.
-            $zip = new \ZipArchive();
-            $zip->open( $bundle, \ZipArchive::CREATE );
+            if(class_exists('ZipArchive')){
+	            $zip = new \ZipArchive();
+				$zip->open( $bundle, \ZipArchive::CREATE );
+            }else{
+	            $error = new Error("Error", 400);
+	            $error->setTitle('Can\'t create the zip archive.');
+				$error->setMessage('The ZipArchive library is missing from the PHP environment. Please install the zip extension: <a href="http://php.net/manual/en/book.zip.php">See the PHP Zip Manual</a>');
+				throw $error;
+            }
+            
             
             // Add files one by one
             foreach($files as $filename => $filepath){
@@ -3236,18 +3253,17 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
     	}
     	
     	public function download_zip( $entity, $withSidecar = false, $withContents = true){
-	    	// Verify name:
-	    	$entity->entityName = empty($entity->entityName) ? time() : $entity->entityName;
-            // Collect article files
-            if(DPS_API_VERSION > 1){ // If API is Publish bundle an article
-				$collectedFiles = $this->collect_article_files($entity);
-			}else{ // otherwise bundle a folio
-				$collectedFiles = $this->collect_folio_files($entity);
-			}
-			            
-            /* Combine files into zip format */
+            // Collect entity data
+            $entityData = $entity->to_array();
+            
+            // Init zip of files 
             $toZip = array();
-    		$toZip[$entity->entityName.'.article'] = $this->create_zip( $collectedFiles );
+
+            // Collect .Article
+            if($entity->entityType = 'article'){
+				$collectedFiles = $this->collect_article_files($entity);
+				$toZip[$entity->entityName.'.article'] = $this->create_zip( $collectedFiles );
+            }
     		
     		/* Add Sidecar */
     		if($withSidecar){
@@ -3257,9 +3273,9 @@ if(!class_exists('DPSFolioAuthor\Bundlr')) {
     		
     		/* Add Contents */
     		if($withContents){
-	    		foreach($entity->contents as $content => $id){
-		    		$filename = basename($content);
-		    		$toZip["contents/$content/$filename"] = $this->save_file($filename,$content);
+	    		foreach($entity->contents as $content => $path){
+		    		$filename = basename($entityData["_$content"]["path"]);
+		    		$toZip["contents/$content/$filename"] = $this->save_file($filename, $entityData["_$content"]["path"]);
 	    		}	
     		}
     		

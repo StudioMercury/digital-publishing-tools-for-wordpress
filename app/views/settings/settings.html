@@ -1,54 +1,26 @@
-<div id="settings">
+<div id="settings" style="background-color: white;">
+
+	<!-- SETTINGS NAV BAR -->
+	<nav class="navbar navbar-inverse navbar-secondary">
+	    <div class="container-fluid text-center" style="height:43px;">
+	        <ul class="nav navbar-nav navbar-center" ng-init="currentTab = 'adobe'">
+		        <li><a class="clickable" ng-class="{ active: currentTab == 'adobe' }" ng-click="currentTab = 'adobe'">AEM Mobile</a></li>
+		        <li><a class="clickable" ng-class="{ active: currentTab == 'templates' }" ng-click="currentTab = 'templates'">Templates</a></li>
+		        <li><a class="clickable" ng-class="{ active: currentTab == 'importing' }" ng-click="currentTab = 'importing'">Importing</a></li>
+		        <li><a class="clickable" ng-class="{ active: currentTab == 'status' }" ng-click="currentTab = 'status'">System Status</a></li>		        
+	        </ul>	          
+	    </div>
+	</nav>
     
+    <!-- SETTINGS VIEW -->
     <div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-7 col-lg-offset-3">
+	<br /><br />
         
-    	<tabset class="nav centered">
-    		
-    		<!-- Settings: General --> 
-    		<tab heading="General">
-    			<div ng-include="config.viewPath + 'views/settings/general.html'"></div>
-    		</tab>
-    		
-    		<!-- Settings: API --> 
-    		<tab heading="Adobe API">
-                <div ng-include="config.viewPath + 'views/settings/api.html'"></div>
-    		</tab>
-    		
-    		<!-- Settings: Devices --> 
-    		<tab heading="Devices">
-                <div ng-include="config.viewPath + 'views/settings/devices.html'"></div>
-    		</tab>
-    		
-    		<!-- Settings: Templates --> 
-    		<tab heading="Templates">
-                <div ng-include="config.viewPath + 'views/settings/templates.html'"></div>
-    		</tab>
-    		
-    		<!-- Settings: Defaults --> 
-<!--
-    		<tab heading="Defaults">
-                <div ng-include="config.viewPath + 'views/settings/defaults.html'"></div>
-    		</tab>
--->
-    		
-    		<!-- Settings: Importing --> 
-<!--
-    		<tab heading="Importing">
-                <div ng-include="config.viewPath + 'views/settings/importing.html'"></div>
-    		</tab>
--->
-    		
-    		<!-- Settings: Advanced --> 
-<!--
-    		<tab heading="Advanced">
-                <div ng-include="config.viewPath + 'views/settings/advanced.html'"></div>
-    		</tab>
--->
-    		
-    	</tabset>
+        <div ng-include="config.viewPath + 'views/settings/'+currentTab+'.html'"></div>
     	
     	<BR/>
     	
+    	<!-- SETTINGS SAVE -->
     	<div class="text-right">
             <button class="btn btn-primary" ng-click="save()"><span class="glyphicon glyphicon-save"></span> Save</button>
     	</div>

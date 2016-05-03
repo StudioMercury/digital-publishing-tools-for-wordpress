@@ -24,7 +24,7 @@
 		</p>
 		<input  type="text" 
 				class="form-control" 
-				ngMaxlength="250"
+				ng-maxlength="300"
 				name="title" 
 				placeholder="Title" 
 				ng-model="article.title" />
@@ -39,7 +39,7 @@
 		</p>
 		<input  type="text" 
 				class="form-control" 
-				ngMaxlength="140"
+				ng-maxlength="200"
 				name="shortTitle" 
 				placeholder="Short Title" 
 				ng-model="article.shortTitle" />
@@ -55,7 +55,7 @@
 		<textarea 	class="form-control" 
 					placeholder="Abstract"
 					name="abstract"  
-					ngMaxlength="400"
+					ng-maxlength="900"
 					ng-model="article.abstract"
 					rows="3"></textarea>
 	</div>			
@@ -69,7 +69,7 @@
 		</p>
 		<input  type="text" 
 				class="form-control" 
-				ngMaxlength="250"
+				ng-maxlength="400"
 				name="shortAbstract" 
 				placeholder="Short Abstract" 
 				ng-model="article.shortAbstract" />
@@ -89,7 +89,7 @@
 		</p>
 		<input  type="text" 
 				class="form-control" 
-				ngMaxlength="100"
+				ng-maxlength="100"
 				name="author" 
 				placeholder="Author" 
 				ng-model="article.author" />
@@ -102,12 +102,13 @@
 		<p>
 			<i>Link to more information about the author.</i>
 		</p>
-		<input  type="text" 
+		<input  type="url"
 				class="form-control" 
-				ngMaxlength="150"
+				ng-maxlength="150"
 				name="authorUrl" 
 				placeholder="Author URL" 
 				ng-model="article.authorUrl" />
+		<span class="metadata-error" ng-show="metadata.authorUrl.$error.url">This is not a valid url.</span>
 	</div>
 	
 	<br />
@@ -131,6 +132,7 @@
 		<input  type="text" 
 				class="form-control" 
 				name="department" 
+				ng-maxlength="50"
 				placeholder="Department" 
 				ng-model="article.department" />
 	</div>	
@@ -142,7 +144,7 @@
 		</p>
 		<input  type="text" 
 				class="form-control" 
-				ngMaxlength="140"
+				ng-maxlength="40"
 				name="category" 
 				placeholder="Category" 
 				ng-model="article.category" />
@@ -162,7 +164,7 @@
 		<p>
 			<i>A list of separated keywords associated with the article. These keywords could be user-facing.</i>
 		</p>
-		<tags-input name="keywords" placeholder="Keywords" ng-model="article.keywords" replace-spaces-with-dashes="false"></tags-input>
+		<tags-input name="keywords" placeholder="Keywords" ng-model="article.keywords" replace-spaces-with-dashes="false" ng-maxlength="40"></tags-input>
 	</div>			
 	
 	<br />
@@ -172,7 +174,7 @@
 		<p>
 			<i>A list of separated, internally used keywords.</i>
 		</p>
-		<tags-input name="internalKeywords" placeholder="Internal Keywords" ng-model="article.internalKeywords" replace-spaces-with-dashes="false"></tags-input>
+		<tags-input name="internalKeywords" placeholder="Internal Keywords" ng-model="article.internalKeywords" replace-spaces-with-dashes="false" ng-maxlength="40"></tags-input>
 	</div>							
 
 
@@ -202,11 +204,11 @@
 		    <input  type="checkbox" 
 					name="isTrustedContent" 
 					ng-model="article.isTrustedContent" />
-		    &nbsp; Trusted Content	
+		    &nbsp; Enable extensibility features	
 	    </label>					
 	</div>
 	<p>
-		<i>Flag that allows Article to access entitlement info / reading APIs.</i>
+		<i>Enables app extensibility features in the article content.</i>
 	</p>
 	
 	<br />
