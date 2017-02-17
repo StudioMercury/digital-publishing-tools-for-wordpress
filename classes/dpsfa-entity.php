@@ -262,6 +262,9 @@ if(!class_exists('DPSFolioAuthor\Entity')) {
 					// Get Article
 					$this->refresh($adobe->get_entity($this));
 					
+				        // eliminate 'altAssetUrl' from '_links' as the value keeps changing
+				        unset($this->_links['altAssetUrl']);
+				    
 					// Combine _links
 					if(is_array($response)){
 						// If saving multiple image renditions (downsample sizes)
