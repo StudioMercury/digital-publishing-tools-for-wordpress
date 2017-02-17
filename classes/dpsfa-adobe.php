@@ -966,6 +966,7 @@ if(!class_exists('DPSFolioAuthor\Adobe')) {
 									
 			$entityAttributes["entityName"] = $entity->entityName;
 			$entityAttributes["entityType"] = $entity->entityType;
+			unset($entityAttributes["_links"]['altAssetUrl']);
 			
 			return array_merge($entityAttributes,$overrides);
 		}
